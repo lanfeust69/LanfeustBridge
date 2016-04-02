@@ -23,17 +23,24 @@
   },
 
   "frameworks": {
-    "dnx451": { },
-    "dnxcore50": { }
+    "dnx451": { }
   },
 
   "exclude": [
-    "wwwroot",
+    "dist",
+    "src",
+    "config",
+    "e2e",
+    "public",
+    "tmp",
     "node_modules",
     "bower_components"
   ],
   "publishExclude": [
     "**.user",
     "**.vspscc"
-  ]
+  ],
+  "scripts": {
+    "postbuild": "ng build" 
+  } 
 }
