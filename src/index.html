@@ -6,7 +6,7 @@
   <base href="/">
   {{content-for 'head'}}
   <link rel="icon" type="image/x-icon" href="favicon.ico">
-  
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">  
   <!-- Service worker support is disabled by default.
        Install the worker script and uncomment to enable.
        Only enable service workers in production.
@@ -31,6 +31,7 @@
   <script src="vendor/angular2/bundles/angular2.dev.js"></script>
   <script src="vendor/angular2/bundles/http.dev.js"></script>
   <script src="vendor/angular2/bundles/router.dev.js"></script>
+  <script src="vendor/ng2-bootstrap/bundles/ng2-bootstrap.min.js"></script>
 
   <script>
     System.config({
@@ -39,6 +40,9 @@
           format: 'register',
           defaultExtension: 'js'
         }
+      },
+      map: {
+        moment: 'vendor/moment/moment.js'
       }
     });
     System.import('app.js').then(null, console.error.bind(console));
