@@ -1,1 +1,13 @@
 <p>This is deal {{deal.id}}</p>
+<!--<table style="table-layout: fixed; width: 400px">-->
+<table style="table-layout: fixed">
+    <tr>
+        <td>Deal #{{deal.id}}</td><td><hand [hand]="deal.hands.north"></hand></td>
+    </tr>
+    <tr>
+        <td><hand [hand]="deal.hands.west"></hand></td><td style="background-color: green"></td><td><hand [hand]="deal.hands.east"></hand></td>
+    </tr>
+    <tr>
+        <td></td><td><hand [hand]="deal.hands.south"></hand></td>
+    </tr>
+</table>
