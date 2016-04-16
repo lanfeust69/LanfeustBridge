@@ -1,9 +1,8 @@
-<h1>Let's check the styles</h1>
-<p>
-  front-end Works <span style="color: red">&hearts;</span> !
-  <foobar type="info">blah !</foobar>
-</p>
+<h1>LanfeustBridge</h1>
 <deal>my deal</deal>
-<alert type="info">ng2-bootstrap hello world!</alert>
-<button type="button" class='btn btn-primary' >Add Alert</button>
+<alert type="info" dismissible="true">ng2-bootstrap hello world!</alert>
+<alert *ngFor="#alert of alerts;#i = index" [type]="alert.type" dismissible="true" (close)="closeAlert(i)">
+  {{alert?.msg}}
+</alert>
+<button type="button" class='btn btn-primary' (click)="addAlert()">Add Alert</button>
 <router-outlet></router-outlet>

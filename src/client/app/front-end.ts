@@ -16,6 +16,13 @@ import {DealComponent} from './deal.component'
 ].concat(CliRouteConfig))
 
 export class FrontEndApp {
+    alerts: Object[] = [];
+    public addAlert() {
+        this.alerts.push({msg: 'Another alert!', type: 'warning', dismissible: true});
+    }
+    public closeAlert(i:number):void {
+        this.alerts.splice(i, 1);
+    }
     defaultMeaning: number = 42;
 
     meaningOfLife(meaning?: number) {
