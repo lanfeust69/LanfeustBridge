@@ -1,5 +1,5 @@
 <h1>LanfeustBridge</h1>
-<deal>my deal</deal>
+<deal [id]="randomDeal"></deal>
 <alert type="info" dismissible="true">ng2-bootstrap hello world!</alert>
 <alert *ngFor="#alert of alerts;#i = index" [type]="alert.type" dismissible="true" (close)="closeAlert(i)">
   {{alert?.msg}}

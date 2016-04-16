@@ -1,5 +1,6 @@
-import {Component, Input, ViewChild} from 'angular2/core';
+import {Component, Input, Inject, OnInit, ViewChild} from 'angular2/core';
 import {Deal} from './deal';
+import {DealService, DEAL_SERVICE} from './deal.service';
 import {HandComponent} from './hand.component';
 
 @Component({
@@ -9,8 +10,17 @@ import {HandComponent} from './hand.component';
     styles: ['canvas { background-color: limeGreen; margin: 10px }']
 })
 export class DealComponent {
-    deal: Deal = new Deal;
+    @Input() id: number;
+    deal: Deal;
     @ViewChild("table") tableCanvas;
+    
+    constructor(@Inject(DEAL_SERVICE) private _dealService: DealService) {}
+    
+    ngOnInit() {
+        this.deal = this._dealService.getDeal("", this.id);
+        console.log("deal service returned", this.deal);
+    }
+
     ngAfterViewInit() {
         var context = this.tableCanvas.nativeElement.getContext("2d");
         var size = this.tableCanvas.nativeElement.height;
@@ -18,7 +28,7 @@ export class DealComponent {
         context.font = font;
         context.textBaseline="middle";
         context.textAlign="center";
-        context.fillText("#1", 40, 40);
+        context.fillText("#" + this.deal.id, 40, 40);
         for (var i = 0; i < 4; i++) {
             var x = [0, size / 3, size * 4 / 5, size / 3][i];
             var y = [size / 3, 0, size / 3, size * 4 / 5][i];
