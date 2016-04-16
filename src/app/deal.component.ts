@@ -3,8 +3,8 @@ import {Deal} from './deal';
 import {HandComponent} from './hand.component';
 
 @Component({
-    templateUrl: 'app/deal.html',
     selector: 'deal',
+    templateUrl: 'app/deal.html',
     directives: [HandComponent]
 })
 export class DealComponent {
