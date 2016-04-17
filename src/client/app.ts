@@ -1,4 +1,4 @@
 import {bootstrap} from 'angular2/platform/browser';
-import {FrontEndApp} from './app/front-end';
+import {LanfeustBridgeApp} from './app/lanfeust-bridge.app';
 
-bootstrap(FrontEndApp, []);
+bootstrap(LanfeustBridgeApp, []);

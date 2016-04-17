@@ -7,27 +7,22 @@ import {DealServiceMock} from './deal.service.mock';
 import {DealComponent} from './deal.component'
 
 @Component({
-    selector: 'front-end-app',
+    selector: 'lanfeust-bridge-app',
     providers: [ROUTER_PROVIDERS, provide(DEAL_SERVICE, {useClass: DealServiceMock})],
-    templateUrl: 'app/front-end.html',
+    templateUrl: 'app/lanfeust-bridge.html',
     directives: [ROUTER_DIRECTIVES, Alert, DealComponent],
     pipes: []
 })
 @RouteConfig([
 
 ].concat(CliRouteConfig))
-export class FrontEndApp {
-    randomDeal: number = Math.floor(Math.random() * 32);
+export class LanfeustBridgeApp {
+    randomDeal: number = Math.floor(Math.random() * 32) + 1;
     alerts: Object[] = [];
     public addAlert() {
         this.alerts.push({msg: 'Another alert!', type: 'warning', dismissible: true});
     }
     public closeAlert(i:number):void {
         this.alerts.splice(i, 1);
-    }
-    defaultMeaning: number = 42;
-
-    meaningOfLife(meaning?: number) {
-        return `The meaning of life is ${meaning || this.defaultMeaning}`;
     }
 }

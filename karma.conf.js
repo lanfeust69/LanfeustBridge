@@ -23,7 +23,8 @@ module.exports = function (config) {
       { pattern: 'node_modules/angular2/bundles/http.dev.js', included: true, watched: true },
       { pattern: 'node_modules/angular2/bundles/router.dev.js', included: true, watched: true },
       { pattern: 'node_modules/angular2/bundles/testing.dev.js', included: true, watched: true },
-
+      { pattern: 'node_modules/ng2-bootstrap/bundles/ng2-bootstrap.js', included: true, watched: true },
+      { pattern: 'node_modules/moment/moment.js', included: true, watched: true },
 
       { pattern: 'karma-test-shim.js', included: true, watched: true },
 
@@ -41,7 +42,8 @@ module.exports = function (config) {
     ],
     proxies: {
       // required for component assets fetched by Angular's compiler
-      '/app/': '/base/dist/app/'
+      '/app/': '/base/dist/app/',
+      '/moment': '/base/dist/vendor/moment/moment.js'
     },
     exclude: [],
     preprocessors: {},
