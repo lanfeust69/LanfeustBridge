@@ -1,4 +1,5 @@
 import {Injectable} from 'angular2/core';
+import {Suit} from './types';
 import {Deal} from './deal';
 import {DealService} from './deal.service';
 
@@ -22,6 +23,25 @@ export class DealServiceMock implements DealService {
             let hand = cards.slice(i * 13, (i + 1) * 13).sort(function(a, b) { return a - b });
             for (let j = 0; j < 13; j++)
                 deal.hands[player][suits[Math.floor(hand[j] / 13)]].push(cardNames[hand[j] % 13]);
+        }
+        
+        for (let i = 0; i < 5; i++) {
+            deal.scores.push({
+                dealId: id,
+                round: i + 1,
+                players: { north: "1", south: "1", east: "2", west: "2"},
+                contract: {
+                    declarer: "W",
+                    level: 4,
+                    suit: Suit.Hearts,
+                    doubled: false,
+                    redoubled: false
+                },
+                tricks: 11,
+                score: -650,
+                nsResult: -1,
+                ewResult: 1
+            })
         }
         return deal;
     }

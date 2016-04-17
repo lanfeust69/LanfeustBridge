@@ -2,11 +2,12 @@ import {Component, Input, Inject, OnInit, ViewChild} from 'angular2/core';
 import {Deal} from './deal';
 import {DealService, DEAL_SERVICE} from './deal.service';
 import {HandComponent} from './hand.component';
+import {ScoreComponent} from './score.component';
 
 @Component({
     selector: 'deal',
     templateUrl: 'app/deal.html',
-    directives: [HandComponent],
+    directives: [HandComponent, ScoreComponent],
     styles: ['canvas { background-color: limeGreen; margin: 10px }']
 })
 export class DealComponent {

@@ -1,12 +1,5 @@
 import {Component, Input} from 'angular2/core';
-
-export enum Suit {
-    Clubs,
-    Diamonds,
-    Hearts,
-    Spades,
-    NoTrump
-};
+import {Suit} from './types';
 
 @Component({
     selector: 'suit',

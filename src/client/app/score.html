@@ -1,0 +1,30 @@
+<table class="table-striped table-bordered table-hover">
+    <thead>
+        <th>Round</th>
+        <th *ngIf="individual">N</th>
+        <th *ngIf="individual">S</th>
+        <th *ngIf="individual">E</th>
+        <th *ngIf="individual">W</th>
+        <th *ngIf="!individual">NS</th>
+        <th *ngIf="!individual">EW</th>
+        <th>Contract</th>
+        <th>Result</th>
+        <th>Score</th>
+        <th>NS</th>
+        <th>EW</th>
+    </thead>
+    <tbody>
+        <tr *ngFor="#score of scores">
+            <td>{{score.round}}</td>
+            <td>{{score.players.north}}</td>
+            <td *ngIf="individual">{{score.players.south}}</td>
+            <td>{{score.players.east}}</td>
+            <td *ngIf="individual">{{score.players.wes}}</td>
+            <td>{{score.contract.level}}<suit [suit]="score.contract.suit"></suit><span *ngIf="score.contract.doubled">X</span><span *ngIf="score.contract.redoubled">XX</span>&nbsp;{{score.contract.declarer}}</td>
+            <td>{{score.tricks}}</td>
+            <td>{{score.score}}</td>
+            <td>{{score.nsResult}}</td>
+            <td>{{score.ewResult}}</td>
+        </tr>
+    </tbody>
+</table>
