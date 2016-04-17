@@ -14,15 +14,26 @@ export class DealComponent {
     @Input() id: number;
     deal: Deal;
     @ViewChild("table") tableCanvas;
+    viewInitialized: boolean = false;
     
     constructor(@Inject(DEAL_SERVICE) private _dealService: DealService) {}
     
     ngOnInit() {
-        this.deal = this._dealService.getDeal("", this.id);
-        console.log("deal service returned", this.deal);
+        this._dealService.getDeal("", this.id).then(deal => {
+            console.log("deal service returned", deal);
+            this.deal = deal;
+            if (this.viewInitialized)
+                this.drawTable();
+        });
     }
 
     ngAfterViewInit() {
+        this.viewInitialized = true;
+        if (this.deal)
+            this.drawTable();
+    }
+
+    drawTable() {
         var context = this.tableCanvas.nativeElement.getContext("2d");
         var size = this.tableCanvas.nativeElement.height;
         var font = (size / 6) + "px arial";
