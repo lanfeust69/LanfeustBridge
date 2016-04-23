@@ -1,6 +1,7 @@
 import {Component, Input, Inject} from 'angular2/core';
 import {Control} from 'angular2/common';
 import {RouteParams, Router, ROUTER_DIRECTIVES} from 'angular2/router';
+import {AlertService} from './alert.service';
 import {Tournament} from './tournament';
 import {TournamentService, TOURNAMENT_SERVICE} from './tournament.service';
 import {Deal} from './deal';
@@ -25,10 +26,9 @@ export class TournamentComponent {
     constructor(
         private _router: Router,
         private _routeParams: RouteParams,
+        private _alertService: AlertService,
         @Inject(TOURNAMENT_SERVICE) private _tournamentService: TournamentService,
-        @Inject(DEAL_SERVICE) private _dealService: DealService) {
-            console.log("TournamentComponent constructor");
-    }
+        @Inject(DEAL_SERVICE) private _dealService: DealService) {}
 
     ngOnInit() {
         let id = +this._routeParams.get('id');
@@ -57,7 +57,8 @@ export class TournamentComponent {
                     this._tournament = tournament;
                 })
                 .catch(reason => {
-                    console.log("no tournament found");
+                    console.log("no tournament found with id " + id);
+                    this._alertService.newAlert.next({msg: "No tournament found with id " + id, type: 'warning', dismissible: true});
                     this._router.navigate(['TournamentList']);
                 });
         }
@@ -70,8 +71,12 @@ export class TournamentComponent {
         } else {
            this._tournamentService.create(this._tournament)
                .then(tournament => {
+                   this._alertService.newAlert.next({msg: "Tournament '" + tournament.name + "' successfully created", type: 'success', dismissible: true});
                    this._tournament = tournament;
                    this._created = true;
+               }).catch(reason => {
+                   this._alertService.newAlert.next({msg: "Tournament creation for '" + this._tournament.name + "' failed : " + reason, type: 'warning', dismissible: true});
+                   this._edit = true;
                });
         }
         this._edit = false;
