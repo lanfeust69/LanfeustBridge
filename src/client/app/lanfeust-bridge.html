@@ -1,5 +1,10 @@
 <h1>Lanfeust Bridge</h1>
 <deal [id]="randomDeal"></deal>
+<div class="list-group">
+  <a href="#" class="list-group-item" *ngFor="#tournamentName of _tournamentNames">{{tournamentName}}</a>
+</div>
+<tournament>There ?</tournament>
+<button type="button" class='btn btn-block' (click)="createTournament()">Create new tournament</button>
 <alert type="info" dismissible="true">ng2-bootstrap hello world!</alert>
 <alert *ngFor="#alert of alerts;#i = index" [type]="alert.type" dismissible="true" (close)="closeAlert(i)">
   {{alert?.msg}}
