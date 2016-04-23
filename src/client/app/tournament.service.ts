@@ -10,6 +10,8 @@ export interface TournamentService {
     create(tournament: Tournament) : Promise<Tournament>;
     update(tournament: Tournament) : Promise<Tournament>;
     delete(name: string) : Promise<boolean>;
+    
+    getMovements() : Promise<string[]>;
 
     // returns the tournament with positions filled
     start(name: string) : Promise<Tournament>;

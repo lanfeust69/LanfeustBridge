@@ -9,7 +9,9 @@ export enum Status {
 export class Tournament {
     name: string;
     date: Date = new Date;
-    movement: string = "Mitchell";
+    movement: string = "";
+    nbTables: number;
+    nbRounds: number;
     players: [
         {
             name: string;
@@ -17,8 +19,6 @@ export class Tournament {
             rank: number;
         }
     ]; // names, index in array is id
-    nbRound: number;
-    nbTables: number;
     deals: Deal[];
     
     status: Status = Status.Setup;

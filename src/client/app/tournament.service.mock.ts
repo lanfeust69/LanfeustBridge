@@ -37,6 +37,10 @@ export class TournamentServiceMock implements TournamentService {
     delete(name: string) : Promise<boolean> {
         return Promise.resolve(this._tournaments.delete(name));
     }
+    
+    getMovements() : Promise<string[]> {
+        return Promise.resolve(["Mitchell", "Howell", "Individual"]);
+    }
 
     start(name: string) : Promise<Tournament> {
         if (!this._tournaments.has(name))
@@ -46,7 +50,7 @@ export class TournamentServiceMock implements TournamentService {
         // TODO : fill tournament.positions
         return Promise.resolve(tournament);        
     }
-    // returns the current ns and ew score filled 
+
     postScore(name: string, score: Score) : Promise<Score> {
         if (!this._tournaments.has(name))
             return Promise.reject<Score>("No tournament named '" + name + "' found");
@@ -55,6 +59,7 @@ export class TournamentServiceMock implements TournamentService {
         // TODO : update scores
         return Promise.resolve(score);
     }
+
     close(name: string) : Promise<Tournament> {
         if (!this._tournaments.has(name))
             return Promise.reject<Tournament>("No tournament named '" + name + "' found");
