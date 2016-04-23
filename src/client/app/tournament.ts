@@ -7,6 +7,7 @@ export enum Status {
 }
 
 export class Tournament {
+    id: number = -1;
     name: string;
     date: Date = new Date;
     movement: string = "";
@@ -30,8 +31,4 @@ export class Tournament {
             south: number
         }
     ]]]; // indexed by table, round, boardInRound
-
-    constructor(name: string) {
-        this.name = name;
-    }
 }

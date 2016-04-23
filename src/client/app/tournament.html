@@ -6,7 +6,7 @@
         <fieldset *ngIf="true" [disabled]="!_edit"> <!-- *ngIf is a workaround for a known angular2 bug -->
             <div class="form-group">
                 <label for="name">Name</label>
-                <input type="text" class="form-control" [(ngModel)]="_tournament.name" [disabled]="_created"
+                <input type="text" class="form-control" [(ngModel)]="_tournament.name"
                     placeholder="Tournament name" ngControl="name" required #name="ngForm">
                 <div [hidden]="name.valid" class="alert alert-danger">
                     Name is required
@@ -31,7 +31,7 @@
             </div>
         </fieldset>
         <button *ngIf="_edit" type="submit" class="btn btn-primary" [disabled]="!tournamentForm.form.valid || !isValid">{{_created ? "Update" : "Create"}}</button>
-        <button *ngIf="!_edit" class="btn btn-primary" (click)="_edit = !_edit">Edit</button>
+        <button *ngIf="_created && !_edit" class="btn btn-primary" (click)="_edit = !_edit">Edit</button>
         <a [routerLink]="['TournamentList']">Back</a>
         <!--<button class="btn btn-link" (click)="_router.navigate(['TournamentList'])">Back</button>-->
     </form>

@@ -22,7 +22,7 @@ import {DealComponent} from './deal.component'
 })
 @RouteConfig([
     { path:'/', name: 'TournamentList',  component: TournamentListComponent },
-    { path:'/tournament/:name', name: 'Tournament',  component: TournamentComponent },
+    { path:'/tournament/:id', name: 'Tournament',  component: TournamentComponent },
     { path:'/new-tournament', name: 'NewTournament',  component: TournamentComponent }
 ].concat(CliRouteConfig))
 export class LanfeustBridgeApp {

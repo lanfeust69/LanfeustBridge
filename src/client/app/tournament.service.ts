@@ -5,17 +5,17 @@ import {Tournament} from './tournament';
 export let TOURNAMENT_SERVICE = new OpaqueToken('TournamentService');
 
 export interface TournamentService {
-    getNames() : Promise<string[]>;
-    get(name: string) : Promise<Tournament>;
+    getNames() : Promise<{id: number; name: string}[]>;
+    get(id: number) : Promise<Tournament>;
     create(tournament: Tournament) : Promise<Tournament>;
     update(tournament: Tournament) : Promise<Tournament>;
-    delete(name: string) : Promise<boolean>;
+    delete(id: number) : Promise<boolean>;
     
     getMovements() : Promise<string[]>;
 
     // returns the tournament with positions filled
-    start(name: string) : Promise<Tournament>;
+    start(id: number) : Promise<Tournament>;
     // returns the current ns and ew score filled 
-    postScore(name: string, score: Score) : Promise<Score>;
-    close(name: string) : Promise<Tournament>;
+    postScore(id: number, score: Score) : Promise<Score>;
+    close(id: number) : Promise<Tournament>;
 }

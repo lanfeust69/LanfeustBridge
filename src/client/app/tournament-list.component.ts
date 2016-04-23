@@ -6,14 +6,14 @@ import {TOURNAMENT_SERVICE, TournamentService} from './tournament.service';
     selector: 'tournament-list',
     template: `
 <div class="list-group">
-  <a [routerLink]="['Tournament', { name: tournamentName }]" class="list-group-item" *ngFor="#tournamentName of _tournamentNames">{{tournamentName}}</a>
+  <a [routerLink]="['Tournament', { id: tournamentName.id }]" class="list-group-item" *ngFor="#tournamentName of _tournamentNames">{{tournamentName.name}}</a>
 </div>
 <button type="button" class='btn btn-block' (click)="createTournament()">Create new tournament</button>
     `,
     directives: [ROUTER_DIRECTIVES]
 })
 export class TournamentListComponent {
-    _tournamentNames: String[] = [];
+    _tournamentNames: {id: number; name: string}[] = [];
 
     constructor(
         private _router: Router,
@@ -25,6 +25,6 @@ export class TournamentListComponent {
     }
 
     public createTournament() {
-        this._router.navigate( ['NewTournament', { name: "New Tournament" }] );
+        this._router.navigate( ['NewTournament', { id: "-1" }] );
     }
 }
