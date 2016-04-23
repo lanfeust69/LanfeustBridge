@@ -1,17 +1,17 @@
-<table class="table-striped table-bordered table-hover">
+<table class="table-striped table-bordered table-hover col-xs-12">
     <thead>
-        <th>Round</th>
-        <th *ngIf="individual">N</th>
-        <th *ngIf="individual">S</th>
-        <th *ngIf="individual">E</th>
-        <th *ngIf="individual">W</th>
-        <th *ngIf="!individual">NS</th>
-        <th *ngIf="!individual">EW</th>
-        <th>Contract</th>
-        <th>Result</th>
-        <th>Score</th>
-        <th>NS</th>
-        <th>EW</th>
+        <th style="width: 8%">#</th>
+        <th style="width: 8%" *ngIf="individual">N</th>
+        <th style="width: 8%" *ngIf="individual">S</th>
+        <th style="width: 8%" *ngIf="individual">E</th>
+        <th style="width: 8%" *ngIf="individual">W</th>
+        <th style="width: 8%" *ngIf="!individual">NS</th>
+        <th style="width: 8%" *ngIf="!individual">EW</th>
+        <th style="width: 30%">Contract</th>
+        <th style="width: 8%">Result</th>
+        <th style="width: 16%">Score</th>
+        <th style="width: 10%">NS</th>
+        <th style="width: 10%">EW</th>
     </thead>
     <tbody>
         <tr *ngFor="#score of scores">

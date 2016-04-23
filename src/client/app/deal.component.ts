@@ -8,7 +8,9 @@ import {ScoreComponent} from './score.component';
     selector: 'deal',
     templateUrl: 'app/deal.html',
     directives: [HandComponent, ScoreComponent],
-    styles: ['canvas { background-color: limeGreen; margin: 10px }']
+    styles: ['canvas { background-color: limeGreen; /*margin: 10px*/ }',
+        '.no-gutter [class*=\'col-\'] { padding-right:0; padding-left:0; vertical-align: middle;}',
+    ]
 })
 export class DealComponent {
     @Input() id: number;
@@ -40,7 +42,7 @@ export class DealComponent {
         context.font = font;
         context.textBaseline="middle";
         context.textAlign="center";
-        context.fillText("#" + this.deal.id, 40, 40);
+        context.fillText("#" + this.deal.id, size / 2, size / 2);
         for (var i = 0; i < 4; i++) {
             var x = [0, size / 3, size * 4 / 5, size / 3][i];
             var y = [size / 3, 0, size / 3, size * 4 / 5][i];

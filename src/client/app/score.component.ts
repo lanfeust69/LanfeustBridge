@@ -5,7 +5,10 @@ import {SuitComponent} from './suit.component';
 @Component({
     selector: 'scores',
     templateUrl: 'app/score.html',
-    styles: [`table { text-align: center } th { text-align: center }`],
+    styles: [
+        'table { text-align: center }',
+        'th { text-align: center }'
+    ],
     directives: [SuitComponent]
 })
 export class ScoreComponent {
