@@ -1,5 +1,6 @@
 import {Component, Input, Inject} from 'angular2/core';
 import {Control} from 'angular2/common';
+import {RouteParams, ROUTER_DIRECTIVES} from 'angular2/router';
 import {Tournament} from './tournament';
 import {TournamentService, TOURNAMENT_SERVICE} from './tournament.service';
 import {Deal} from './deal';
@@ -9,7 +10,7 @@ import {DealComponent} from './deal.component';
 @Component({
     selector: 'tournament',
     templateUrl: 'app/tournament.html',
-    directives: [DealComponent]
+    directives: [ROUTER_DIRECTIVES, DealComponent]
 })
 export class TournamentComponent {
     @Input() name: string;
@@ -22,12 +23,15 @@ export class TournamentComponent {
     _invalidReason: string;
 
     constructor(
+        private _routeParams: RouteParams,
         @Inject(TOURNAMENT_SERVICE) private _tournamentService: TournamentService,
         @Inject(DEAL_SERVICE) private _dealService: DealService) {
             console.log("TournamentComponent constructor");
     }
 
     ngOnInit() {
+        this.name = this._routeParams.get('name');
+        console.log("name is " + this.name);
         this._tournamentService.getMovements().then(movements => {
             this._knownMovements = movements;
             if (this._tournament && !this._tournament.movement && movements.length > 0)
@@ -55,10 +59,10 @@ export class TournamentComponent {
 
     onSubmit() {
         // isValid if the button could be clicked (and checked on server side)
-        //if (this._created)
-        //    this._tournamentService.update(this._tournament);
-        //else
-        //    this._tournamentService.create(this._tournament);
+        if (this._created)
+           this._tournamentService.update(this._tournament);
+        else
+           this._tournamentService.create(this._tournament);
         this._created = true;
         this._edit = false;
     }
@@ -83,7 +87,7 @@ export class TournamentComponent {
             this._invalidReason = "Number of rounds must be between 1 and 100";
             return false;
         }
-        if (this._knownNames.indexOf(this._tournament.name) != -1) {
+        if (!this._created && this._knownNames.indexOf(this._tournament.name) != -1) {
             this._invalidReason = "Name already exists";
             return false;
         }

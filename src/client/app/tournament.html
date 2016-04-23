@@ -26,11 +26,13 @@
                 <label for="name">Number of rounds</label>
                 <input type="number" class="form-control" [(ngModel)]="_tournament.nbRounds" required>
             </div>
-            <div [hidden]="isValid" class="alert alert-danger">
+            <div [hidden]="!_edit || isValid" class="alert alert-danger">
                 {{_invalidReason}}
             </div>
         </fieldset>
         <button *ngIf="_edit" type="submit" class="btn btn-primary" [disabled]="!tournamentForm.form.valid || !isValid">{{_created ? "Update" : "Create"}}</button>
         <button *ngIf="!_edit" class="btn btn-primary" (click)="_edit = !_edit">Edit</button>
+        <a [routerLink]="['TournamentList']">Back</a>
+        <!--<button class="btn btn-link" (click)="_router.navigate(['TournamentList'])">Back</button>-->
     </form>
 </div>

@@ -8,14 +8,13 @@ export class TournamentServiceMock implements TournamentService {
     private _tournaments: Map<string, Tournament> = new Map<string, Tournament>();
 
     getNames() : Promise<string[]> {
-        return Promise.resolve(["t 1", "t 2"]);
-        //return Promise.resolve(Array.from(this._tournaments.keys()));
+        return Promise.resolve(Array.from(this._tournaments.keys()));
     }
 
     get(name: string) : Promise<Tournament> {
         if (!this._tournaments.has(name))
             return Promise.reject<Tournament>("No tournament named '" + name + "' found");
-        let tournament = this._tournaments[name];
+        let tournament = this._tournaments.get(name);
         //return Promise.resolve(tournament);
         return new Promise<Tournament>(resolve => setTimeout(() => resolve(tournament), 2000)); // 2 seconds
     }
@@ -45,7 +44,7 @@ export class TournamentServiceMock implements TournamentService {
     start(name: string) : Promise<Tournament> {
         if (!this._tournaments.has(name))
             return Promise.reject<Tournament>("No tournament named '" + name + "' found");
-        let tournament = this._tournaments[name];
+        let tournament = this._tournaments.get(name);
         tournament.status = Status.Running;
         // TODO : fill tournament.positions
         return Promise.resolve(tournament);        
@@ -54,7 +53,7 @@ export class TournamentServiceMock implements TournamentService {
     postScore(name: string, score: Score) : Promise<Score> {
         if (!this._tournaments.has(name))
             return Promise.reject<Score>("No tournament named '" + name + "' found");
-        let tournament = this._tournaments[name];
+        let tournament = this._tournaments.get(name);
         tournament.deals[score.dealId - 1].scores[score.round - 1] = score;
         // TODO : update scores
         return Promise.resolve(score);
@@ -63,7 +62,7 @@ export class TournamentServiceMock implements TournamentService {
     close(name: string) : Promise<Tournament> {
         if (!this._tournaments.has(name))
             return Promise.reject<Tournament>("No tournament named '" + name + "' found");
-        let tournament = this._tournaments[name];
+        let tournament = this._tournaments.get(name);
         tournament.status = Status.Finished;
         return Promise.resolve(tournament);
     }
