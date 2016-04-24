@@ -28,6 +28,7 @@
 
   "exclude": [
     "dist",
+    "wwwroot",
     "src",
     "config",
     "e2e",
@@ -37,10 +38,13 @@
     "bower_components"
   ],
   "publishExclude": [
+    "typings",
+    "**/.*/**",
     "**.user",
     "**.vspscc"
   ],
   "scripts": {
-    "postbuild": "ng build" 
+    "postrestore": "npm install",
+    "prepackage": [ "node_modules/.bin/ng build", "if exist wwwroot rmdir /S /Q wwwroot", "rename dist wwwroot" ]
   } 
 }
