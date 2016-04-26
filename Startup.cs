@@ -1,13 +1,21 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System.IO;
+
+using Newtonsoft.Json.Serialization;
+
+using Serilog;
+
+using LanfeustBridge.Models;
+using LanfeustBridge.Services;
 
 namespace LanfeustBridge
 {
@@ -28,7 +36,12 @@ namespace LanfeustBridge
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
-            services.AddMvc();
+            //services.AddEntityFramework().AddInMemoryDatabase().AddDbContext<TournamentsContext>(options => options.UseInMemoryDatabase());
+            services
+                .AddInstance(DirectoryService.Service)
+                .AddSingleton<ITournamentService, SimpleTournamentsService>();
+
+            services.AddMvc().AddJsonOptions(x => x.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -36,6 +49,12 @@ namespace LanfeustBridge
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+            var logFilePattern = Path.Combine(DirectoryService.Service.LogDirectory, "LanfeustBridge-{Date}.log");
+            var log = new LoggerConfiguration()
+                .MinimumLevel.Information()
+                .WriteTo.RollingFile(pathFormat: logFilePattern)
+                .CreateLogger();
+            loggerFactory.AddSerilog(log);
 
             app.UseIISPlatformHandler();
 

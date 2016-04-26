@@ -259,3 +259,5 @@ testem.log
 /e2e/*.map
 
 wwwroot/
+data/
+logs/
