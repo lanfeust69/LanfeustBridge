@@ -1,10 +1,12 @@
 import {Component, Inject, provide} from 'angular2/core';
 import {RouteConfig, Router, ROUTER_DIRECTIVES, ROUTER_PROVIDERS} from 'angular2/router';
+import {HTTP_PROVIDERS} from 'angular2/http';
 import {Alert, DATEPICKER_DIRECTIVES} from 'ng2-bootstrap/ng2-bootstrap';
 import {CliRouteConfig} from './route-config';
 import {AlertService} from './alert.service';
 import {TOURNAMENT_SERVICE, TournamentService} from './tournament.service';
 import {TournamentServiceMock} from './tournament.service.mock';
+import {TournamentServiceHttp} from './tournament.service.http';
 import {TournamentComponent} from './tournament.component';
 import {TournamentListComponent} from './tournament-list.component';
 import {DEAL_SERVICE} from './deal.service';
@@ -15,10 +17,10 @@ import {DealComponent} from './deal.component'
     selector: 'lanfeust-bridge-app',
     templateUrl: 'app/lanfeust-bridge.html',
     providers: [
-        ROUTER_PROVIDERS,
+        ROUTER_PROVIDERS, HTTP_PROVIDERS,
         AlertService,
         provide(DEAL_SERVICE, {useClass: DealServiceMock}),
-        provide(TOURNAMENT_SERVICE, {useClass: TournamentServiceMock})],
+        provide(TOURNAMENT_SERVICE, {useClass: TournamentServiceHttp})],
     directives: [ROUTER_DIRECTIVES, Alert],
     pipes: []
 })

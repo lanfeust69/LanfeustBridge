@@ -38,8 +38,18 @@ namespace LanfeustBridge.Controllers
 
         // POST api/tournament
         [HttpPost]
-        public IActionResult Post(Tournament tournament)
+        public IActionResult Post([FromBody]Tournament tournament)
         {
+            tournament = _service.SaveTournament(tournament);
+            return Ok(tournament);
+        }
+
+        // PUT api/tournament/3
+        [HttpPut("{id}")]
+        public IActionResult Put(int id, [FromBody]Tournament tournament)
+        {
+            if (id != tournament.Id)
+                return HttpBadRequest($"Id mismatch : id of resource was {id}, id of tournament was {tournament.Id}");
             tournament = _service.SaveTournament(tournament);
             return Ok(tournament);
         }

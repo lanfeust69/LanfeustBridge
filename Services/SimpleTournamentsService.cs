@@ -33,9 +33,10 @@ namespace LanfeustBridge.Services
         {
             Dictionary<int, Tournament> result;
             if (File.Exists(_dataFile))
-                 result = JsonConvert.DeserializeObject<Dictionary<int, Tournament>>(File.ReadAllText(_dataFile));
+                result = JsonConvert.DeserializeObject<Dictionary<int, Tournament>>(File.ReadAllText(_dataFile));
             else
-                result = new Dictionary<int, Tournament> { { 0, new Tournament { Id = 0, Name = "Test 1", Movement = "Mitchell" } } };
+                result = new Dictionary<int, Tournament>();
+
             if (result.Count > 0)
                 _nextId = result.Keys.Max() + 1;
             _logger.LogInformation($"InitializeTournaments() done, {result.Count} tournaments in db, _nextId is {_nextId}");
@@ -67,7 +68,7 @@ namespace LanfeustBridge.Services
                 _logger.LogInformation($"New tournament created with Id {tournament.Id}");
             }
             Tournaments[tournament.Id] = tournament;
-            File.WriteAllText(_dataFile, JsonConvert.SerializeObject(Tournaments));
+            SaveToFile();
             return tournament;
         }
 
@@ -75,8 +76,13 @@ namespace LanfeustBridge.Services
         {
             bool removed = Tournaments.Remove(id);
             if (removed)
-                File.WriteAllText(_dataFile, JsonConvert.SerializeObject(Tournaments));
+                SaveToFile();
             return removed;
+        }
+
+        private void SaveToFile()
+        {
+            File.WriteAllText(_dataFile, JsonConvert.SerializeObject(Tournaments));
         }
     }
 }
