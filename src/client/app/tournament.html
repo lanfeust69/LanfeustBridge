@@ -39,6 +39,23 @@
                 </fieldset>
             </form>
         </tab>
+        <tab heading="Play" *ngIf="running">
+            <h4>Round {{_currentRound + 1}}</h4>
+            <div class="form-group">
+                <label for="player">Player</label>
+                <select class="form-control" required [(ngModel)]="_currentPlayer">
+                    <option *ngFor="let p of players; let i = index" [value]="i">{{p.name}}</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="deal">Deal</label>
+                <select class="form-control" required [(ngModel)]="_currentDeal">
+                    <option *ngFor="let d of roundDeals" [value]="d">#{{d}}</option>
+                </select>
+            </div>
+            <score-form [(score)]="_currentScore" (validatedd)="scoreValidated()"></score-form>
+            <button class="btn btn-primary" [disabled]="!roundFinished || _currentRound == _tournament.nbRounds - 1" (click)="nextRound()">Next Round</button>
+        </tab>
         <tab heading="Players" *ngIf="_tournament.players">
             <div *ngIf="!_edit" class="list-group">
                 <a [routerLink]="['Tournament', { id: _tournament.id }]" class="list-group-item"

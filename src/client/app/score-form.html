@@ -1,0 +1,13 @@
+<div class="panel panel-default">
+<form (ngSubmit)="onSubmit()">
+    <div class="btn-group">
+        <label *ngFor="let level of _levels" class="btn btn-default" [(ngModel)]="score.contract.level" [btnRadio]="level">{{level}}</label>
+    </div>
+    <div class="btn-group">
+        <label *ngFor="let suit of _suits" class="btn btn-default btn-large" [(ngModel)]="score.contract.suit" [btnRadio]="suit">
+            <suit [suit]="suit"></suit>
+        </label>
+    </div>
+    <button type="submit" class="btn btn-primary">Accept</button>
+</form>
+</div>

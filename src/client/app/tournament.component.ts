@@ -5,6 +5,8 @@ import {TAB_DIRECTIVES} from 'ng2-bootstrap/ng2-bootstrap';
 import {AlertService} from './alert.service';
 import {Tournament, Player, Status} from './tournament';
 import {TournamentService, TOURNAMENT_SERVICE} from './tournament.service';
+import {Score} from './score';
+import {ScoreFormComponent} from './score-form.component';
 import {Deal} from './deal';
 import {DealService, DEAL_SERVICE} from './deal.service';
 import {DealComponent} from './deal.component';
@@ -12,7 +14,7 @@ import {DealComponent} from './deal.component';
 @Component({
     selector: 'tournament',
     templateUrl: 'app/tournament.html',
-    directives: [ROUTER_DIRECTIVES, TAB_DIRECTIVES, DealComponent]
+    directives: [ROUTER_DIRECTIVES, TAB_DIRECTIVES, DealComponent, ScoreFormComponent]
 })
 export class TournamentComponent {
     @Input() id: number;
@@ -23,6 +25,11 @@ export class TournamentComponent {
     _knownMovements: string[] = [];
     _knownNames: string[] = [];
     _invalidReason: string;
+    
+    _currentRound: number;
+    _currentDeal: number;
+    _currentPlayer: number;
+    _currentScore: Score;
 
     constructor(
         private _router: Router,
@@ -89,6 +96,10 @@ export class TournamentComponent {
     start() {
         // tentatively set as running
         this._tournament.status = Status.Running;
+        this._currentRound = 0;
+        this._currentDeal = 1;
+        this._currentPlayer = 0;
+        this.initializeScore();
         this._tournamentService.start(this._tournament.id)
             .then(tournament => {
                 this._alertService.newAlert.next({msg: "Tournament '" + tournament.name + "' started", type: 'success', dismissible: true});
@@ -114,6 +125,26 @@ export class TournamentComponent {
             });
     }
 
+    initializeScore() {
+        let score = new Score;
+        score.dealId = this._currentDeal;
+        score.round = this._currentRound;
+        this._currentScore = score;
+    }
+
+    scoreValidated() {
+        console.log("scoreValidated");
+        // TODO : set to first non-played deal of the round
+        this._currentDeal++;
+        this.initializeScore();
+    }
+
+    nextRound() {
+        this._currentRound++;
+        this._currentDeal = this.roundDeals[0];
+        this.initializeScore();
+    }
+
     // apparently won't work with template-driven forms... 
     static nameValid(c: Control) {
         console.log("nameValid called");
@@ -122,6 +153,18 @@ export class TournamentComponent {
         // if (/* cannot access instance field _knownNames here... */)
         //     return { reason: "already taken" };
         return null;
+    }
+
+    get roundFinished() {
+        return true;
+    }
+
+    get roundDeals() {
+        let result =  [];
+        for (let i = 0; i < this._tournament.nbDealsPerRound; i++) {
+            result.push(this._currentRound * this._tournament.nbDealsPerRound + i + 1);
+        }
+        return result;
     }
 
     get setup() {

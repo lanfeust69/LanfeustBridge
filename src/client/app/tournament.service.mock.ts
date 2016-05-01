@@ -24,7 +24,7 @@ export class TournamentServiceMock implements TournamentService {
         tournament.id = this._tournaments.length;
         this._tournaments.push(tournament);
         //return Promise.resolve(tournament);
-        return new Promise<Tournament>(resolve => setTimeout(() => resolve(tournament), 2000)); // 2 seconds
+        return new Promise<Tournament>(resolve => setTimeout(() => resolve(tournament), 400)); // 0.4 seconds
     }
 
     update(tournament: Tournament) : Promise<Tournament> {
