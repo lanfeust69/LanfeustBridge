@@ -1,7 +1,7 @@
 import {Component, Inject, provide} from 'angular2/core';
 import {RouteConfig, Router, ROUTER_DIRECTIVES, ROUTER_PROVIDERS} from 'angular2/router';
 import {HTTP_PROVIDERS} from 'angular2/http';
-import {Alert, DATEPICKER_DIRECTIVES} from 'ng2-bootstrap/ng2-bootstrap';
+import {AlertComponent, DATEPICKER_DIRECTIVES} from 'ng2-bootstrap/ng2-bootstrap';
 import {CliRouteConfig} from './route-config';
 import {AlertService} from './alert.service';
 import {TOURNAMENT_SERVICE, TournamentService} from './tournament.service';
@@ -21,7 +21,7 @@ import {DealComponent} from './deal.component'
         AlertService,
         provide(DEAL_SERVICE, {useClass: DealServiceMock}),
         provide(TOURNAMENT_SERVICE, {useClass: TournamentServiceHttp})],
-    directives: [ROUTER_DIRECTIVES, Alert],
+    directives: [ROUTER_DIRECTIVES, AlertComponent],
     pipes: []
 })
 @RouteConfig([
