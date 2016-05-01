@@ -1,16 +1,16 @@
 <div>
     <table>
         <tr>
-            <suit [suit]="Suit.Spades"></suit><span *ngFor="#card of hand.spades"> {{card}}</span>
+            <suit [suit]="Suit.Spades"></suit><span *ngFor="let card of hand.spades"> {{card}}</span>
         </tr>
         <tr>
-            <suit [suit]="Suit.Hearts"></suit><span *ngFor="#card of hand.hearts"> {{card}}</span>
+            <suit [suit]="Suit.Hearts"></suit><span *ngFor="let card of hand.hearts"> {{card}}</span>
         </tr>
         <tr>
-            <suit [suit]="Suit.Diamonds"></suit><span *ngFor="#card of hand.diamonds"> {{card}}</span>
+            <suit [suit]="Suit.Diamonds"></suit><span *ngFor="let card of hand.diamonds"> {{card}}</span>
         </tr>
         <tr>
-            <suit [suit]="Suit.Clubs"></suit><span *ngFor="#card of hand.clubs"> {{card}}</span>
+            <suit [suit]="Suit.Clubs"></suit><span *ngFor="let card of hand.clubs"> {{card}}</span>
         </tr>
     </table> 
 </div>

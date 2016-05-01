@@ -6,7 +6,7 @@ beforeEachProviders(() => [DealServiceMock]);
 describe('Service Mock: Deal', () => {
     describe('#createRandomDeal', () => {
         it('should return a valid deal', inject([DealServiceMock], (ds: DealServiceMock) => {
-            let deal = ds.createRandomDeal("", 3);
+            let deal = ds.createRandomDeal(0, 3);
             expect(deal.id).toBe(3);
             expect(deal.dealer).toBe("S");
             expect(deal.vulnerability).toBe("EW");

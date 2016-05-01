@@ -1,4 +1,5 @@
 import {Component, Input, Inject, OnInit, ViewChild} from 'angular2/core';
+import {RouteParams, Router, ROUTER_DIRECTIVES} from 'angular2/router';
 import {Deal} from './deal';
 import {DealService, DEAL_SERVICE} from './deal.service';
 import {HandComponent} from './hand.component';
@@ -18,10 +19,16 @@ export class DealComponent {
     @ViewChild("table") tableCanvas;
     viewInitialized: boolean = false;
     
-    constructor(@Inject(DEAL_SERVICE) private _dealService: DealService) {}
+    constructor(
+        private _router: Router,
+        private _routeParams: RouteParams,
+        @Inject(DEAL_SERVICE) private _dealService: DealService) {}
     
     ngOnInit() {
-        this._dealService.getDeal("", this.id).then(deal => {
+        let tournamentId = +this._routeParams.get('tournamentId');
+        this.id = +this._routeParams.get('dealId');
+        console.log("tournamentId is " + tournamentId + ", dealId is " + this.id);
+        this._dealService.getDeal(tournamentId, this.id).then(deal => {
             console.log("deal service returned", deal);
             this.deal = deal;
             if (this.viewInitialized)

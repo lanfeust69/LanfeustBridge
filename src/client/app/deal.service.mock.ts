@@ -5,12 +5,12 @@ import {DealService} from './deal.service';
 
 @Injectable()
 export class DealServiceMock implements DealService {
-    getDeal(tournament: string, id: number) : Promise<Deal> {
+    getDeal(tournament: number, id: number) : Promise<Deal> {
         let deal = this.createRandomDeal(tournament, id);
         //return Promise.resolve(deal);
         return new Promise<Deal>(resolve => setTimeout(() => resolve(deal), 2000)); // 2 seconds
     }
-    createRandomDeal(tournament: string, id: number) : Deal {
+    createRandomDeal(tournament: number, id: number) : Deal {
         let deal = new Deal(id);
         let cards: number[] = [];
         for (let i = 0; i < 52; i++)

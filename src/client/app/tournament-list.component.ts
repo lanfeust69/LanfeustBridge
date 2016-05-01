@@ -6,7 +6,7 @@ import {TOURNAMENT_SERVICE, TournamentService} from './tournament.service';
     selector: 'tournament-list',
     template: `
 <div class="list-group">
-  <a [routerLink]="['Tournament', { id: tournamentName.id }]" class="list-group-item" *ngFor="#tournamentName of _tournamentNames">{{tournamentName.name}}</a>
+  <a [routerLink]="['Tournament', { id: tournamentName.id }]" class="list-group-item" *ngFor="let tournamentName of _tournamentNames">{{tournamentName.name}}</a>
 </div>
 <button type="button" class='btn btn-block' (click)="createTournament()">Create new tournament</button>
     `,

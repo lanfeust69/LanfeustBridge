@@ -20,13 +20,15 @@ import {DealComponent} from './deal.component'
         ROUTER_PROVIDERS, HTTP_PROVIDERS,
         AlertService,
         provide(DEAL_SERVICE, {useClass: DealServiceMock}),
-        provide(TOURNAMENT_SERVICE, {useClass: TournamentServiceHttp})],
+        //provide(TOURNAMENT_SERVICE, {useClass: TournamentServiceHttp})],
+        provide(TOURNAMENT_SERVICE, {useClass: TournamentServiceMock})],
     directives: [ROUTER_DIRECTIVES, AlertComponent],
     pipes: []
 })
 @RouteConfig([
     { path:'/', name: 'TournamentList',  component: TournamentListComponent },
     { path:'/tournament/:id', name: 'Tournament',  component: TournamentComponent },
+    { path:'/tournament/:tournamentId/deal/:dealId', name: 'Deal',  component: DealComponent },
     { path:'/new-tournament', name: 'NewTournament',  component: TournamentComponent }
 ].concat(CliRouteConfig))
 export class LanfeustBridgeApp {

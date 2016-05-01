@@ -6,6 +6,12 @@ export enum Status {
     Finished
 }
 
+export class Player {
+    name: string = "";
+    score: number = 0;
+    rank: number = 0;
+}
+
 export class Tournament {
     id: number = -1;
     name: string;
@@ -13,22 +19,15 @@ export class Tournament {
     movement: string = "";
     nbTables: number;
     nbRounds: number;
-    players: [
-        {
-            name: string;
-            score: number;
-            rank: number;
-        }
-    ]; // names, index in array is id
+    players: Player[] = []; // names, index in array is id
     deals: Deal[];
     
     status: Status = Status.Setup;
-    positions: [[[
+    positions:
         {
             west: number,
             north: number,
             east: number,
             south: number
-        }
-    ]]]; // indexed by table, round, boardInRound
+        }[][][]; // indexed by table, round, boardInRound
 }
