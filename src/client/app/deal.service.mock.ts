@@ -1,15 +1,31 @@
 import {Injectable} from 'angular2/core';
 import {Suit} from './types';
 import {Deal} from './deal';
+import {Score} from './score';
 import {DealService} from './deal.service';
 
 @Injectable()
 export class DealServiceMock implements DealService {
+    private _deals: Deal[][] = [];
+
     getDeal(tournament: number, id: number) : Promise<Deal> {
         let deal = this.createRandomDeal(tournament, id);
         //return Promise.resolve(deal);
         return new Promise<Deal>(resolve => setTimeout(() => resolve(deal), 2000)); // 2 seconds
     }
+
+    postScore(id: number, score: Score) : Promise<Score> {
+        // if (id < 0 || id >= this._deals.length || !this._deals[id]) 
+        //     return Promise.reject<Score>("No tournament with id '" + id + "' found");
+        if (!this._deals[id])
+            this._deals[id] = [];
+        if (!this._deals[id][score.dealId - 1])
+            this._deals[id][score.dealId - 1] = this.createRandomDeal(id, score.dealId);
+        this._deals[id][score.dealId - 1].scores[score.round - 1] = score;
+        // TODO : update scores
+        return Promise.resolve(score);
+    }
+
     createRandomDeal(tournament: number, id: number) : Deal {
         let deal = new Deal(id);
         let cards: number[] = [];

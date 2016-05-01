@@ -15,7 +15,5 @@ export interface TournamentService {
 
     // returns the tournament with positions filled
     start(id: number) : Promise<Tournament>;
-    // returns the current ns and ew score filled 
-    postScore(id: number, score: Score) : Promise<Score>;
     close(id: number) : Promise<Tournament>;
 }

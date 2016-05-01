@@ -3,7 +3,7 @@ import {Control} from 'angular2/common';
 import {RouteParams, Router, ROUTER_DIRECTIVES} from 'angular2/router';
 import {TAB_DIRECTIVES} from 'ng2-bootstrap/ng2-bootstrap';
 import {AlertService} from './alert.service';
-import {Tournament, Player} from './tournament';
+import {Tournament, Player, Status} from './tournament';
 import {TournamentService, TOURNAMENT_SERVICE} from './tournament.service';
 import {Deal} from './deal';
 import {DealService, DEAL_SERVICE} from './deal.service';
@@ -45,11 +45,11 @@ export class TournamentComponent {
             this._tournament = new Tournament;
             this._tournament.nbTables = 1;
             this._tournament.nbRounds = 1;
+            this._tournament.nbDealsPerRound = 2;
             for (let i = 0; i < 4; i++)
                 this._tournament.players.push({name: "Player " + (i + 1), score: 0, rank: 0});
             if (this._knownMovements.length > 0)
                 this._tournament.movement = this._knownMovements[0];
-            this._tournament.deals = [new Deal(1)];
             this._created = false;
             this._edit = true;
         } else {
@@ -86,6 +86,34 @@ export class TournamentComponent {
         this._edit = false;
     }
 
+    start() {
+        // tentatively set as running
+        this._tournament.status = Status.Running;
+        this._tournamentService.start(this._tournament.id)
+            .then(tournament => {
+                this._alertService.newAlert.next({msg: "Tournament '" + tournament.name + "' started", type: 'success', dismissible: true});
+                this._tournament = tournament;
+            }).catch(reason => {
+                this._alertService.newAlert.next({msg: "Tournament '" + this._tournament.name + "' failed to start : " + reason, type: 'warning', dismissible: true});
+                // go back to setup status
+                this._tournament.status = Status.Setup;
+            });
+    }
+
+    close() {
+        // tentatively set as finished
+        this._tournament.status = Status.Finished;
+        this._tournamentService.close(this._tournament.id)
+            .then(tournament => {
+                this._alertService.newAlert.next({msg: "Tournament '" + tournament.name + "' finished", type: 'success', dismissible: true});
+                this._tournament = tournament;
+            }).catch(reason => {
+                this._alertService.newAlert.next({msg: "Tournament '" + this._tournament.name + "' failed to close : " + reason, type: 'warning', dismissible: true});
+                // go back to running status
+                this._tournament.status = Status.Running;
+            });
+    }
+
     // apparently won't work with template-driven forms... 
     static nameValid(c: Control) {
         console.log("nameValid called");
@@ -96,12 +124,35 @@ export class TournamentComponent {
         return null;
     }
 
+    get setup() {
+        return this._tournament.status == Status.Setup;
+    }
+
+    get running() {
+        return this._tournament.status == Status.Running;
+    }
+
+    get finished() {
+        return this._tournament.status == Status.Finished;
+    }
+
     get players() {
         let nbPlayers = this._tournament.nbTables * 4;
         if (this._tournament.players.length < nbPlayers)
             for (let i = this._tournament.players.length; i < nbPlayers; i++)
                 this._tournament.players.push({name: "Player " + (i + 1), score: 0, rank: 0});
         return this._tournament.players.filter((p, i) => i < nbPlayers);
+    }
+
+    get nbDeals() {
+        return this._tournament.nbRounds * this._tournament.nbDealsPerRound;
+    }
+
+    get deals() {
+        let result = [];
+        for (let i = 0; i < this.nbDeals; i++)
+            result.push({id: i + 1});
+        return result;
     }
 
     get isValid() {

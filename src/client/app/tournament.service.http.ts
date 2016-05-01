@@ -60,15 +60,6 @@ export class TournamentServiceHttp implements TournamentService {
         return Promise.resolve(tournament);
     }
 
-    postScore(id: number, score: Score) : Promise<Score> {
-        if (id < 0 || id >= this._tournaments.length || !this._tournaments[id]) 
-            return Promise.reject<Score>("No tournament with id '" + id + "' found");
-        let tournament = this._tournaments[id];
-        tournament.deals[score.dealId - 1].scores[score.round - 1] = score;
-        // TODO : update scores
-        return Promise.resolve(score);
-    }
-
     close(id: number) : Promise<Tournament> {
         if (id < 0 || id >= this._tournaments.length || !this._tournaments[id]) 
             return Promise.reject<Tournament>("No tournament with id '" + id + "' found");

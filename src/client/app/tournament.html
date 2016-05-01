@@ -1,6 +1,9 @@
 <h2 class="text-center">Tournament {{_tournament ? _tournament.name : tournamentName}}</h2>
 <p class="text-center" *ngIf="_tournament">Created on : {{_tournament.date.toLocaleDateString('en-US')}}</p>
-<p class="text-center">{{diagnostic}}</p>
+<h3 class="text-center" *ngIf="_tournament && running">
+    <span class="text-primary">Now Running</span>
+</h3>
+<!--<p class="text-center">{{diagnostic}}</p>-->
 <div class="container" *ngIf="_tournament">
     <tabset>
         <tab heading='Infos'>
@@ -29,6 +32,10 @@
                         <label for="rounds">Number of rounds</label>
                         <input type="number" class="form-control" [(ngModel)]="_tournament.nbRounds" required>
                     </div>
+                    <div class="form-group">
+                        <label for="dealsPerRound">Number of deals per rounds</label>
+                        <input type="number" class="form-control" [(ngModel)]="_tournament.nbDealsPerRound" required>
+                    </div>
                 </fieldset>
             </form>
         </tab>
@@ -47,9 +54,9 @@
                 </div>
             </form>
         </tab>
-        <tab heading="Deals" *ngIf="_tournament.deals">
+        <tab heading="Deals" *ngIf="finished && nbDeals">
             <div class="list-group">
-                <a [routerLink]="['Deal', { tournamentId: _tournament.id, dealId: deal.id }]" class="list-group-item" *ngFor="let deal of _tournament.deals">Deal {{deal.id}}</a>
+                <a [routerLink]="['Deal', { tournamentId: _tournament.id, dealId: deal.id }]" class="list-group-item" *ngFor="let deal of deals">Deal {{deal.id}}</a>
             </div>
         </tab>
     </tabset>
@@ -57,6 +64,9 @@
         {{_invalidReason}}
     </div>
     <button *ngIf="_edit" class="btn btn-primary" [disabled]="!tournamentForm.form.valid || !isValid" (click)="onSubmit()">{{_created ? "Update" : "Create"}}</button>
-    <button *ngIf="_created && !_edit" class="btn btn-primary" (click)="_edit = !_edit">Edit</button>
+    <button *ngIf="setup && _created && !_edit" class="btn btn-primary" (click)="_edit = !_edit">Edit</button>
+    <button *ngIf="setup && _created && !_edit" class="btn btn-primary" (click)="start()">Start</button>
+    <!--<button *ngIf="running" class="btn btn-primary" (click)="play()">Play</button>-->
+    <button *ngIf="running" class="btn btn-primary" (click)="close()">Close</button>
     <a [routerLink]="['TournamentList']">Back</a>
 </div>

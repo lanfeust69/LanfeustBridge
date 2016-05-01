@@ -19,8 +19,8 @@ export class Tournament {
     movement: string = "";
     nbTables: number;
     nbRounds: number;
+    nbDealsPerRound: number;
     players: Player[] = []; // names, index in array is id
-    deals: Deal[];
     
     status: Status = Status.Setup;
     positions:
