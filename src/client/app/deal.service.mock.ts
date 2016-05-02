@@ -9,19 +9,32 @@ export class DealServiceMock implements DealService {
     private _deals: Deal[][] = [];
 
     getDeal(tournament: number, id: number) : Promise<Deal> {
-        let deal = this.createRandomDeal(tournament, id);
-        //return Promise.resolve(deal);
-        return new Promise<Deal>(resolve => setTimeout(() => resolve(deal), 2000)); // 2 seconds
+        if (!this._deals[tournament])
+            this._deals[tournament] = [];
+        if (!this._deals[tournament][id - 1])
+            this._deals[tournament][id - 1] = this.createRandomDeal(tournament, id);
+        return new Promise<Deal>(resolve => setTimeout(() => resolve(this._deals[tournament][id - 1]), 400)); // 0.4 seconds
     }
 
-    postScore(id: number, score: Score) : Promise<Score> {
+    getScore(tournament: number, id: number, round: number) : Promise<Score> {
+        if (!this._deals[tournament] || !this._deals[tournament][id - 1] || !this._deals[tournament][id - 1].scores[round]) {
+            let score = new Score;
+            score.dealId = id;
+            score.round = round;
+            return Promise.resolve(score);
+        }
+        return Promise.resolve(this._deals[tournament][id - 1].scores[round]);
+    }
+
+    postScore(tournament: number, score: Score) : Promise<Score> {
         // if (id < 0 || id >= this._deals.length || !this._deals[id]) 
         //     return Promise.reject<Score>("No tournament with id '" + id + "' found");
-        if (!this._deals[id])
-            this._deals[id] = [];
-        if (!this._deals[id][score.dealId - 1])
-            this._deals[id][score.dealId - 1] = this.createRandomDeal(id, score.dealId);
-        this._deals[id][score.dealId - 1].scores[score.round - 1] = score;
+        if (!this._deals[tournament])
+            this._deals[tournament] = [];
+        if (!this._deals[tournament][score.dealId - 1])
+            this._deals[tournament][score.dealId - 1] = this.createRandomDeal(tournament, score.dealId);
+        score.score = score.computeScore();
+        this._deals[tournament][score.dealId - 1].scores[score.round] = score;
         // TODO : update scores
         return Promise.resolve(score);
     }
@@ -45,25 +58,7 @@ export class DealServiceMock implements DealService {
             for (let j = 0; j < 13; j++)
                 deal.hands[player][suits[Math.floor(hand[j] / 13)]].push(cardNames[hand[j] % 13]);
         }
-        
-        for (let i = 0; i < 5; i++) {
-            deal.scores.push({
-                dealId: id,
-                round: i + 1,
-                players: { north: "1", south: "1", east: "2", west: "2"},
-                contract: {
-                    declarer: "W",
-                    level: 4,
-                    suit: Suit.Hearts,
-                    doubled: false,
-                    redoubled: false
-                },
-                tricks: 11,
-                score: -650,
-                nsResult: -1,
-                ewResult: 1
-            })
-        }
+
         return deal;
     }
 }

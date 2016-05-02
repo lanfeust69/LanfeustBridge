@@ -16,4 +16,7 @@ export interface TournamentService {
     // returns the tournament with positions filled
     start(id: number) : Promise<Tournament>;
     close(id: number) : Promise<Tournament>;
+
+    currentRound(id: number) : Promise<{round: number, finished: boolean}>;
+    nextRound(id: number) : void;
 }

@@ -63,4 +63,10 @@ export class TournamentServiceMock implements TournamentService {
         tournament.status = Status.Finished;
         return Promise.resolve(tournament);
     }
+
+    currentRound(id: number) : Promise<{round: number, finished: boolean}> {
+        return Promise.resolve({round: 1, finished: true});
+    }
+
+    nextRound(id: number) {}
 }

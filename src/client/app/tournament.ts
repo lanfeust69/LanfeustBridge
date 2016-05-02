@@ -25,9 +25,10 @@ export class Tournament {
     status: Status = Status.Setup;
     positions:
         {
+            table: number,
             west: number,
             north: number,
             east: number,
             south: number
-        }[][][]; // indexed by table, round, boardInRound
+        }[][][]; // indexed by player, round
 }

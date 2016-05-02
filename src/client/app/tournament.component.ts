@@ -27,9 +27,11 @@ export class TournamentComponent {
     _invalidReason: string;
     
     _currentRound: number = 0;
+    _roundFinished: boolean = false;
     _currentDeal: number = 1;
     _currentPlayer: number = 0;
     _currentScore: Score = new Score;
+    _scoreDisplayed = false;
 
     constructor(
         private _router: Router,
@@ -126,37 +128,46 @@ export class TournamentComponent {
     }
 
     initializeScore() {
-        let score = new Score;
-        score.dealId = this._currentDeal;
-        score.round = this._currentRound;
-        this._currentScore = score;
+        this._scoreDisplayed = false;
+        // only display score form for deals from round
+        if (this.roundDeals.indexOf(this.currentDeal) == -1)
+            return;
+        this._dealService.getScore(this._tournament.id, this._currentDeal, this._currentRound)
+            .then(score => {
+                // TODO : fill score from this._tournament.positions
+                score.players = {
+                    north: this._tournament.players[0].name,
+                    south: this._tournament.players[1].name,
+                    east: this._tournament.players[2].name,
+                    west: this._tournament.players[3].name,
+                };
+                this._currentScore = score;
+                this._scoreDisplayed = true
+            });
     }
 
     scoreValidated() {
         console.log("scoreValidated");
         // TODO : set to first non-played deal of the round
+        this._dealService.postScore(this._tournament.id, this._currentScore);
         this._currentDeal++;
+        // FIXME : just until we can query currentRound
+        if (this.roundDeals.indexOf(this.currentDeal) == -1)
+            this._roundFinished = true;
         this.initializeScore();
     }
 
     nextRound() {
+        this._tournamentService.nextRound(this._tournament.id);
         this._currentRound++;
         this._currentDeal = this.roundDeals[0];
         this.initializeScore();
     }
 
-    // apparently won't work with template-driven forms... 
-    static nameValid(c: Control) {
-        console.log("nameValid called");
-        if (!c.value)
-            return { reason: "required" };
-        // if (/* cannot access instance field _knownNames here... */)
-        //     return { reason: "already taken" };
-        return null;
-    }
-
     get roundFinished() {
-        return true;
+        // TODO : be efficient with that
+        //this._tournamentService.currentRound(this._tournament.id).then(r => this._roundFinished = r.finished);
+        return this._roundFinished;
     }
 
     get roundDeals() {

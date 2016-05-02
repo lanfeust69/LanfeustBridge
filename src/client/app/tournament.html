@@ -53,7 +53,7 @@
                     <option *ngFor="let d of roundDeals" [value]="d">#{{d}}</option>
                 </select>
             </div>
-            <score-form *ngIf="roundDeals.indexOf(currentDeal) != -1" [(score)]="_currentScore" (validated)="scoreValidated()"></score-form>
+            <score-form *ngIf="_scoreDisplayed" [(score)]="_currentScore" (validated)="scoreValidated()"></score-form>
             <div class="form-group">
                 <button class="btn btn-primary" [disabled]="!roundFinished || _currentRound == _tournament.nbRounds - 1" (click)="nextRound()">Next Round</button>
             </div>

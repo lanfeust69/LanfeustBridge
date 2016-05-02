@@ -8,5 +8,6 @@ export interface DealService {
     getDeal(tournament: number, id: number) : Promise<Deal>;
 
     // returns the current ns and ew score filled 
+    getScore(tournament: number, id: number, round: number) : Promise<Score>;
     postScore(id: number, score: Score) : Promise<Score>;
 }
