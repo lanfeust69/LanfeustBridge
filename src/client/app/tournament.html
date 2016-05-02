@@ -43,18 +43,20 @@
             <h4>Round {{_currentRound + 1}}</h4>
             <div class="form-group">
                 <label for="player">Player</label>
-                <select class="form-control" required [(ngModel)]="_currentPlayer">
+                <select class="form-control" required [(ngModel)]="_currentPlayer" (ngModelChange)="initializeScore()">
                     <option *ngFor="let p of players; let i = index" [value]="i">{{p.name}}</option>
                 </select>
             </div>
             <div class="form-group">
                 <label for="deal">Deal</label>
-                <select class="form-control" required [(ngModel)]="_currentDeal">
+                <select class="form-control" required [(ngModel)]="currentDeal" (ngModelChange)="initializeScore()">
                     <option *ngFor="let d of roundDeals" [value]="d">#{{d}}</option>
                 </select>
             </div>
-            <score-form [(score)]="_currentScore" (validatedd)="scoreValidated()"></score-form>
-            <button class="btn btn-primary" [disabled]="!roundFinished || _currentRound == _tournament.nbRounds - 1" (click)="nextRound()">Next Round</button>
+            <score-form *ngIf="roundDeals.indexOf(currentDeal) != -1" [(score)]="_currentScore" (validated)="scoreValidated()"></score-form>
+            <div class="form-group">
+                <button class="btn btn-primary" [disabled]="!roundFinished || _currentRound == _tournament.nbRounds - 1" (click)="nextRound()">Next Round</button>
+            </div>
         </tab>
         <tab heading="Players" *ngIf="_tournament.players">
             <div *ngIf="!_edit" class="list-group">
@@ -63,9 +65,9 @@
                 <!--<a [routerLink]="['User', { name: player?.name }]" class="list-group-item" *ngFor="let player of _tournament.players">{{player?.name}}</a>-->
             </div>
             <form *ngIf="_edit" class="list-group form-horizontal">
-                <div *ngFor="let player of players; let i = index" class="form-group list-group-item">
-                    <label for="player" class="control-label col-xs-2">Player {{i + 1}}</label>
-                    <div class="col-xs-10">
+                <div *ngFor="let player of players; let i = index" class="list-group-item row from-group">
+                    <label for="player" class="control-label col-xs-3">Player {{i + 1}}</label>
+                    <div class="col-xs-9">
                     <input type="text" class="form-control" [(ngModel)]="player.name" placeholder="Player name">
                     </div>
                 </div>
@@ -80,10 +82,12 @@
     <div [hidden]="!_edit || isValid" class="alert alert-danger">
         {{_invalidReason}}
     </div>
-    <button *ngIf="_edit" class="btn btn-primary" [disabled]="!tournamentForm.form.valid || !isValid" (click)="onSubmit()">{{_created ? "Update" : "Create"}}</button>
-    <button *ngIf="setup && _created && !_edit" class="btn btn-primary" (click)="_edit = !_edit">Edit</button>
-    <button *ngIf="setup && _created && !_edit" class="btn btn-primary" (click)="start()">Start</button>
-    <!--<button *ngIf="running" class="btn btn-primary" (click)="play()">Play</button>-->
-    <button *ngIf="running" class="btn btn-primary" (click)="close()">Close</button>
-    <a [routerLink]="['TournamentList']">Back</a>
+    <div class="form-group">
+        <button *ngIf="_edit" class="btn btn-primary" [disabled]="!tournamentForm.form.valid || !isValid" (click)="onSubmit()">{{_created ? "Update" : "Create"}}</button>
+        <button *ngIf="setup && _created && !_edit" class="btn btn-primary" (click)="_edit = !_edit">Edit</button>
+        <button *ngIf="setup && _created && !_edit" class="btn btn-primary" (click)="start()">Start</button>
+        <!--<button *ngIf="running" class="btn btn-primary" (click)="play()">Play</button>-->
+        <button *ngIf="running" class="btn btn-primary" (click)="close()">Close</button>
+        <a [routerLink]="['TournamentList']">Back</a>
+    </div>
 </div>

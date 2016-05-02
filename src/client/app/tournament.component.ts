@@ -26,10 +26,10 @@ export class TournamentComponent {
     _knownNames: string[] = [];
     _invalidReason: string;
     
-    _currentRound: number;
-    _currentDeal: number;
-    _currentPlayer: number;
-    _currentScore: Score;
+    _currentRound: number = 0;
+    _currentDeal: number = 1;
+    _currentPlayer: number = 0;
+    _currentScore: Score = new Score;
 
     constructor(
         private _router: Router,
@@ -165,6 +165,15 @@ export class TournamentComponent {
             result.push(this._currentRound * this._tournament.nbDealsPerRound + i + 1);
         }
         return result;
+    }
+
+    get currentDeal(): number {
+        return this._currentDeal;
+    }
+
+    // handle the list selection setting to a string
+    set currentDeal(value) {
+        this._currentDeal = +value;
     }
 
     get setup() {
