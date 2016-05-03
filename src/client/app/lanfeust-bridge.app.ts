@@ -11,6 +11,7 @@ import {TournamentComponent} from './tournament.component';
 import {TournamentListComponent} from './tournament-list.component';
 import {DEAL_SERVICE} from './deal.service';
 import {DealServiceMock} from './deal.service.mock';
+import {DealServiceHttp} from './deal.service.http';
 import {DealComponent} from './deal.component'
 
 @Component({
@@ -19,9 +20,10 @@ import {DealComponent} from './deal.component'
     providers: [
         ROUTER_PROVIDERS, HTTP_PROVIDERS,
         AlertService,
-        provide(DEAL_SERVICE, {useClass: DealServiceMock}),
-        //provide(TOURNAMENT_SERVICE, {useClass: TournamentServiceHttp})],
-        provide(TOURNAMENT_SERVICE, {useClass: TournamentServiceMock})],
+        provide(DEAL_SERVICE, {useClass: DealServiceHttp}),
+        //provide(DEAL_SERVICE, {useClass: DealServiceMock}),
+        provide(TOURNAMENT_SERVICE, {useClass: TournamentServiceHttp})],
+        //provide(TOURNAMENT_SERVICE, {useClass: TournamentServiceMock})],
     directives: [ROUTER_DIRECTIVES, AlertComponent],
     pipes: []
 })

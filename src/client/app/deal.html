@@ -20,4 +20,5 @@
     <a *ngIf="id > 1" [routerLink]="['Deal', { tournamentId: tournamentId, dealId: id - 1 }]">Previous</a>
     <a [routerLink]="['Tournament', { id: tournamentId }]">Up</a>
     <a [routerLink]="['Deal', { tournamentId: tournamentId, dealId: id + 1 }]">Next</a>
+    <a [routerLink]="['TournamentList']" class="pull-right">Home</a>
 </div>

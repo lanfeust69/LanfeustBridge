@@ -93,6 +93,6 @@
         <button *ngIf="setup && _created && !_edit" class="btn btn-primary" (click)="start()">Start</button>
         <!--<button *ngIf="running" class="btn btn-primary" (click)="play()">Play</button>-->
         <button *ngIf="running" class="btn btn-primary" (click)="close()">Close</button>
-        <a [routerLink]="['TournamentList']">Back</a>
+        <a [routerLink]="['TournamentList']" class="pull-right">Back</a>
     </div>
 </div>

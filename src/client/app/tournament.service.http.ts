@@ -52,26 +52,18 @@ export class TournamentServiceHttp implements TournamentService {
     }
 
     start(id: number) : Promise<Tournament> {
-        if (id < 0 || id >= this._tournaments.length || !this._tournaments[id]) 
-            return Promise.reject<Tournament>("No tournament with id '" + id + "' found");
-        let tournament = this._tournaments[id];
-        tournament.status = Status.Running;
-        // TODO : fill tournament.positions
-        return Promise.resolve(tournament);
+        return this._http.post(this._baseUrl + '/' + id + '/start', "").map(this.extractData).toPromise();
     }
 
     close(id: number) : Promise<Tournament> {
-        if (id < 0 || id >= this._tournaments.length || !this._tournaments[id]) 
-            return Promise.reject<Tournament>("No tournament with id '" + id + "' found");
-        let tournament = this._tournaments[id];
-        tournament.status = Status.Finished;
-        return Promise.resolve(tournament);
+        return this._http.post(this._baseUrl + '/' + id + '/close', "").map(this.extractData).toPromise();
     }
 
     currentRound(id: number) : Promise<{round: number, finished: boolean}> {
-        return Promise.resolve({round: 1, finished: true});
+        return this._http.get(this._baseUrl + '/' + id + '/current-round').map(this.extractData).toPromise();
     }
 
     nextRound(id: number) {
+        this._http.post(this._baseUrl + '/' + id + '/next-round', "");
     }
 }

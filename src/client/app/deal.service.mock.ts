@@ -13,6 +13,7 @@ export class DealServiceMock implements DealService {
             this._deals[tournament] = [];
         if (!this._deals[tournament][id - 1])
             this._deals[tournament][id - 1] = this.createRandomDeal(tournament, id);
+            //this._deals[tournament][id - 1] = new Deal(id);
         return new Promise<Deal>(resolve => setTimeout(() => resolve(this._deals[tournament][id - 1]), 400)); // 0.4 seconds
     }
 
@@ -33,6 +34,7 @@ export class DealServiceMock implements DealService {
             this._deals[tournament] = [];
         if (!this._deals[tournament][score.dealId - 1])
             this._deals[tournament][score.dealId - 1] = this.createRandomDeal(tournament, score.dealId);
+            //this._deals[tournament][score.dealId - 1] = new Deal(score.dealId);
         score.score = score.computeScore();
         this._deals[tournament][score.dealId - 1].scores[score.round] = score;
         // TODO : update nsResult and ewResult
@@ -58,7 +60,6 @@ export class DealServiceMock implements DealService {
             for (let j = 0; j < 13; j++)
                 deal.hands[player][suits[Math.floor(hand[j] / 13)]].push(cardNames[hand[j] % 13]);
         }
-
         return deal;
     }
 }
