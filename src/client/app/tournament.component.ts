@@ -3,7 +3,7 @@ import {Control} from 'angular2/common';
 import {RouteParams, Router, ROUTER_DIRECTIVES} from 'angular2/router';
 import {TAB_DIRECTIVES} from 'ng2-bootstrap/ng2-bootstrap';
 import {AlertService} from './alert.service';
-import {Tournament, Player, Status} from './tournament';
+import {Tournament, Player, Position, Status} from './tournament';
 import {TournamentService, TOURNAMENT_SERVICE} from './tournament.service';
 import {Score} from './score';
 import {ScoreFormComponent} from './score-form.component';
@@ -28,8 +28,11 @@ export class TournamentComponent {
     
     _currentRound: number = 0;
     _roundFinished: boolean = false;
+    _polling: boolean = false;
+    _stopPolling: boolean = false;
     _currentDeal: number = 1;
     _currentPlayer: number = 0;
+    _currentPosition: Position;
     _currentScore: Score = new Score;
     _scoreDisplayed = false;
 
@@ -68,6 +71,15 @@ export class TournamentComponent {
                     this._created = true;
                     this._edit = false;
                     this._tournament = tournament;
+                    if (tournament.status == Status.Running)
+                        this._tournamentService.currentRound(tournament.id)
+                            .then(r => {
+                                this._currentRound = r.round;
+                                this._roundFinished = r.finished;
+                                this.initializeScore(true);
+                                if (!this._polling)
+                                    this.pollEndOfRound(this);
+                            });
                 })
                 .catch(reason => {
                     console.log("no tournament found with id " + id);
@@ -75,6 +87,10 @@ export class TournamentComponent {
                     this._router.navigate(['TournamentList']);
                 });
         }
+    }
+
+    ngOnDestroy() {
+        this._stopPolling = true;
     }
 
     onSubmit() {
@@ -101,15 +117,35 @@ export class TournamentComponent {
         this._currentRound = 0;
         this._currentDeal = 1;
         this._currentPlayer = 0;
-        this.initializeScore();
+        this.initializeScore(true);
         this._tournamentService.start(this._tournament.id)
             .then(tournament => {
                 this._alertService.newAlert.next({msg: "Tournament '" + tournament.name + "' started", type: 'success', dismissible: true});
                 this._tournament = tournament;
+                if (!this._polling)
+                    this.pollEndOfRound(this);
             }).catch(reason => {
                 this._alertService.newAlert.next({msg: "Tournament '" + this._tournament.name + "' failed to start : " + reason, type: 'warning', dismissible: true});
                 // go back to setup status
                 this._tournament.status = Status.Setup;
+            });
+    }
+
+    pollEndOfRound(self: TournamentComponent) {
+        self._polling = true;
+        if (self._stopPolling)
+            return;
+        self._tournamentService.currentRound(self._tournament.id)
+            .then(r => {
+                self._roundFinished = r.finished;
+                if (r.round != self._currentRound) {
+                    self._currentRound = r.round;
+                    self.initializeScore(true);
+                }
+                if (self._currentRound < self._tournament.nbRounds)
+                    setTimeout(self.pollEndOfRound, 5000, self);
+                else
+                    self._polling = false;
             });
     }
 
@@ -127,19 +163,23 @@ export class TournamentComponent {
             });
     }
 
-    initializeScore() {
+    initializeScore(resetCurrentDeal: boolean) {
         this._scoreDisplayed = false;
+        if (this._currentRound >= this._tournament.nbRounds)
+            return;
+        this._currentPosition = this._tournament.positions[this._currentRound][this._currentPlayer];
         // only display score form for deals from round
-        if (this.roundDeals.indexOf(this.currentDeal) == -1)
+        if (resetCurrentDeal)
+            this._currentDeal = this.roundDeals[0];
+        if (this.roundDeals.indexOf(this._currentDeal) == -1)
             return;
         this._dealService.getScore(this._tournament.id, this._currentDeal, this._currentRound)
             .then(score => {
-                // TODO : fill score from this._tournament.positions
                 score.players = {
-                    north: this._tournament.players[0].name,
-                    south: this._tournament.players[1].name,
-                    east: this._tournament.players[2].name,
-                    west: this._tournament.players[3].name,
+                    north: this._tournament.players[this._currentPosition.north].name,
+                    south: this._tournament.players[this._currentPosition.south].name,
+                    east: this._tournament.players[this._currentPosition.east].name,
+                    west: this._tournament.players[this._currentPosition.west].name
                 };
                 this._currentScore = score;
                 this._scoreDisplayed = true
@@ -151,31 +191,20 @@ export class TournamentComponent {
         // TODO : set to first non-played deal of the round
         this._dealService.postScore(this._tournament.id, this._currentScore);
         this._currentDeal++;
-        // FIXME : just until we can query currentRound
-        if (this.roundDeals.indexOf(this.currentDeal) == -1)
-            this._roundFinished = true;
-        this.initializeScore();
+        this.initializeScore(false);
     }
 
     nextRound() {
         this._tournamentService.nextRound(this._tournament.id);
-        this._currentRound++;
-        this._currentDeal = this.roundDeals[0];
-        this.initializeScore();
+        // simply set _roundFinished for display, and wait for pollEndOfRound
     }
 
     get roundFinished() {
-        // TODO : be efficient with that
-        //this._tournamentService.currentRound(this._tournament.id).then(r => this._roundFinished = r.finished);
         return this._roundFinished;
     }
 
     get roundDeals() {
-        let result =  [];
-        for (let i = 0; i < this._tournament.nbDealsPerRound; i++) {
-            result.push(this._currentRound * this._tournament.nbDealsPerRound + i + 1);
-        }
-        return result;
+        return this._currentPosition.deals;
     }
 
     get currentDeal(): number {

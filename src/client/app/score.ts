@@ -65,9 +65,9 @@ export class Score {
         score += level * trickValue;
         score *= redoubled ? 4 : (doubled ? 2 : 1);
         score += score >= 100 ? (vulnerable ? 500 : 300) : 50;
-        if (level == 12)
+        if (level == 6)
             score += vulnerable ? 1000 : 500;
-        if (level == 13)
+        if (level == 7)
             score += vulnerable ? 1500 : 1000;
         let overtrickValue = trickValue;
         if (doubled || redoubled) {

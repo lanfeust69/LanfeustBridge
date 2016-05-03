@@ -8,12 +8,13 @@ import {ScoreComponent} from './score.component';
 @Component({
     selector: 'deal',
     templateUrl: 'app/deal.html',
-    directives: [HandComponent, ScoreComponent],
+    directives: [ROUTER_DIRECTIVES, HandComponent, ScoreComponent],
     styles: ['canvas { background-color: limeGreen; /*margin: 10px*/ }',
         '.no-gutter [class*=\'col-\'] { padding-right:0; padding-left:0; vertical-align: middle;}',
     ]
 })
 export class DealComponent {
+    @Input() tournamentId: number;
     @Input() id: number;
     deal: Deal;
     @ViewChild("table") tableCanvas;
@@ -25,10 +26,10 @@ export class DealComponent {
         @Inject(DEAL_SERVICE) private _dealService: DealService) {}
     
     ngOnInit() {
-        let tournamentId = +this._routeParams.get('tournamentId');
+        this.tournamentId = +this._routeParams.get('tournamentId');
         this.id = +this._routeParams.get('dealId');
-        console.log("tournamentId is " + tournamentId + ", dealId is " + this.id);
-        this._dealService.getDeal(tournamentId, this.id).then(deal => {
+        console.log("tournamentId is " + this.tournamentId + ", dealId is " + this.id);
+        this._dealService.getDeal(this.tournamentId, this.id).then(deal => {
             console.log("deal service returned", deal);
             this.deal = deal;
             if (this.viewInitialized)

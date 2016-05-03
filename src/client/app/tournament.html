@@ -39,17 +39,19 @@
                 </fieldset>
             </form>
         </tab>
-        <tab heading="Play" *ngIf="running">
-            <h4>Round {{_currentRound + 1}}</h4>
+        <tab heading="Play" *ngIf="running && _currentRound < _tournament.nbRounds && _currentPosition">
+            <h4>Round {{_currentRound + 1}} : Table {{_currentPosition.table + 1}},
+                N : {{_tournament.players[_currentPosition.north].name}}, S : {{_tournament.players[_currentPosition.south].name}},
+                E : {{_tournament.players[_currentPosition.east].name}}, W : {{_tournament.players[_currentPosition.west].name}}</h4>
             <div class="form-group">
                 <label for="player">Player</label>
-                <select class="form-control" required [(ngModel)]="_currentPlayer" (ngModelChange)="initializeScore()">
+                <select class="form-control" required [(ngModel)]="_currentPlayer" (ngModelChange)="initializeScore(true)">
                     <option *ngFor="let p of players; let i = index" [value]="i">{{p.name}}</option>
                 </select>
             </div>
             <div class="form-group">
                 <label for="deal">Deal</label>
-                <select class="form-control" required [(ngModel)]="currentDeal" (ngModelChange)="initializeScore()">
+                <select class="form-control" required [(ngModel)]="currentDeal" (ngModelChange)="initializeScore(false)">
                     <option *ngFor="let d of roundDeals" [value]="d">#{{d}}</option>
                 </select>
             </div>
@@ -57,6 +59,9 @@
             <div class="form-group">
                 <button class="btn btn-primary" [disabled]="!roundFinished || _currentRound == _tournament.nbRounds - 1" (click)="nextRound()">Next Round</button>
             </div>
+        </tab>
+        <tab heading="Play" *ngIf="running && _currentRound >= _tournament.nbRounds">
+            <h4>All rounds Finished</h4>
         </tab>
         <tab heading="Players" *ngIf="_tournament.players">
             <div *ngIf="!_edit" class="list-group">
@@ -73,7 +78,7 @@
                 </div>
             </form>
         </tab>
-        <tab heading="Deals" *ngIf="finished && nbDeals">
+        <tab heading="Deals" *ngIf="finished && nbDeals > 0">
             <div class="list-group">
                 <a [routerLink]="['Deal', { tournamentId: _tournament.id, dealId: deal.id }]" class="list-group-item" *ngFor="let deal of deals">Deal {{deal.id}}</a>
             </div>

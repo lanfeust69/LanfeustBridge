@@ -1,11 +1,14 @@
-import {Injectable} from 'angular2/core';
-import {Tournament, Status} from './tournament';
+import {Inject, Injectable} from 'angular2/core';
+import {Tournament, Position, Status} from './tournament';
 import {Score} from './score';
+import {DealService, DEAL_SERVICE} from './deal.service';
 import {TournamentService} from './tournament.service';
 
 @Injectable()
 export class TournamentServiceMock implements TournamentService {
     private _tournaments: Tournament[] = [];
+
+    constructor(@Inject(DEAL_SERVICE) private _dealService: DealService) {}
 
     getNames() : Promise<{id: number; name: string}[]> {
         let result = this._tournaments.map((value, i) => ({id: i, name: value.name}));
@@ -22,6 +25,28 @@ export class TournamentServiceMock implements TournamentService {
 
     create(tournament: Tournament) : Promise<Tournament> {
         tournament.id = this._tournaments.length;
+        let allPositions: Position[][] = [];
+        // mock : mitchell
+        for (let r = 0; r < tournament.nbRounds; r++) {
+            let positions: Position[] = [];
+            for (let t = 0; t < tournament.nbTables; t++) {
+                for (let i = 0; i < 4; i++) {
+                    let position = new Position;
+                    position.table = t;
+                    position.north = t * 4;
+                    position.south = t * 4 + 1;
+                    position.east = t * 4 + 2;
+                    position.west = t * 4 + 3;
+                    position.deals = [];
+                    for (let d = 0; d < tournament.nbDealsPerRound; d++) {
+                        position.deals.push(((t + r) * tournament.nbDealsPerRound) % (tournament.nbTables * tournament.nbDealsPerRound) + d + 1);
+                    }
+                    positions.push(position);
+                }
+            }
+            allPositions.push(positions);
+        }
+        tournament.positions = allPositions;
         this._tournaments.push(tournament);
         //return Promise.resolve(tournament);
         return new Promise<Tournament>(resolve => setTimeout(() => resolve(tournament), 400)); // 0.4 seconds
@@ -52,7 +77,7 @@ export class TournamentServiceMock implements TournamentService {
             return Promise.reject<Tournament>("No tournament with id '" + id + "' found");
         let tournament = this._tournaments[id];
         tournament.status = Status.Running;
-        // TODO : fill tournament.positions
+        tournament.currentRound = 0;
         return Promise.resolve(tournament);        
     }
 
@@ -65,8 +90,29 @@ export class TournamentServiceMock implements TournamentService {
     }
 
     currentRound(id: number) : Promise<{round: number, finished: boolean}> {
-        return Promise.resolve({round: 1, finished: true});
+        if (id < 0 || id >= this._tournaments.length || !this._tournaments[id]) 
+            return Promise.reject<{round: number, finished: boolean}>("No tournament with id '" + id + "' found");
+        let tournament = this._tournaments[id];
+        // finished, waiting for close
+        if (tournament.currentRound == tournament.nbRounds)
+            return Promise.resolve({round: tournament.currentRound, finished: true});
+        // only in mock : assume all deals are played each round
+        let promises: Promise<Score>[] = [];
+        for (let dealId = 1; dealId <= tournament.nbDealsPerRound * tournament.nbTables; dealId++) {
+            promises.push(this._dealService.getScore(id, dealId, tournament.currentRound));
+        }
+        return Promise.all<Score>(promises).then(scores => {
+            let finished = scores.every(s => s.contract.level !== undefined);
+            if (finished) console.log("scores : ", scores);
+            return {round: tournament.currentRound, finished: scores.every(s => s.contract.level !== undefined)};
+        });
     }
 
-    nextRound(id: number) {}
+    nextRound(id: number) {
+        if (id < 0 || id >= this._tournaments.length || !this._tournaments[id]) 
+            return Promise.reject("No tournament with id '" + id + "' found");
+        let tournament = this._tournaments[id];
+        if (tournament.currentRound < tournament.nbRounds)
+            tournament.currentRound++;
+    }
 }

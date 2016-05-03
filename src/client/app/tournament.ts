@@ -12,6 +12,15 @@ export class Player {
     rank: number = 0;
 }
 
+export class Position {
+    table: number;
+    deals: number[];
+    west: number;
+    north: number;
+    east: number;
+    south: number;
+}
+
 export class Tournament {
     id: number = -1;
     name: string;
@@ -23,12 +32,6 @@ export class Tournament {
     players: Player[] = []; // names, index in array is id
     
     status: Status = Status.Setup;
-    positions:
-        {
-            table: number,
-            west: number,
-            north: number,
-            east: number,
-            south: number
-        }[][][]; // indexed by player, round
+    currentRound: number;
+    positions: Position[][]; // indexed by round, player
 }
