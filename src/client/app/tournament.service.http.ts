@@ -46,9 +46,13 @@ export class TournamentServiceHttp implements TournamentService {
     delete(id: number) : Promise<boolean> {
         return this._http.delete(this._baseUrl + '/' + id).map(this.extractData).toPromise();
     }
-    
+
     getMovements() : Promise<string[]> {
-        return Promise.resolve(["Mitchell", "Howell", "Individual"]);
+        return this._http.get(this._baseUrl + '/movement').map(this.extractData).toPromise();
+    }
+
+    getScorings() : Promise<string[]> {
+        return this._http.get(this._baseUrl + '/scoring').map(this.extractData).toPromise();
     }
 
     start(id: number) : Promise<Tournament> {
@@ -64,6 +68,6 @@ export class TournamentServiceHttp implements TournamentService {
     }
 
     nextRound(id: number) {
-        this._http.post(this._baseUrl + '/' + id + '/next-round', "");
+        this._http.post(this._baseUrl + '/' + id + '/next-round', "").toPromise();
     }
 }

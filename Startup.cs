@@ -39,6 +39,7 @@ namespace LanfeustBridge
             //services.AddEntityFramework().AddInMemoryDatabase().AddDbContext<TournamentsContext>(options => options.UseInMemoryDatabase());
             services
                 .AddInstance(DirectoryService.Service)
+                .AddSingleton<IDealsService, SimpleDealsService>()
                 .AddSingleton<ITournamentService, SimpleTournamentsService>();
 
             services.AddMvc().AddJsonOptions(x => x.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());

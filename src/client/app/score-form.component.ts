@@ -55,6 +55,11 @@ export class ScoreFormComponent {
     }
 
     @Input('score') set score(value) {
+        if (!value.entered) {
+            value.contract.level = undefined;
+            value.contract.suit = undefined;
+            value.contract.declarer = undefined;
+        }
         if (value.contract.level != undefined && value.tricks != undefined)
             this._nbTricksDisplay = value.tricks - 6 - value.contract.level;
         else
@@ -73,7 +78,7 @@ export class ScoreFormComponent {
     get computedScore() {
         if (!this.isValid)
             return "";
-        let result = this.score.computeScore()
+        let result = Score.computeScore(this.score);
         return (result > 0 ? "+" : "") + result;
     }
 
@@ -86,6 +91,7 @@ export class ScoreFormComponent {
 
     onSubmit() {
         console.log("onSubmit");
+        this.score.entered = true;
         this.validated.next(this.score);
     }
 }

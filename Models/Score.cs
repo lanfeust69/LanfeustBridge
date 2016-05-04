@@ -6,6 +6,7 @@ namespace LanfeustBridge.Models
     {
         public int DealId { get; set; }
         public int Round { get; set; }
+        public bool Entered { get; set; }
         public Players Players { get; set; }
         public Contract Contract { get; set; }
         public int Tricks { get; set; }

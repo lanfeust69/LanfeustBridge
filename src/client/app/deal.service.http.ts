@@ -27,6 +27,8 @@ export class DealServiceHttp implements DealService {
     }
 
     postScore(tournament: number, score: Score) : Promise<Score> {
+        // TODO : don't trust client side : compute on server
+        score.score = Score.computeScore(score);
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: headers });
         return this._http.post(this._baseUrl + tournament + '/deal/' + score.dealId + '/score/' + score.round, JSON.stringify(score), options).map(this.extractData).toPromise();

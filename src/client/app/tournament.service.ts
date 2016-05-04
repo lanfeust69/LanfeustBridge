@@ -12,6 +12,7 @@ export interface TournamentService {
     delete(id: number) : Promise<boolean>;
     
     getMovements() : Promise<string[]>;
+    getScorings() : Promise<string[]>;
 
     // returns the tournament with positions filled
     start(id: number) : Promise<Tournament>;

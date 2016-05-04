@@ -23,6 +23,7 @@ export class TournamentComponent {
     _edit: boolean = false;
     _tournament: Tournament;
     _knownMovements: string[] = [];
+    _knownScorings: string[] = [];
     _knownNames: string[] = [];
     _invalidReason: string;
     
@@ -51,6 +52,11 @@ export class TournamentComponent {
             if (this._tournament && !this._tournament.movement && movements.length > 0)
                 this._tournament.movement = movements[0];
         });
+        this._tournamentService.getScorings().then(scorings => {
+            this._knownScorings = scorings;
+            if (this._tournament && !this._tournament.scoring && scorings.length > 0)
+                this._tournament.scoring = scorings[0];
+        });
         this._tournamentService.getNames().then(names => this._knownNames = names.filter(v => v != undefined).map(v => v.name));
         if (id == -1) {
             // called by NewTournament
@@ -62,6 +68,8 @@ export class TournamentComponent {
                 this._tournament.players.push({name: "Player " + (i + 1), score: 0, rank: 0});
             if (this._knownMovements.length > 0)
                 this._tournament.movement = this._knownMovements[0];
+            if (this._knownScorings.length > 0)
+                this._tournament.scoring = this._knownScorings[0];
             this._created = false;
             this._edit = true;
         } else {
@@ -197,6 +205,7 @@ export class TournamentComponent {
     nextRound() {
         this._tournamentService.nextRound(this._tournament.id);
         // simply set _roundFinished for display, and wait for pollEndOfRound
+        this._roundFinished = false;
     }
 
     get roundFinished() {
@@ -255,6 +264,10 @@ export class TournamentComponent {
         }
         if (!this._tournament.nbRounds || this._tournament.nbRounds < 1 || this._tournament.nbRounds > 100) {
             this._invalidReason = "Number of rounds must be between 1 and 100";
+            return false;
+        }
+        if (!this._tournament.nbDealsPerRound || this._tournament.nbDealsPerRound < 1 || this._tournament.nbDealsPerRound > 100) {
+            this._invalidReason = "Number of deals per round must be between 1 and 100";
             return false;
         }
         let nbPlayers = this._tournament.nbTables * 4;

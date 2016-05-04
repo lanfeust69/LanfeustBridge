@@ -16,15 +16,18 @@ namespace LanfeustBridge.Services
     {
         private int _nextId = 0;
         ILogger _logger;
+        IDealsService _dealsService;
         string _dataFile;
 
         private Lazy<Dictionary<int, Tournament>> _tournaments;
 
         private Dictionary<int, Tournament> Tournaments { get { return _tournaments.Value; } }
 
-        public SimpleTournamentsService(ILogger<ITournamentService> logger, DirectoryService directoryService)
+        public SimpleTournamentsService(ILogger<ITournamentService> logger,
+            DirectoryService directoryService, IDealsService dealsService)
         {
             _logger = logger;
+            _dealsService = dealsService;
             _dataFile = Path.Combine(directoryService.DataDirectory, "tournaments.json");
             _tournaments = new Lazy<Dictionary<int, Tournament>>(InitializeTournaments);
         }
@@ -66,7 +69,11 @@ namespace LanfeustBridge.Services
             {
                 tournament.Id = GetNextId();
                 _logger.LogInformation($"New tournament created with Id {tournament.Id}");
+                _dealsService.CreateDealsForTournament(tournament.Id, tournament.NbRounds * tournament.NbDealsPerRound, tournament.NbRounds);
+                
             }
+            // define positions
+            tournament.GeneratePositions();
             Tournaments[tournament.Id] = tournament;
             SaveToFile();
             return tournament;

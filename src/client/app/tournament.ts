@@ -26,6 +26,7 @@ export class Tournament {
     name: string;
     date: Date = new Date;
     movement: string = "";
+    scoring: string = "";
     nbTables: number;
     nbRounds: number;
     nbDealsPerRound: number;

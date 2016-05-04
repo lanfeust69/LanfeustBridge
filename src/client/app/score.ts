@@ -12,6 +12,7 @@ export class Contract {
 export class Score {
     dealId: number;
     round: number;
+    entered: boolean;
     players: {
         north: string;
         south: string;
@@ -24,18 +25,18 @@ export class Score {
     nsResult: number;
     ewResult: number;
 
-    computeScore(): number {
-        if (this.dealId === undefined || this.contract === undefined || this.contract.level === undefined
-            || this.contract.level === 0 || this.contract.suit === undefined
-            || this.contract.declarer === undefined || this.tricks == undefined)
+    public static computeScore(s: Score): number {
+        if (s.dealId === undefined || s.contract === undefined || s.contract.level === undefined
+            || s.contract.level === 0 || s.contract.suit === undefined
+            || s.contract.declarer === undefined || s.tricks == undefined)
             return 0;
-        let level = this.contract.level;
-        let doubled: boolean = this.contract.doubled;
-        let redoubled: boolean = this.contract.redoubled;
-        let vulnerability = Deal.computeVulnerability(this.dealId);
-        let vulnerable = vulnerability == "Both" || (vulnerability != "None" && vulnerability.indexOf(this.contract.declarer) != -1);
-        let sign = this.contract.declarer == "N" || this.contract.declarer == "S" ? 1 : -1;
-        let result = this.tricks - 6 - level;
+        let level = s.contract.level;
+        let doubled: boolean = s.contract.doubled;
+        let redoubled: boolean = s.contract.redoubled;
+        let vulnerability = Deal.computeVulnerability(s.dealId);
+        let vulnerable = vulnerability == "Both" || (vulnerability != "None" && vulnerability.indexOf(s.contract.declarer) != -1);
+        let sign = s.contract.declarer == "N" || s.contract.declarer == "S" ? 1 : -1;
+        let result = s.tricks - 6 - level;
         let score = 0;
         if (result < 0) {
             if (!doubled && !redoubled)
@@ -48,7 +49,7 @@ export class Score {
             return sign * score;
         }
         let trickValue = 0;
-        switch (this.contract.suit) {
+        switch (s.contract.suit) {
             case Suit.Clubs:
             case Suit.Diamonds:
                 trickValue = 20;
@@ -66,7 +67,7 @@ export class Score {
         score *= redoubled ? 4 : (doubled ? 2 : 1);
         score += score >= 100 ? (vulnerable ? 500 : 300) : 50;
         if (level == 6)
-            score += vulnerable ? 1000 : 500;
+            score += vulnerable ? 750 : 500;
         if (level == 7)
             score += vulnerable ? 1500 : 1000;
         let overtrickValue = trickValue;

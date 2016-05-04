@@ -32,7 +32,7 @@ export class TournamentServiceMock implements TournamentService {
             for (let t = 0; t < tournament.nbTables; t++) {
                 for (let i = 0; i < 4; i++) {
                     let position = new Position;
-                    position.table = t;
+                    position.table = t + 1;
                     position.north = t * 4;
                     position.south = t * 4 + 1;
                     position.east = t * 4 + 2;
@@ -67,9 +67,13 @@ export class TournamentServiceMock implements TournamentService {
         }
         return Promise.resolve(false);
     }
-    
+
     getMovements() : Promise<string[]> {
         return Promise.resolve(["Mitchell", "Howell", "Individual"]);
+    }
+
+    getScorings() : Promise<string[]> {
+        return Promise.resolve(["Matchpoint", "IMP"]);
     }
 
     start(id: number) : Promise<Tournament> {
@@ -102,9 +106,9 @@ export class TournamentServiceMock implements TournamentService {
             promises.push(this._dealService.getScore(id, dealId, tournament.currentRound));
         }
         return Promise.all<Score>(promises).then(scores => {
-            let finished = scores.every(s => s.contract.level !== undefined);
+            let finished = scores.every(s => s.entered);
             if (finished) console.log("scores : ", scores);
-            return {round: tournament.currentRound, finished: scores.every(s => s.contract.level !== undefined)};
+            return {round: tournament.currentRound, finished: finished};
         });
     }
 
