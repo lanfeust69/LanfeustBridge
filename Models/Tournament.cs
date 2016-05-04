@@ -22,6 +22,7 @@ namespace LanfeustBridge.Models
         public int NbTables { get; set; }
         public int NbRounds { get; set; }
         public int NbDealsPerRound { get; set; }
+        public int NbDeals { get; set; }
         public List<Player> Players { get; set; }
 
         public TournamentStatus Status { get; set; }
@@ -43,6 +44,14 @@ namespace LanfeustBridge.Models
         {
             IMovement movement = GetMovement();
             Positions = movement.GetPositions(NbTables, NbRounds, NbDealsPerRound);
+        }
+
+        internal Deal[] CreateDeals()
+        {
+            IMovement movement = GetMovement();
+            var deals = movement.CreateDeals(NbTables, NbRounds, NbDealsPerRound);
+            NbDeals = deals.Length;
+            return deals;
         }
     }
 }

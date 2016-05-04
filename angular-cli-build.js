@@ -14,7 +14,8 @@ module.exports = function(defaults) {
       'angular2/bundles/http.dev.js',
       'angular2/bundles/router.dev.js',
       'ng2-bootstrap/bundles/ng2-bootstrap.min.js',
-      'moment/moment.js'
+      'moment/moment.js',
+      'bootstrap/3.3.6/css/bootstrap.min.css'
     ]
   });
   return app.toTree();

@@ -11,7 +11,7 @@ export interface TournamentService {
     update(tournament: Tournament) : Promise<Tournament>;
     delete(id: number) : Promise<boolean>;
     
-    getMovements() : Promise<string[]>;
+    getMovements() : Promise<{name: string, nbTables: number}[]>;
     getScorings() : Promise<string[]>;
 
     // returns the tournament with positions filled

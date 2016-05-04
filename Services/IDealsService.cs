@@ -11,6 +11,6 @@ namespace LanfeustBridge.Services
     {
         Deal GetDeal(int tournamentId, int dealId);
         Deal SaveDeal(int tournamentId, Deal deal);
-        void CreateDealsForTournament(int tournamentId, int nbDeals, int nbRounds);
+        void SetDealsForTournament(int tournamentId, Deal[] deals);
     }
 }

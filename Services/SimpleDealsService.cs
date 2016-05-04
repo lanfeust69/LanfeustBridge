@@ -61,11 +61,8 @@ namespace LanfeustBridge.Services
             return deal;
         }
 
-        public void CreateDealsForTournament(int tournamentId, int nbDeals, int nbRounds)
+        public void SetDealsForTournament(int tournamentId, Deal[] deals)
         {
-            var deals = new Deal[nbDeals];
-            for (int i = 0; i < nbDeals; i++)
-                deals[i] = Deal.CreateDeal(i + 1, nbRounds);
             Deals[tournamentId] = deals;
             SaveToFile();
             _logger.LogInformation($"Deals for tournament {tournamentId} created");

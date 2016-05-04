@@ -22,7 +22,7 @@ export class TournamentComponent {
     _created: boolean = false;
     _edit: boolean = false;
     _tournament: Tournament;
-    _knownMovements: string[] = [];
+    _knownMovements: {name: string, nbTables: number}[] = [];
     _knownScorings: string[] = [];
     _knownNames: string[] = [];
     _invalidReason: string;
@@ -48,9 +48,11 @@ export class TournamentComponent {
         let id = +this._routeParams.get('id');
         console.log("id is " + id);
         this._tournamentService.getMovements().then(movements => {
+            console.log("_knownMovements : ", movements);
             this._knownMovements = movements;
-            if (this._tournament && !this._tournament.movement && movements.length > 0)
-                this._tournament.movement = movements[0];
+            if (this._tournament && !this._tournament.movement && movements.length > 0) {
+                this.movement = movements[0].name;
+            }
         });
         this._tournamentService.getScorings().then(scorings => {
             this._knownScorings = scorings;
@@ -67,7 +69,7 @@ export class TournamentComponent {
             for (let i = 0; i < 4; i++)
                 this._tournament.players.push({name: "Player " + (i + 1), score: 0, rank: 0});
             if (this._knownMovements.length > 0)
-                this._tournament.movement = this._knownMovements[0];
+                this.movement = this._knownMovements[0].name;
             if (this._knownScorings.length > 0)
                 this._tournament.scoring = this._knownScorings[0];
             this._created = false;
@@ -79,6 +81,7 @@ export class TournamentComponent {
                     this._created = true;
                     this._edit = false;
                     this._tournament = tournament;
+                    this.movement = tournament.movement;
                     if (tournament.status == Status.Running)
                         this._tournamentService.currentRound(tournament.id)
                             .then(r => {
@@ -245,8 +248,28 @@ export class TournamentComponent {
         return this._tournament.players.filter((p, i) => i < nbPlayers);
     }
 
+    get movement() {
+        return this._tournament ? this._tournament.movement
+            : (this._knownMovements.length > 0 ? this._knownMovements[0].name : undefined);
+    }
+
+    set movement(value) {
+        if (this._tournament)
+            this._tournament.movement = value;
+        let movement = this._knownMovements.find(m => m.name == value);
+        if (movement && movement.nbTables != -1)
+            this._tournament.nbTables = movement.nbTables;
+    }
+
+    get fixedNbTables() {
+        if (!this._tournament)
+            return false;
+        let movement = this._knownMovements.find(m => m.name == this._tournament.movement);
+        return movement && movement.nbTables != -1;
+    }
+
     get nbDeals() {
-        return this._tournament.nbRounds * this._tournament.nbDealsPerRound;
+        return this._tournament.nbDeals;
     }
 
     get deals() {

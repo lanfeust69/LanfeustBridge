@@ -69,11 +69,14 @@ namespace LanfeustBridge.Services
             {
                 tournament.Id = GetNextId();
                 _logger.LogInformation($"New tournament created with Id {tournament.Id}");
-                _dealsService.CreateDealsForTournament(tournament.Id, tournament.NbRounds * tournament.NbDealsPerRound, tournament.NbRounds);
                 
             }
-            // define positions
-            tournament.GeneratePositions();
+            if (tournament.Status == TournamentStatus.Setup)
+            {
+                _dealsService.SetDealsForTournament(tournament.Id, tournament.CreateDeals());
+                // define positions
+                tournament.GeneratePositions();
+            }
             Tournaments[tournament.Id] = tournament;
             SaveToFile();
             return tournament;

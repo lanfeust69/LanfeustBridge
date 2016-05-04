@@ -50,11 +50,13 @@ namespace LanfeustBridge.Controllers
         [HttpPost("{id}/score/{round}")]
         public IActionResult PostScore(int tournamentId, int id, int round, [FromBody]Score score)
         {
+            _logger.LogInformation($"Receiving score for deal {id}, round {round} : {score.Entered}, {score.Tricks}, {score.BridgeScore}");
             var deal = _dealsService.GetDeal(tournamentId, id);
             if (deal == null || round < 0 || round >= deal.Scores.Length)
                 return HttpNotFound();
             deal.Scores[round] = score;
             deal.ComputeResults(_tournamentService.GetTournament(tournamentId).Scoring);
+            _dealsService.SaveDeal(tournamentId, deal);
             return Ok(score);
         }
     }

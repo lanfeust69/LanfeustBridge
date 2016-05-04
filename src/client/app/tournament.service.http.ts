@@ -47,7 +47,7 @@ export class TournamentServiceHttp implements TournamentService {
         return this._http.delete(this._baseUrl + '/' + id).map(this.extractData).toPromise();
     }
 
-    getMovements() : Promise<string[]> {
+    getMovements() : Promise<{name: string, nbTables: number}[]> {
         return this._http.get(this._baseUrl + '/movement').map(this.extractData).toPromise();
     }
 

@@ -67,7 +67,12 @@ namespace LanfeustBridge.Controllers
         [HttpGet("movement")]
         public IActionResult GetMovements()
         {
-            return Ok(new[] { "Mitchell", "Howell", "Individual"});
+            return Ok(new[]
+                {
+                    new { Name = "Mitchell", NbTables = -1 },
+                    new { Name = "Teams", NbTables = 2 },
+                    new { Name = "Individual", NbTables = 3 }
+                });
         }
 
         // GET api/tournament/scoring

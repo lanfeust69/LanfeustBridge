@@ -68,8 +68,8 @@ export class TournamentServiceMock implements TournamentService {
         return Promise.resolve(false);
     }
 
-    getMovements() : Promise<string[]> {
-        return Promise.resolve(["Mitchell", "Howell", "Individual"]);
+    getMovements() : Promise<{name: string, nbTables: number}[]> {
+        return Promise.resolve([{name: "Mitchell", nbTables: -1}, {name: "Teams", nbTables: 2}, {name: "Individual", nbTables: 3}]);
     }
 
     getScorings() : Promise<string[]> {

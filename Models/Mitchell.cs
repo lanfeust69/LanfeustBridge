@@ -35,5 +35,14 @@ namespace LanfeustBridge.Models
             }
             return allPositions;
         }
+
+        public Deal[] CreateDeals(int nbTables, int nbRounds, int nbDealsPerRound)
+        {
+            int nbDeals = nbTables * nbDealsPerRound;
+            var deals = new Deal[nbDeals];
+            for (int i = 0; i < nbDeals; i++)
+                deals[i] = Deal.CreateDeal(i + 1, nbRounds);
+            return deals;
+        }
     }
 }
