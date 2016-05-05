@@ -13,18 +13,19 @@ namespace LanfeustBridge.Models
         public Hands Hands { get; set; }
         public Score[] Scores { get; set; }
         
-        public static Deal CreateDeal(int id, int nbRounds)
+        public static Deal CreateDeal(int id, int nbRounds, string dealer = null, string vulnerability = null)
         {
+            vulnerability = vulnerability ?? ComputeVulnerability(id);
             var deal = new Deal
                 {
                     Id = id,
-                    Dealer = ComputeDealer(id),
-                    Vulnerability = ComputeVulnerability(id),
+                    Dealer = dealer ?? ComputeDealer(id),
+                    Vulnerability = vulnerability,
                     Hands = new Hands(),
                     Scores = new Score[nbRounds]
                 };
             for (int i = 0; i < nbRounds; i++)
-                deal.Scores[i] = new Score { DealId = id, Round = i, Contract = new Contract() };
+                deal.Scores[i] = new Score { DealId = id, Vulnerability = vulnerability, Round = i, Contract = new Contract() };
             return deal;
         }
 

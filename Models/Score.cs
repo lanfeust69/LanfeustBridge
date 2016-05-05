@@ -5,6 +5,7 @@ namespace LanfeustBridge.Models
     public class Score
     {
         public int DealId { get; set; }
+        public string Vulnerability { get; set; }
         public int Round { get; set; }
         public bool Entered { get; set; }
         public Players Players { get; set; }

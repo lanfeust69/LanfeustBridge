@@ -48,7 +48,6 @@ export class TournamentComponent {
         let id = +this._routeParams.get('id');
         console.log("id is " + id);
         this._tournamentService.getMovements().then(movements => {
-            console.log("_knownMovements : ", movements);
             this._knownMovements = movements;
             if (this._tournament && !this._tournament.movement && movements.length > 0) {
                 this.movement = movements[0].name;

@@ -11,6 +11,7 @@ export class Contract {
 
 export class Score {
     dealId: number;
+    vulnerability: string;
     round: number;
     entered: boolean;
     players: {
@@ -33,8 +34,7 @@ export class Score {
         let level = s.contract.level;
         let doubled: boolean = s.contract.doubled;
         let redoubled: boolean = s.contract.redoubled;
-        let vulnerability = Deal.computeVulnerability(s.dealId);
-        let vulnerable = vulnerability == "Both" || (vulnerability != "None" && vulnerability.indexOf(s.contract.declarer) != -1);
+        let vulnerable = s.vulnerability == "Both" || (s.vulnerability != "None" && s.vulnerability.indexOf(s.contract.declarer) != -1);
         let sign = s.contract.declarer == "N" || s.contract.declarer == "S" ? 1 : -1;
         let result = s.tricks - 6 - level;
         let score = 0;
