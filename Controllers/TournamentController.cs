@@ -71,6 +71,7 @@ namespace LanfeustBridge.Controllers
                 {
                     new { Name = "Mitchell", NbTables = -1 },
                     new { Name = "Teams", NbTables = 2 },
+                    new { Name = "Triplicate", NbTables = 3 },
                     new { Name = "Individual", NbTables = 3 }
                 });
         }
@@ -79,7 +80,7 @@ namespace LanfeustBridge.Controllers
         [HttpGet("scoring")]
         public IActionResult GetScorings()
         {
-            return Ok(new[] { "Matchpoint", "IMP", "Mixed"});
+            return Ok(new[] { "Matchpoint", "IMP" });
         }
 
         // POST api/tournament/3/start

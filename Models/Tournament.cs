@@ -36,6 +36,10 @@ namespace LanfeustBridge.Models
             {
                 case "Mitchell":
                     return new Mitchell();
+                case "Teams":
+                    return new Teams();
+                case "Triplicate":
+                    return new Triplicate();
                 default:
                     throw new NotImplementedException($"Movement {Movement} not implemented yet");
             }
