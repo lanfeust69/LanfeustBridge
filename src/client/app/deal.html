@@ -14,7 +14,7 @@
         </div>
     </div>
     <br/>
-    <scores *ngIf="deal && deal.scores && deal.scores.length > 0" [scores]="deal.scores"></scores>
+    <scores *ngIf="deal && deal.scores && deal.scores.length > 0" [scores]="deal.scores" [tournamentId]="tournamentId"></scores>
 </div>
 <div class="form-group">
     <a *ngIf="id > 1" [routerLink]="['Deal', { tournamentId: tournamentId, dealId: id - 1 }]">Previous</a>

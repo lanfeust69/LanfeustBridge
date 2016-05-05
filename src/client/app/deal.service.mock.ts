@@ -17,6 +17,12 @@ export class DealServiceMock implements DealService {
         return new Promise<Deal>(resolve => setTimeout(() => resolve(this._deals[tournament][id - 1]), 400)); // 0.4 seconds
     }
 
+    getDeals(tournament: number) : Promise<Deal[]> {
+        if (!this._deals[tournament])
+            return Promise.resolve([]);
+        return Promise.resolve<Deal[]>(this._deals[tournament]);
+    }
+
     getScore(tournament: number, id: number, round: number) : Promise<Score> {
         if (!this._deals[tournament] || !this._deals[tournament][id - 1] || !this._deals[tournament][id - 1].scores[round]) {
             let score = new Score;

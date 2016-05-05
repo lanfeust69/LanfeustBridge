@@ -36,6 +36,16 @@ namespace LanfeustBridge.Controllers
             return Ok(deal);
         }
 
+        // GET api/tournament/1/deal
+        [HttpGet()]
+        public IActionResult Get(int tournamentId)
+        {
+            var deals = _dealsService.GetDeals(tournamentId);
+            if (deals == null)
+                return HttpNotFound();
+            return Ok(deals);
+        }
+
         // GET api/tournament/1/deal/3/score/2
         [HttpGet("{id}/score/{round}")]
         public IActionResult GetScore(int tournamentId, int id, int round)

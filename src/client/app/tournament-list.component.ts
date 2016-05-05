@@ -5,6 +5,7 @@ import {TOURNAMENT_SERVICE, TournamentService} from './tournament.service';
 @Component({
     selector: 'tournament-list',
     template: `
+<h1 class="text-center">Lanfeust Bridge</h1>
 <div class="list-group">
   <a [routerLink]="['Tournament', { id: tournamentName.id }]" class="list-group-item" *ngFor="let tournamentName of _tournamentNames">{{tournamentName.name}}</a>
 </div>

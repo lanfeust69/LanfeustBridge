@@ -22,6 +22,10 @@ export class DealServiceHttp implements DealService {
         return this._http.get(this._baseUrl + tournament + '/deal/' + id).map(this.extractData).toPromise();
     }
 
+    getDeals(tournament: number) : Promise<Deal[]> {
+        return this._http.get(this._baseUrl + tournament + '/deal').map(this.extractData).toPromise();
+    }
+
     getScore(tournament: number, id: number, round: number) : Promise<Score> {
         return this._http.get(this._baseUrl + tournament + '/deal/' + id + '/score/' + round).map(this.extractData).toPromise();
     }

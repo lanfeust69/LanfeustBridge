@@ -1,8 +1,4 @@
-<h1 class="text-center">Lanfeust Bridge</h1>
-<!--<deal [id]="randomDeal"></deal>-->
-<!--<alert type="info" dismissible="true">ng2-bootstrap hello world!</alert>-->
 <alert *ngFor="let alert of alerts;let i = index" [type]="alert.type" dismissible="true" (close)="closeAlert(i)">
   {{alert?.msg}}
 </alert>
-<!--<button type="button" class='btn btn-primary' (click)="addAlert()">Add Alert</button>-->
 <router-outlet></router-outlet>

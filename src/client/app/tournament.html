@@ -85,7 +85,7 @@
                     <tbody>
                         <tr *ngFor="let player of sortedPlayers">
                             <td>{{player.rank}}</td>
-                            <td><a [routerLink]="['Tournament', { id: _tournament.id }]">{{player.name}}</a></td>
+                            <td><a [routerLink]="['ScoreSheet', { tournamentId: _tournament.id, player: player.name }]">{{player.name}}</a></td>
                             <td>{{player.score.toFixed(2)}}</td>
                         </tr>
                     </tbody>

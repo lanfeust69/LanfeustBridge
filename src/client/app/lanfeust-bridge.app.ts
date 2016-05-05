@@ -12,7 +12,8 @@ import {TournamentListComponent} from './tournament-list.component';
 import {DEAL_SERVICE} from './deal.service';
 import {DealServiceMock} from './deal.service.mock';
 import {DealServiceHttp} from './deal.service.http';
-import {DealComponent} from './deal.component'
+import {DealComponent} from './deal.component';
+import {ScoreSheetComponent} from './score-sheet.component';
 
 @Component({
     selector: 'lanfeust-bridge-app',
@@ -31,6 +32,7 @@ import {DealComponent} from './deal.component'
     { path:'/', name: 'TournamentList',  component: TournamentListComponent },
     { path:'/tournament/:id', name: 'Tournament',  component: TournamentComponent },
     { path:'/tournament/:tournamentId/deal/:dealId', name: 'Deal',  component: DealComponent },
+    { path:'/tournament/:tournamentId/scoresheet/:player', name: 'ScoreSheet',  component: ScoreSheetComponent },
     { path:'/new-tournament', name: 'NewTournament',  component: TournamentComponent }
 ].concat(CliRouteConfig))
 export class LanfeustBridgeApp {

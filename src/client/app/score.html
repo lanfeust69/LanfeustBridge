@@ -1,25 +1,26 @@
 <table class="table-striped table-bordered table-hover col-xs-12">
     <thead>
         <th style="width: 8%">#</th>
-        <th style="width: 8%" *ngIf="individual">N</th>
-        <th style="width: 8%" *ngIf="individual">S</th>
-        <th style="width: 8%" *ngIf="individual">E</th>
-        <th style="width: 8%" *ngIf="individual">W</th>
-        <th style="width: 8%" *ngIf="!individual">NS</th>
-        <th style="width: 8%" *ngIf="!individual">EW</th>
-        <th style="width: 30%">Contract</th>
+        <th style="width: 12%" *ngIf="individual">N</th>
+        <th style="width: 12%" *ngIf="individual">S</th>
+        <th style="width: 12%" *ngIf="individual">E</th>
+        <th style="width: 12%" *ngIf="individual">W</th>
+        <th style="width: 12%" *ngIf="!individual">NS</th>
+        <th style="width: 12%" *ngIf="!individual">EW</th>
+        <th style="width: 16%">Contract</th>
         <th style="width: 8%">Result</th>
-        <th style="width: 16%">Score</th>
-        <th style="width: 10%">NS</th>
-        <th style="width: 10%">EW</th>
+        <th style="width: 12%">Score</th>
+        <th style="width: 8%">NS</th>
+        <th style="width: 8%">EW</th>
     </thead>
     <tbody>
         <tr *ngFor="let score of filteredScores">
-            <td>{{score.round + 1}}</td>
-            <td>{{score.players.north}}</td>
-            <td *ngIf="individual">{{score.players.south}}</td>
-            <td>{{score.players.east}}</td>
-            <td *ngIf="individual">{{score.players.wes}}</td>
+            <td *ngIf="forPlayers"><a [routerLink]="['Deal', { tournamentId: tournamentId, dealId: score.dealId }]">{{score.dealId}}</a></td>
+            <td *ngIf="!forPlayers">{{score.round + 1}}</td>
+            <td><a [routerLink]="['ScoreSheet', { tournamentId: tournamentId, player: score.players.north }]">{{score.players.north}}</a></td>
+            <td *ngIf="individual"><a [routerLink]="['ScoreSheet', { tournamentId: tournamentId, player: score.players.south }]">{{score.players.south}}</a></td>
+            <td><a [routerLink]="['ScoreSheet', { tournamentId: tournamentId, player: score.players.east }]">{{score.players.east}}</a></td>
+            <td *ngIf="individual"><a [routerLink]="['ScoreSheet', { tournamentId: tournamentId, player: score.players.west }]">{{score.players.west}}</a></td>
             <td *ngIf="score.contract.level > 0">{{score.contract.level}}<suit [suit]="score.contract.suit"></suit><span *ngIf="score.contract.doubled">X</span><span *ngIf="score.contract.redoubled">XX</span>&nbsp;{{score.contract.declarer}}</td>
             <td *ngIf="score.contract.level == 0">Pass</td>
             <td *ngIf="score.contract.level > 0">{{score.tricks}}</td>
