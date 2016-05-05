@@ -70,10 +70,26 @@
             <h4>All rounds Finished</h4>
         </tab>
         <tab heading="Players" *ngIf="_tournament.players">
-            <div *ngIf="!_edit" class="list-group">
+            <div *ngIf="!finished && !_edit" class="list-group">
                 <a [routerLink]="['Tournament', { id: _tournament.id }]" class="list-group-item"
                     *ngFor="let player of players; let i = index">Player {{i + 1}} : {{player.name}}</a>
                 <!--<a [routerLink]="['User', { name: player?.name }]" class="list-group-item" *ngFor="let player of _tournament.players">{{player?.name}}</a>-->
+            </div>
+            <div *ngIf="finished">
+                <table class="table-striped table-bordered table-hover col-xs-12">
+                    <thead>
+                        <th style="width: 20%">#</th>
+                        <th style="width: 50%">Name</th>
+                        <th style="width: 30%">Score</th>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let player of sortedPlayers">
+                            <td>{{player.rank}}</td>
+                            <td><a [routerLink]="['Tournament', { id: _tournament.id }]">{{player.name}}</a></td>
+                            <td>{{player.score.toFixed(2)}}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
             <form *ngIf="_edit" class="list-group form-horizontal">
                 <div *ngFor="let player of players; let i = index" class="list-group-item row from-group">

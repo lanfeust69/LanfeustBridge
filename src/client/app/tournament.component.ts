@@ -247,6 +247,10 @@ export class TournamentComponent {
         return this._tournament.players.filter((p, i) => i < nbPlayers);
     }
 
+    get sortedPlayers() {
+        return this.players.sort((a, b) => a.rank - b.rank);
+    }
+
     get movement() {
         return this._tournament ? this._tournament.movement
             : (this._knownMovements.length > 0 ? this._knownMovements[0].name : undefined);

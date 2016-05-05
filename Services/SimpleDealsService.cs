@@ -49,6 +49,13 @@ namespace LanfeustBridge.Services
             return deals[dealId - 1];
         }
 
+        public Deal[] GetDeals(int tournamentId)
+        {
+            Deal[] deals;
+            Deals.TryGetValue(tournamentId, out deals);
+            return deals;
+        }
+
         public Deal SaveDeal(int tournamentId, Deal deal)
         {
             Deal[] deals;
