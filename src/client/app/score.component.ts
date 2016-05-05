@@ -15,4 +15,8 @@ export class ScoreComponent {
     @Input() scores: Score[];
     @Input() individual: boolean = false;
     @Input() matchpoints: boolean = false;
+
+    get filteredScores() {
+        return this.scores.filter(s => s.entered);
+    }
 }
