@@ -10,7 +10,7 @@ namespace LanfeustBridge.Models
         public Position[][] GetPositions(int nbTables, int nbRounds, int nbDealsPerRound)
         {
             if (nbTables != 3)
-                throw new NotSupportedException("Only two tables allowed for triplicates");
+                throw new NotSupportedException("Only three tables allowed for triplicates");
             if (nbRounds != 15)
                 throw new NotSupportedException("Only 15 rounds are allowed for triplicates");
             // player ids : 0 = N1, 1 = S1, 2 = E1, 3 = W1, etc...
@@ -40,7 +40,7 @@ namespace LanfeustBridge.Models
         public Deal[] CreateDeals(int nbTables, int nbRounds, int nbDealsPerRound)
         {
             if (nbTables != 3)
-                throw new NotSupportedException("Only two tables allowed for triplicates");
+                throw new NotSupportedException("Only three tables allowed for triplicates");
             if (nbRounds != 15)
                 throw new NotSupportedException("Only 15 rounds are allowed for triplicates");
             int nbDeals = nbRounds * nbDealsPerRound;

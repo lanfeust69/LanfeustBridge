@@ -18,12 +18,15 @@
     "Microsoft.Extensions.Logging": "1.0.0-rc1-final",
     "Microsoft.Extensions.Logging.Console": "1.0.0-rc1-final",
     "Microsoft.Extensions.Logging.Debug": "1.0.0-rc1-final",
-    "Serilog.Framework.Logging": "1.0.0-rc1-final-10083"
+    "Serilog.Framework.Logging": "1.0.0-rc1-final-10083",
+    "xunit": "2.2.0-beta1-build3239",
+    "xunit.runner.dnx": "2.1.0-rc1-build204"
   },
 
   "commands": {
     "web": "Microsoft.AspNet.Server.Kestrel",
-    "ef": "EntityFramework.Commands"
+    "ef": "EntityFramework.Commands",
+    "test": "xunit.runner.dnx"
   },
 
   "frameworks": {
@@ -42,6 +45,7 @@
     "bower_components"
   ],
   "publishExclude": [
+    "Tests",
     "typings",
     "**/.*/**",
     "**.user",

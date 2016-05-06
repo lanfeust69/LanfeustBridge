@@ -40,6 +40,8 @@ namespace LanfeustBridge.Models
                     return new Teams();
                 case "Triplicate":
                     return new Triplicate();
+                case "Individual":
+                    return new Individual();
                 default:
                     throw new NotImplementedException($"Movement {Movement} not implemented yet");
             }

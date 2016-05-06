@@ -13,5 +13,10 @@ namespace LanfeustBridge.Models
         public int North { get; set; }
         public int East { get; set; }
         public int South { get; set; }
+
+        public override string ToString()
+        {
+            return $"Table {Table}, Deals {string.Join(",", Deals)}, N {North} S {South} E {East} W {West}";
+        }
     }
 }
