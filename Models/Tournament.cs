@@ -65,8 +65,10 @@ namespace LanfeustBridge.Models
         {
             Status = TournamentStatus.Finished;
             var players = new Dictionary<string, int>();
-            for (int i = 0; i < Players.Length; i++)
+            for (int i = 0; i < Players.Length; i++) {
                 players[Players[i].Name] = i;
+                Players[i].Score = 0;
+            }
             int[] nbPlayed = new int[Players.Length];
             foreach (var deal in deals)
                 foreach (var score in deal.Scores)

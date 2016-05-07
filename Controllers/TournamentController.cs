@@ -105,7 +105,7 @@ namespace LanfeustBridge.Controllers
             var tournament = _tournamentService.GetTournament(id);
             if (tournament == null)
                 return HttpNotFound();
-            if (tournament.Status != TournamentStatus.Running)
+            if (tournament.Status == TournamentStatus.Setup)
                 return HttpBadRequest($"Cannot close tournament in status {tournament.Status}");
 
             tournament.Close(_dealsService.GetDeals(id));

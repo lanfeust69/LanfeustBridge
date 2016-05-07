@@ -8,7 +8,7 @@
     <tabset>
         <tab heading='Infos'>
             <form (ngSubmit)="onSubmit()" #tournamentForm="ngForm">
-                <fieldset *ngIf="true" [disabled]="!_edit">
+                <fieldset *ngIf="true" [disabled]="!(setup && _edit)">
                     <!-- *ngIf is a workaround for a known angular2 bug -->
                     <div class="form-group">
                         <label for="name">Name</label>
@@ -45,7 +45,13 @@
                 </fieldset>
             </form>
         </tab>
-        <tab heading="Play" *ngIf="running && _currentRound < _tournament.nbRounds && _currentPosition">
+        <tab heading="Play" *ngIf="(running && _currentRound < _tournament.nbRounds && _currentPosition) || (finished && _edit)">
+            <div *ngIf="_edit" class="form-group">
+                <label for="round">Round</label>
+                <select class="form-control" required [(ngModel)]="_currentRound" (ngModelChange)="initializeScore(true)">
+                    <option *ngFor="let r of rounds" [value]="r">{{r + 1}}</option>
+                </select>
+            </div>
             <h4>Round {{_currentRound + 1}} : Table {{_currentPosition.table}},
                 N : {{_tournament.players[_currentPosition.north].name}}, S : {{_tournament.players[_currentPosition.south].name}},
                 E : {{_tournament.players[_currentPosition.east].name}}, W : {{_tournament.players[_currentPosition.west].name}}</h4>
@@ -62,7 +68,7 @@
                 </select>
             </div>
             <score-form *ngIf="_scoreDisplayed" [(score)]="_currentScore" (validated)="scoreValidated()"></score-form>
-            <div *ngIf="_currentRound < _tournament.nbRounds - 1" class="form-group">
+            <div *ngIf="running && _currentRound < _tournament.nbRounds - 1" class="form-group">
                 <button class="btn btn-primary" [disabled]="!roundFinished" (click)="nextRound()">Next Round</button>
             </div>
         </tab>
@@ -91,7 +97,7 @@
                     </tbody>
                 </table>
             </div>
-            <form *ngIf="_edit" class="list-group form-horizontal">
+            <form *ngIf="setup && _edit" class="list-group form-horizontal">
                 <div *ngFor="let player of players; let i = index" class="list-group-item row from-group">
                     <label for="player" class="control-label col-xs-3">Player {{i + 1}}</label>
                     <div class="col-xs-9">
@@ -110,11 +116,11 @@
         {{_invalidReason}}
     </div>
     <div class="form-group">
-        <button *ngIf="_edit" class="btn btn-primary" [disabled]="!tournamentForm.form.valid || !isValid" (click)="onSubmit()">{{_created ? "Update" : "Create"}}</button>
-        <button *ngIf="setup && _created && !_edit" class="btn btn-primary" (click)="_edit = !_edit">Edit</button>
+        <button *ngIf="setup && _edit" class="btn btn-primary" [disabled]="!tournamentForm.form.valid || !isValid" (click)="onSubmit()">{{_created ? "Update" : "Create"}}</button>
+        <button *ngIf="(setup && _created && !_edit) || (finished && !_edit)" class="btn btn-primary" (click)="_edit = !_edit; _currentRound = 0; initializeScore()">Edit</button>
         <button *ngIf="setup && _created && !_edit" class="btn btn-primary" (click)="start()">Start</button>
         <!--<button *ngIf="running" class="btn btn-primary" (click)="play()">Play</button>-->
-        <button *ngIf="running && _roundFinished && _currentRound == _tournament.nbRounds - 1" class="btn btn-primary" (click)="close()">Close</button>
+        <button *ngIf="(running && _roundFinished && _currentRound == _tournament.nbRounds - 1) || (finished && _edit)" class="btn btn-primary" (click)="close()">Close</button>
         <a [routerLink]="['TournamentList']" class="pull-right">Back</a>
     </div>
 </div>

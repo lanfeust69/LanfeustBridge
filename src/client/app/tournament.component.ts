@@ -175,6 +175,7 @@ export class TournamentComponent {
 
     initializeScore(resetCurrentDeal: boolean) {
         this._scoreDisplayed = false;
+        this._currentRound = +this._currentRound; // string if set from html
         if (this._currentRound >= this._tournament.nbRounds)
             return;
         this._currentPosition = this._tournament.positions[this._currentRound][this._currentPlayer];
@@ -208,6 +209,17 @@ export class TournamentComponent {
         this._tournamentService.nextRound(this._tournament.id);
         // simply set _roundFinished for display, and wait for pollEndOfRound
         this._roundFinished = false;
+    }
+
+    get rounds(): number[] {
+        if (this._tournament) {
+            let rounds = [];
+            for (let i = 0; i < this._tournament.nbRounds; i++)
+                rounds.push(i);
+            return rounds;
+        } else {
+            return [];
+        }
     }
 
     get roundFinished() {
