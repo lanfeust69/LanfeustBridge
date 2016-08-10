@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 using LanfeustBridge.Models;
@@ -32,7 +32,7 @@ namespace LanfeustBridge.Controllers
         {
             var deal = _dealsService.GetDeal(tournamentId, id);
             if (deal == null)
-                return HttpNotFound();
+                return NotFound();
             return Ok(deal);
         }
 
@@ -42,7 +42,7 @@ namespace LanfeustBridge.Controllers
         {
             var deals = _dealsService.GetDeals(tournamentId);
             if (deals == null)
-                return HttpNotFound();
+                return NotFound();
             return Ok(deals);
         }
 
@@ -52,7 +52,7 @@ namespace LanfeustBridge.Controllers
         {
             var deal = _dealsService.GetDeal(tournamentId, id);
             if (deal == null || round < 0 || round >= deal.Scores.Length)
-                return HttpNotFound();
+                return NotFound();
             return Ok(deal.Scores[round]);
         }
 
@@ -63,7 +63,7 @@ namespace LanfeustBridge.Controllers
             _logger.LogInformation($"Receiving score for deal {id}, round {round} : {score.Entered}, {score.Tricks}, {score.BridgeScore}");
             var deal = _dealsService.GetDeal(tournamentId, id);
             if (deal == null || round < 0 || round >= deal.Scores.Length)
-                return HttpNotFound();
+                return NotFound();
             deal.Scores[round] = score;
             deal.ComputeResults(_tournamentService.GetTournament(tournamentId).Scoring);
             _dealsService.SaveDeal(tournamentId, deal);

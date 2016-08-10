@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
 using LanfeustBridge.Models;
 using LanfeustBridge.Services;
@@ -34,7 +34,7 @@ namespace LanfeustBridge.Controllers
         {
             var tournament = _tournamentService.GetTournament(id);
             if (tournament == null)
-                return HttpNotFound();
+                return NotFound();
             return Ok(tournament);
         }
 
@@ -51,7 +51,7 @@ namespace LanfeustBridge.Controllers
         public IActionResult Put(int id, [FromBody]Tournament tournament)
         {
             if (id != tournament.Id)
-                return HttpBadRequest($"Id mismatch : id of resource was {id}, id of tournament was {tournament.Id}");
+                return BadRequest($"Id mismatch : id of resource was {id}, id of tournament was {tournament.Id}");
             tournament = _tournamentService.SaveTournament(tournament);
             return Ok(tournament);
         }
@@ -89,9 +89,9 @@ namespace LanfeustBridge.Controllers
         {
             var tournament = _tournamentService.GetTournament(id);
             if (tournament == null)
-                return HttpNotFound();
+                return NotFound();
             if (tournament.Status != TournamentStatus.Setup)
-                return HttpBadRequest($"Cannot start tournament in status {tournament.Status}");
+                return BadRequest($"Cannot start tournament in status {tournament.Status}");
 
             tournament.Status = TournamentStatus.Running;
             tournament = _tournamentService.SaveTournament(tournament);
@@ -104,9 +104,9 @@ namespace LanfeustBridge.Controllers
         {
             var tournament = _tournamentService.GetTournament(id);
             if (tournament == null)
-                return HttpNotFound();
+                return NotFound();
             if (tournament.Status == TournamentStatus.Setup)
-                return HttpBadRequest($"Cannot close tournament in status {tournament.Status}");
+                return BadRequest($"Cannot close tournament in status {tournament.Status}");
 
             tournament.Close(_dealsService.GetDeals(id));
             tournament = _tournamentService.SaveTournament(tournament);
@@ -119,9 +119,9 @@ namespace LanfeustBridge.Controllers
         {
             var tournament = _tournamentService.GetTournament(id);
             if (tournament == null)
-                return HttpNotFound();
+                return NotFound();
             if (tournament.Status != TournamentStatus.Running)
-                return HttpBadRequest($"Cannot get current round of tournament in status {tournament.Status}");
+                return BadRequest($"Cannot get current round of tournament in status {tournament.Status}");
 
             bool finished = tournament.Positions[tournament.CurrentRound]
                 .SelectMany(p => p.Deals)
@@ -137,9 +137,9 @@ namespace LanfeustBridge.Controllers
         {
             var tournament = _tournamentService.GetTournament(id);
             if (tournament == null)
-                return HttpNotFound();
+                return NotFound();
             if (tournament.Status != TournamentStatus.Running)
-                return HttpBadRequest($"Cannot get current round of tournament in status {tournament.Status}");
+                return BadRequest($"Cannot get current round of tournament in status {tournament.Status}");
 
             tournament.CurrentRound++;
             _tournamentService.SaveTournament(tournament);

@@ -1,6 +1,6 @@
 {
   "version": "1.0.0-*",
-  "compilationOptions": {
+  "buildOptions": {
     "emitEntryPoint": true
   },
   "tooling": {
@@ -8,29 +8,30 @@
   },
 
   "dependencies": {
-    "EntityFramework.Commands": "7.0.0-rc1-final",
-    "EntityFramework.InMemory": "7.0.0-rc1-final",
-    "Microsoft.AspNet.IISPlatformHandler": "1.0.0-rc1-final",
-    "Microsoft.AspNet.Mvc": "6.0.0-rc1-final",
-    "Microsoft.AspNet.Server.Kestrel": "1.0.0-rc1-final",
-    "Microsoft.AspNet.StaticFiles": "1.0.0-rc1-final",
-    "Microsoft.Extensions.Configuration.FileProviderExtensions": "1.0.0-rc1-final",
-    "Microsoft.Extensions.Logging": "1.0.0-rc1-final",
-    "Microsoft.Extensions.Logging.Console": "1.0.0-rc1-final",
-    "Microsoft.Extensions.Logging.Debug": "1.0.0-rc1-final",
-    "Serilog.Framework.Logging": "1.0.0-rc1-final-10083",
-    "xunit": "2.2.0-beta1-build3239",
-    "xunit.runner.dnx": "2.1.0-rc1-build204"
-  },
-
-  "commands": {
-    "web": "Microsoft.AspNet.Server.Kestrel",
-    "ef": "EntityFramework.Commands",
-    "test": "xunit.runner.dnx"
+    "Microsoft.NETCore.App": {
+      "version": "1.0.0",
+      "type": "platform"
+    },
+    "Microsoft.AspNetCore.Mvc": "1.0.0",
+    "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0",
+    "Microsoft.AspNetCore.Server.Kestrel": "1.0.0",
+    "Microsoft.AspNetCore.StaticFiles": "1.0.0",
+    "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0",
+    "Microsoft.Extensions.Configuration.FileExtensions": "1.0.0",
+    "Microsoft.Extensions.Configuration.Json": "1.0.0",
+    "Microsoft.Extensions.Logging": "1.0.0",
+    "Microsoft.Extensions.Logging.Console": "1.0.0",
+    "Microsoft.Extensions.Logging.Debug": "1.0.0",
+    "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0",
+    "Serilog.Extensions.Logging": "1.2.0",
+    "xunit": "2.2.0-beta2-build3300",
+    "dotnet-test-xunit": "2.2.0-preview2-build1029",
+    "Microsoft.EntityFrameworkCore.Sqlite": "1.0.0",
+    "Serilog.Sinks.RollingFile": "2.2.0"
   },
 
   "frameworks": {
-    "dnx451": { }
+    "netcoreapp1.0": {}
   },
 
   "exclude": [

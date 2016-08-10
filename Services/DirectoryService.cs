@@ -17,8 +17,8 @@ namespace LanfeustBridge.Services
 
         public DirectoryService()
         {
-            string currentDir = Environment.CurrentDirectory;
-            if (currentDir.StartsWith(@"D:\home\site", StringComparison.InvariantCultureIgnoreCase))
+            string currentDir = Directory.GetCurrentDirectory();
+            if (currentDir.StartsWith(@"D:\home\site", StringComparison.OrdinalIgnoreCase))
             {
                 // in Azure
                 LogDirectory = @"D:\home\LogFiles";

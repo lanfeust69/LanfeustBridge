@@ -4,8 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-using Microsoft.AspNet.Builder;
-using Microsoft.AspNet.Hosting;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -38,7 +38,7 @@ namespace LanfeustBridge
             // Add framework services.
             //services.AddEntityFramework().AddInMemoryDatabase().AddDbContext<TournamentsContext>(options => options.UseInMemoryDatabase());
             services
-                .AddInstance(DirectoryService.Service)
+                .AddSingleton(DirectoryService.Service)
                 .AddSingleton<IDealsService, SimpleDealsService>()
                 .AddSingleton<ITournamentService, SimpleTournamentsService>();
 
@@ -56,8 +56,6 @@ namespace LanfeustBridge
                 .WriteTo.RollingFile(pathFormat: logFilePattern)
                 .CreateLogger();
             loggerFactory.AddSerilog(log);
-
-            app.UseIISPlatformHandler();
 
             // Route all unknown requests to app root
             app.Use(async (context, next) =>
@@ -80,6 +78,16 @@ namespace LanfeustBridge
         }
 
         // Entry point for the application.
-        public static void Main(string[] args) => Microsoft.AspNet.Hosting.WebApplication.Run<Startup>(args);
+        public static void Main(string[] args)
+        {
+            var host = new WebHostBuilder()
+                .UseKestrel()
+                .UseContentRoot(Directory.GetCurrentDirectory())
+                .UseIISIntegration()
+                .UseStartup<Startup>()
+                .Build();
+
+            host.Run();
+        }
     }
 }
