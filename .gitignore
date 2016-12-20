@@ -235,6 +235,7 @@ _Pvt_Extensions
 
 # from angular2 .gitignore
 # compiled output
+/ClientApp/dist/
 /dist
 /tmp
 

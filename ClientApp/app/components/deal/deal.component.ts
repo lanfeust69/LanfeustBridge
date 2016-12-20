@@ -1,0 +1,76 @@
+import {Component, Input, Inject, OnInit, ViewChild} from '@angular/core';
+import {ActivatedRoute, Router, Routes} from '@angular/router';
+import {Deal} from '../../deal';
+import {DealService, DEAL_SERVICE} from '../../services/deal/deal.service';
+import {HandComponent} from '../hand/hand.component';
+import {ScoreComponent} from '../score/score.component';
+
+@Component({
+    selector: 'deal',
+    templateUrl: './deal.html',
+    styles: ['canvas { background-color: limeGreen; /*margin: 10px*/ }',
+        '.no-gutter [class*=\'col-\'] { padding-right:0; padding-left:0; vertical-align: middle;}',
+    ]
+})
+export class DealComponent {
+    @Input() tournamentId: number;
+    @Input() id: number;
+    deal: Deal;
+    @ViewChild("table") tableCanvas;
+    viewInitialized: boolean = false;
+    
+    constructor(
+        private _router: Router,
+        private _route: ActivatedRoute,
+        @Inject(DEAL_SERVICE) private _dealService: DealService) {}
+    
+    ngOnInit() {
+        this.tournamentId = +this._route.snapshot.params['tournamentId'];
+        this.id = +this._route.snapshot.params['dealId'];
+        console.log("tournamentId is " + this.tournamentId + ", dealId is " + this.id);
+        this._dealService.getDeal(this.tournamentId, this.id).then(deal => {
+            console.log("deal service returned", deal);
+            this.deal = deal;
+            if (this.viewInitialized)
+                this.drawTable();
+        });
+    }
+
+    ngAfterViewInit() {
+        this.viewInitialized = true;
+        if (this.deal)
+            this.drawTable();
+    }
+
+    drawTable() {
+        var context = this.tableCanvas.nativeElement.getContext("2d");
+        var size = this.tableCanvas.nativeElement.height;
+        var font = (size / 6) + "px arial";
+        context.font = font;
+        context.textBaseline="middle";
+        context.textAlign="center";
+        context.fillText("#" + this.deal.id, size / 2, size / 2);
+        for (var i = 0; i < 4; i++) {
+            var x = [0, size / 3, size * 4 / 5, size / 3][i];
+            var y = [size / 3, 0, size / 3, size * 4 / 5][i];
+            var width = [size / 5, size / 3][i % 2];
+            var height = [size / 3, size / 5][i % 2];
+            var color = { None: ["white", "white"], Both: ["red", "red"], NS: ["white", "red"], EW: ["red", "white"] }[this.deal.vulnerability][i % 2];
+            context.fillStyle = color;
+            context.fillRect(x, y, width, height);
+            context.strokeStyle = "black";
+            context.strokeRect(x, y, width, height);
+            var name = ["W", "N", "E", "S"][i];
+            var textX = [size / 10, size / 2, size * 9 / 10, size / 2][i];
+            var textY = [size / 2, size / 10, size / 2, size * 9 / 10][i];
+            context.fillStyle = "black";
+            if (name == this.deal.dealer) {
+                name = "D";
+                context.font = "bold " + font;
+            } else {
+                context.font = font;
+            }
+            context.fillText(name, textX, textY);
+        }
+    }
+}

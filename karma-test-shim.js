@@ -22,8 +22,8 @@ System.config({
   }
 });
 
-System.import('angular2/testing').then(function (testing) {
-  return System.import('angular2/platform/testing/browser').then(function (providers) {
+System.import('@angular/testing').then(function (testing) {
+  return System.import('@angular/platform/testing/browser').then(function (providers) {
     testing.setBaseTestProviders(providers.TEST_BROWSER_PLATFORM_PROVIDERS,
       providers.TEST_BROWSER_APPLICATION_PROVIDERS);
   });

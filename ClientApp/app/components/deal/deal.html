@@ -1,0 +1,24 @@
+<!--<table style="table-layout: fixed; width: 400px">-->
+<div class="container table-responsive">
+    <div class="no-gutter">
+        <div class="row">
+            <div class="col-xs-4 col-xs-offset-4 col-md-2 col-md-offset-5"><hand *ngIf="deal" [hand]="deal.hands.north"></hand></div>
+        </div>
+        <div class="row">
+            <div class="col-xs-4 col-md-2 col-md-offset-3"><hand *ngIf="deal" [hand]="deal.hands.west"></hand></div>
+            <div class="col-xs-4 col-md-2"><canvas #table height="80" width="80"></canvas></div>
+            <div class="col-xs-4 col-md-2"><hand *ngIf="deal" [hand]="deal.hands.east"></hand></div>
+        </div>
+        <div class="row">
+            <div class="col-xs-4 col-xs-offset-4 col-md-2 col-md-offset-5"><hand *ngIf="deal" [hand]="deal.hands.south"></hand></div>
+        </div>
+    </div>
+    <br/>
+    <scores *ngIf="deal && deal.scores && deal.scores.length > 0" [scores]="deal.scores" [tournamentId]="tournamentId"></scores>
+</div>
+<div class="form-group">
+    <a *ngIf="id > 1" [routerLink]="['tournament', tournamentId, 'deal', id - 1]">Previous</a>
+    <a [routerLink]="['tournament', tournamentId]">Up</a>
+    <a [routerLink]="['tournament', tournamentId, 'deal', id + 1]">Next</a>
+    <a [routerLink]="['']" class="pull-right">Home</a>
+</div>

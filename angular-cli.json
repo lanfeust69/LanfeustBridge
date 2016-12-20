@@ -1,6 +1,0 @@
-{
-  "routes": [],
-  "defaults": {
-      "sourceDir": "src/client"
-  }
-}
