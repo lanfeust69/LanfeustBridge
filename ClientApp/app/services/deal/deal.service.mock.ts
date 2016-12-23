@@ -28,6 +28,7 @@ export class DealServiceMock implements DealService {
             let score = new Score;
             score.dealId = id;
             score.round = round;
+            score.vulnerability = Deal.computeVulnerability(id);
             return Promise.resolve(score);
         }
         return Promise.resolve(this._deals[tournament][id - 1].scores[round]);

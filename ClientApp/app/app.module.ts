@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { UniversalModule } from 'angular2-universal';
 import { DealComponent } from './components/deal/deal.component';
 import { HandComponent } from './components/hand/hand.component';
@@ -25,12 +26,13 @@ import { DealServiceMock } from './services/deal/deal.service.mock';
     imports: [
         UniversalModule, // Must be first import. This automatically imports BrowserModule, HttpModule, and JsonpModule too.
         FormsModule,
+        NgbModule.forRoot(),
         RouterModule.forRoot([
             { path: '', component: TournamentListComponent },
-            { path:'/tournament/:id', component: TournamentComponent },
-            { path:'/tournament/:tournamentId/deal/:dealId', component: DealComponent },
-            { path:'/tournament/:tournamentId/scoresheet/:player', component: ScoreSheetComponent },
-            { path:'/new-tournament', component: TournamentComponent },
+            { path:'tournament/:id', component: TournamentComponent },
+            { path:'tournament/:tournamentId/deal/:dealId', component: DealComponent },
+            { path:'tournament/:tournamentId/scoresheet/:player', component: ScoreSheetComponent },
+            { path:'new-tournament', component: TournamentComponent },
             { path: '**', redirectTo: '' }
         ])
     ],

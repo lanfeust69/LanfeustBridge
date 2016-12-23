@@ -4,13 +4,7 @@ import {TOURNAMENT_SERVICE, TournamentService} from '../../services/tournament/t
 
 @Component({
     selector: 'tournament-list',
-    template: `
-<h1 class="text-center">Lanfeust Bridge</h1>
-<div class="list-group">
-  <a [routerLink]="['tournament', tournamentName.id]" class="list-group-item" *ngFor="let tournamentName of _tournamentNames">{{tournamentName.name}}</a>
-</div>
-<button type="button" class='btn btn-block' (click)="createTournament()">Create new tournament</button>
-    `
+    templateUrl: './tournament-list.html'
 })
 export class TournamentListComponent {
     _tournamentNames: {id: number; name: string}[] = [];
@@ -25,6 +19,6 @@ export class TournamentListComponent {
     }
 
     public createTournament() {
-        this._router.navigate( ['new-tournament', -1 ] );
+        this._router.navigate( ['new-tournament'] );
     }
 }

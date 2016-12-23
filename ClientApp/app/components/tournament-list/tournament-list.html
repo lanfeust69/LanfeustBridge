@@ -1,0 +1,5 @@
+<h1 class="text-xs-center">Lanfeust Bridge</h1>
+<div class="list-group">
+  <a [routerLink]="['tournament', tournamentName.id]" class="list-group-item" *ngFor="let tournamentName of _tournamentNames">{{tournamentName.name}}</a>
+</div>
+<button type="button" class='btn btn-block' (click)="createTournament()">Create new tournament</button>

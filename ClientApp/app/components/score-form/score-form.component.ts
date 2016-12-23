@@ -48,11 +48,12 @@ export class ScoreFormComponent {
         }
     }
 
+    @Input()
     get score() {
         return this._score;
     }
 
-    @Input('score') set score(value) {
+    set score(value) {
         if (!value.entered) {
             value.contract.level = undefined;
             value.contract.suit = undefined;

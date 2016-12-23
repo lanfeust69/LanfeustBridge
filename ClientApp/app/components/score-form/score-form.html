@@ -1,37 +1,37 @@
 <form (ngSubmit)="onSubmit()">
-    <fieldset class="form-group btn-group">
-        <label class="btn btn-default"
-            [(ngModel)]="score.contract.level" (ngModelChange)="tricksFixup()" [btnRadio]="0">Pass</label>
-        <label *ngFor="let level of [1, 2, 3, 4, 5, 6, 7]" class="btn btn-default"
-            [(ngModel)]="score.contract.level" (ngModelChange)="tricksFixup()" [btnRadio]="level">{{level}}</label>
+    <fieldset class="form-group btn-group" [(ngModel)]="score.contract.level" (ngModelChange)="tricksFixup()" ngbRadioGroup name="level">
+        <label class="btn btn-secondary"><input type="radio" [value]="0" />Pass</label>
+        <label *ngFor="let level of [1, 2, 3, 4, 5, 6, 7]" class="btn btn-secondary"><input type="radio" [value]="level" />{{level}}</label>
     </fieldset>
-    <fieldset *ngIf="score.contract.level" class="form-group btn-group">
-        <label *ngFor="let suit of _suits" class="btn btn-default" [(ngModel)]="score.contract.suit" [btnRadio]="suit">
-            <suit [suit]="suit"></suit>
+    <fieldset *ngIf="score.contract.level" class="form-group btn-group" [(ngModel)]="score.contract.suit" ngbRadioGroup name="suit">
+        <label *ngFor="let suit of _suits" class="btn btn-secondary">
+            <input type="radio" [value]="suit" /><suit [suit]="suit"></suit>
         </label>
     </fieldset>
-    <fieldset *ngIf="score.contract.level" class="form-group btn-group">
-        <label class="btn btn-default" [(ngModel)]="score.contract.doubled"
-            (ngModelChange)="doubleFixup($event)" btnCheckbox>X</label>
-        <label class="btn btn-default" [(ngModel)]="score.contract.redoubled"
-            (ngModelChange)="redoubleFixup($event)" btnCheckbox>XX</label>
+    <fieldset *ngIf="score.contract.level" class="form-group btn-group" data-toggle="buttons">
+        <label class="btn btn-secondary" [class.active]="score.contract.doubled">
+            <input type="checkbox" [(ngModel)]="score.contract.doubled" (ngModelChange)="doubleFixup($event)" name="doubled" />X
+        </label>
+        <label class="btn btn-secondary" [class.active]="score.contract.redoubled">
+            <input type="checkbox"  [(ngModel)]="score.contract.redoubled" (ngModelChange)="redoubleFixup($event)" name="redoubled" />XX
+        </label>
+    </fieldset>
+    <fieldset *ngIf="score.contract.level" class="form-group btn-group" [(ngModel)]="score.contract.declarer" ngbRadioGroup name="declarer">
+        <label *ngFor="let declarer of ['N', 'S', 'E', 'W']" class="btn btn-secondary">
+            <input type="radio" [value]="declarer" />{{declarer}}</label>
     </fieldset>
     <fieldset *ngIf="score.contract.level" class="form-group btn-group">
-        <label *ngFor="let declarer of ['N', 'S', 'E', 'W']" class="btn btn-default"
-            [(ngModel)]="score.contract.declarer" [btnRadio]="declarer">{{declarer}}</label>
-    </fieldset>
-    <fieldset *ngIf="score.contract.level" class="form-group btn-group">
-        <label class="btn btn-default" (click)="changeTricks(-1)">-</label>
+        <label class="btn btn-secondary" (click)="changeTricks(-1)">-</label>
         <label class="btn bg-info">{{tricksDisplay}}</label>
-        <label class="btn btn-default" (click)="changeTricks(1)">+</label>
+        <label class="btn btn-secondary" (click)="changeTricks(1)">+</label>
     </fieldset>
     <div class="form-group">
-        <panel *ngIf="!score.contract.level" style="font-size: 18px">Pass</panel>
-        <panel *ngIf="score.contract.level" style="font-size: 18px">
+        <div class="panel panel-body" *ngIf="!score.contract.level" style="font-size: 18px">Pass</div>
+        <div class="panel panel-body" *ngIf="score.contract.level" style="font-size: 18px">
             {{score.contract.level}}<suit *ngIf="score.contract.suit != undefined" [suit]="score.contract.suit"></suit>
             <span *ngIf="score.contract.doubled">X&nbsp;</span><span *ngIf="score.contract.redoubled">XX&nbsp;</span>
             {{score.contract.declarer}}&nbsp;{{tricksDisplay}}&nbsp;&nbsp;&nbsp;<strong>{{computedScore}}</strong>
-        </panel>
+        </div>
     </div>
     <div class="form-group">
         <button type="submit" class="btn btn-primary" [disabled]="!isValid">Accept</button>

@@ -6,7 +6,7 @@ export class Contract {
     level: number;
     suit: Suit;
     doubled: boolean;
-    redoubled: boolean;    
+    redoubled: boolean;
 }
 
 export class Score {
@@ -27,7 +27,7 @@ export class Score {
     ewResult: number;
 
     public static computeScore(s: Score): number {
-        if (s.dealId === undefined || s.contract === undefined || s.contract.level === undefined
+        if (s.vulnerability === undefined || s.contract === undefined || s.contract.level === undefined
             || s.contract.level === 0 || s.contract.suit === undefined
             || s.contract.declarer === undefined || s.tricks == undefined)
             return 0;

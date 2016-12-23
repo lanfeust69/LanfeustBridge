@@ -1,7 +1,12 @@
 import {EventEmitter, Injectable} from '@angular/core';
-import {AlertComponent} from 'ng2-bootstrap/ng2-bootstrap';
+
+export interface Alert {
+  id: number;
+  type: string;
+  message: string;
+}
 
 @Injectable()
 export class AlertService {
-    newAlert: EventEmitter<AlertComponent> = new EventEmitter<AlertComponent>();
+    newAlert: EventEmitter<Alert> = new EventEmitter<Alert>();
 }

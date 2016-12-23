@@ -3,7 +3,7 @@ import {Suit} from '../../types';
 
 @Component({
     selector: 'suit',
-    template: `<span style="color: {{suitColor()}}">&nbsp;<span [innerHTML]="suitSymbol()"></span>&nbsp;</span>`,
+    template: `<span  [ngStyle]="{'color': suitColor()}">&nbsp;<span [innerHTML]="suitSymbol()"></span>&nbsp;</span>`,
 })
 export class SuitComponent {
     @Input() suit: Suit;

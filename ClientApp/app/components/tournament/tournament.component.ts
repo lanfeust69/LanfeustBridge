@@ -37,12 +37,15 @@ export class TournamentComponent {
     constructor(
         private _router: Router,
         private _route: ActivatedRoute,
-        private _alertService: AlertService,
+        // private _alertService: AlertService,
         @Inject(TOURNAMENT_SERVICE) private _tournamentService: TournamentService,
         @Inject(DEAL_SERVICE) private _dealService: DealService) {}
 
     ngOnInit() {
-        let id = +this._route.snapshot.params['id'];
+        let id = -1;
+        if (this._route.snapshot.url[0].path == 'tournament') {
+            id = +this._route.snapshot.params['id'];
+        }
         console.log("id is " + id);
         this._tournamentService.getMovements().then(movements => {
             this._knownMovements = movements;
@@ -91,7 +94,7 @@ export class TournamentComponent {
                 .catch(reason => {
                     console.log("no tournament found with id " + id);
                     //this._alertService.newAlert.next({msg: "No tournament found with id " + id, type: 'warning', dismissible: true});
-                    this._router.navigate(['TournamentList']);
+                    this._router.navigate(['']);
                 });
         }
     }
@@ -260,6 +263,20 @@ export class TournamentComponent {
         return this.players.sort((a, b) => a.rank - b.rank);
     }
 
+    get nbTables() {
+        return this._tournament ? this._tournament.nbTables : 1;
+    }
+
+    set nbTables(value) {
+        if (!this._tournament)
+            return;
+        this._tournament.nbTables = value;
+        let nbPlayers = this._tournament.nbTables * 4;
+        if (this._tournament.players.length < nbPlayers)
+            for (let i = this._tournament.players.length; i < nbPlayers; i++)
+                this._tournament.players.push({ name: "Player " + (i + 1), score: 0, rank: 0 });
+    }
+
     get movement() {
         return this._tournament ? this._tournament.movement
             : (this._knownMovements.length > 0 ? this._knownMovements[0].name : undefined);
@@ -270,7 +287,7 @@ export class TournamentComponent {
             this._tournament.movement = value;
         let movement = this._knownMovements.find(m => m.name == value);
         if (movement && movement.nbTables != -1)
-            this._tournament.nbTables = movement.nbTables;
+            this.nbTables = movement.nbTables;
     }
 
     get fixedNbTables() {
