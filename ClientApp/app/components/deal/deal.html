@@ -17,8 +17,8 @@
     <scores *ngIf="deal && deal.scores && deal.scores.length > 0" [scores]="deal.scores" [tournamentId]="tournamentId"></scores>
 </div>
 <div class="form-group">
-    <a *ngIf="id > 1" [routerLink]="['tournament', tournamentId, 'deal', id - 1]">Previous</a>
-    <a [routerLink]="['tournament', tournamentId]">Up</a>
-    <a [routerLink]="['tournament', tournamentId, 'deal', id + 1]">Next</a>
-    <a [routerLink]="['']" class="float-xs-right">Home</a>
+    <a *ngIf="id > 1" [routerLink]="['/tournament', tournamentId, 'deal', id - 1]">Previous</a>
+    <a [routerLink]="['/tournament', tournamentId]">Up</a>
+    <a [routerLink]="['/tournament', tournamentId, 'deal', id + 1]">Next</a>
+    <a [routerLink]="['/']" class="float-xs-right">Home</a>
 </div>

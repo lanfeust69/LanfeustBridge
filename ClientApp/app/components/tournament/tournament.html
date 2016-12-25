@@ -85,9 +85,9 @@
         <ngb-tab title="Players" *ngIf="_tournament.players">
             <template ngbTabContent>
                 <div *ngIf="!finished && !_edit" class="list-group">
-                    <a [routerLink]="['tournament', _tournament.id]" class="list-group-item"
+                    <a [routerLink]="['/tournament', _tournament.id]" class="list-group-item"
                         *ngFor="let player of players; let i = index">Player {{i + 1}} : {{player.name}}</a>
-                    <!--<a [routerLink]="['user', player?.name]" class="list-group-item" *ngFor="let player of _tournament.players">{{player?.name}}</a>-->
+                    <!--<a [routerLink]="['/user', player?.name]" class="list-group-item" *ngFor="let player of _tournament.players">{{player?.name}}</a>-->
                 </div>
                 <div *ngIf="finished">
                     <table class="table-striped table-bordered table-hover col-xs-12">
@@ -99,7 +99,7 @@
                         <tbody>
                             <tr *ngFor="let player of sortedPlayers">
                                 <td>{{player.rank}}</td>
-                                <td><a [routerLink]="['tournament', _tournament.id, 'scoresheet', player.name]">{{player.name}}</a></td>
+                                <td><a [routerLink]="['scoresheet', player.name]">{{player.name}}</a></td>
                                 <td>{{player.score.toFixed(2)}}</td>
                             </tr>
                         </tbody>
@@ -118,7 +118,7 @@
         <ngb-tab title="Deals" *ngIf="finished && nbDeals > 0">
             <template ngbTabContent>
                 <div class="list-group">
-                    <a [routerLink]="['tournament', _tournament.id, 'deal', deal.id]" class="list-group-item" *ngFor="let deal of deals">Deal {{deal.id}}</a>
+                    <a [routerLink]="['deal', deal.id]" class="list-group-item" *ngFor="let deal of deals">Deal {{deal.id}}</a>
                 </div>
             </template>
         </ngb-tab>
@@ -131,6 +131,6 @@
         <button *ngIf="setup && _created && !_edit" class="btn btn-primary" (click)="start()">Start</button>
         <!--<button *ngIf="running" class="btn btn-primary" (click)="play()">Play</button>-->
         <button *ngIf="(running && _roundFinished && _currentRound == _tournament.nbRounds - 1) || (finished && _edit)" class="btn btn-primary" (click)="close()">Close</button>
-        <a [routerLink]="['']" class="float-xs-right">Back</a>
+        <a [routerLink]="['/']" class="float-xs-right">Back</a>
     </div>
 </div>

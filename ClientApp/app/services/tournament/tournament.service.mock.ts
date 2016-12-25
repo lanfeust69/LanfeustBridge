@@ -47,6 +47,8 @@ export class TournamentServiceMock implements TournamentService {
             allPositions.push(positions);
         }
         tournament.positions = allPositions;
+        // not always true, but OK for a mock
+        tournament.nbDeals = tournament.nbDealsPerRound * tournament.nbRounds;
         this._tournaments.push(tournament);
         //return Promise.resolve(tournament);
         return new Promise<Tournament>(resolve => setTimeout(() => resolve(tournament), 400)); // 0.4 seconds

@@ -16,6 +16,7 @@ import { TOURNAMENT_SERVICE } from './services/tournament/tournament.service';
 import { TournamentServiceMock } from './services/tournament/tournament.service.mock';
 import { DEAL_SERVICE } from './services/deal/deal.service';
 import { DealServiceMock } from './services/deal/deal.service.mock';
+import { AlertService } from './services/alert/alert.service';
 
 @NgModule({
     bootstrap: [ LanfeustBridgeApp ],
@@ -39,6 +40,7 @@ import { DealServiceMock } from './services/deal/deal.service.mock';
     providers: [
         { provide: TOURNAMENT_SERVICE, useClass: TournamentServiceMock },
         { provide: DEAL_SERVICE, useClass: DealServiceMock },
+        { provide: AlertService, useClass: AlertService }
     ]
 })
 export class AppModule {

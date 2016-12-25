@@ -1,8 +1,7 @@
 import {Component, Inject} from '@angular/core';
 import {Router, Routes} from '@angular/router';
 import {HttpModule} from '@angular/http';
-// import {AlertComponent} from 'ng2-bootstrap/ng2-bootstrap';
-// import {AlertService} from '../../services/alert/alert.service';
+import {Alert, AlertService} from '../../services/alert/alert.service';
 
 @Component({
     selector: 'lanfeust-bridge-app',
@@ -10,12 +9,11 @@ import {HttpModule} from '@angular/http';
 })
 export class LanfeustBridgeApp {
 
-    constructor(private _router: Router) {}
-    // constructor(private _router: Router, private _alertService: AlertService) {}
+    constructor(private _router: Router, private _alertService: AlertService) {}
     
-    // ngOnInit() {
-    //     this._alertService.newAlert.subscribe(alert => this.alerts.push(alert));
-    // }
+    ngOnInit() {
+        this._alertService.newAlert.subscribe(alert => this.alerts.push(alert));
+    }
 
     randomDeal: number = Math.floor(Math.random() * 32) + 1;
     alerts: Object[] = [];

@@ -1,9 +1,9 @@
 import {EventEmitter, Injectable} from '@angular/core';
 
 export interface Alert {
-  id: number;
   type: string;
-  message: string;
+  dismissible: boolean;
+  msg: string;
 }
 
 @Injectable()

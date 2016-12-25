@@ -37,7 +37,7 @@ export class TournamentComponent {
     constructor(
         private _router: Router,
         private _route: ActivatedRoute,
-        // private _alertService: AlertService,
+        private _alertService: AlertService,
         @Inject(TOURNAMENT_SERVICE) private _tournamentService: TournamentService,
         @Inject(DEAL_SERVICE) private _dealService: DealService) {}
 
@@ -93,8 +93,8 @@ export class TournamentComponent {
                 })
                 .catch(reason => {
                     console.log("no tournament found with id " + id);
-                    //this._alertService.newAlert.next({msg: "No tournament found with id " + id, type: 'warning', dismissible: true});
-                    this._router.navigate(['']);
+                    this._alertService.newAlert.next({msg: "No tournament found with id " + id, type: 'warning', dismissible: true});
+                    this._router.navigate(['/']);
                 });
         }
     }
@@ -110,11 +110,15 @@ export class TournamentComponent {
         } else {
            this._tournamentService.create(this._tournament)
                .then(tournament => {
-                   //this._alertService.newAlert.next({msg: "Tournament '" + tournament.name + "' successfully created", type: 'success', dismissible: true});
+                   this._alertService.newAlert.next({msg: "Tournament '" + tournament.name + "' successfully created", type: 'success', dismissible: true});
                    this._tournament = tournament;
                    this._created = true;
+                   // since the route will get back to us (as a component), ngOnInit isn't necessarily called
+                   // well, actually it *is* called...
+                   this._router.navigate(['/tournament', tournament.id]);
+                   console.log("url : ", this._router.url);
                }).catch(reason => {
-                   //this._alertService.newAlert.next({msg: "Tournament creation for '" + this._tournament.name + "' failed : " + reason, type: 'warning', dismissible: true});
+                   this._alertService.newAlert.next({msg: "Tournament creation for '" + this._tournament.name + "' failed : " + reason, type: 'warning', dismissible: true});
                    this._edit = true;
                });
         }
@@ -130,12 +134,12 @@ export class TournamentComponent {
         this.initializeScore(true);
         this._tournamentService.start(this._tournament.id)
             .then(tournament => {
-                //this._alertService.newAlert.next({msg: "Tournament '" + tournament.name + "' started", type: 'success', dismissible: true});
+                this._alertService.newAlert.next({msg: "Tournament '" + tournament.name + "' started", type: 'success', dismissible: true});
                 this._tournament = tournament;
                 if (!this._polling)
                     this.pollEndOfRound(this);
             }).catch(reason => {
-                //this._alertService.newAlert.next({msg: "Tournament '" + this._tournament.name + "' failed to start : " + reason, type: 'warning', dismissible: true});
+                this._alertService.newAlert.next({msg: "Tournament '" + this._tournament.name + "' failed to start : " + reason, type: 'warning', dismissible: true});
                 // go back to setup status
                 this._tournament.status = Status.Setup;
             });
@@ -164,10 +168,10 @@ export class TournamentComponent {
         this._tournament.status = Status.Finished;
         this._tournamentService.close(this._tournament.id)
             .then(tournament => {
-                //this._alertService.newAlert.next({msg: "Tournament '" + tournament.name + "' finished", type: 'success', dismissible: true});
+                this._alertService.newAlert.next({msg: "Tournament '" + tournament.name + "' finished", type: 'success', dismissible: true});
                 this._tournament = tournament;
             }).catch(reason => {
-                //this._alertService.newAlert.next({msg: "Tournament '" + this._tournament.name + "' failed to close : " + reason, type: 'warning', dismissible: true});
+                this._alertService.newAlert.next({msg: "Tournament '" + this._tournament.name + "' failed to close : " + reason, type: 'warning', dismissible: true});
                 // go back to running status
                 this._tournament.status = Status.Running;
             });
