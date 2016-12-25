@@ -1,5 +1,5 @@
 import {Component, Input, Inject, OnInit, ViewChild} from '@angular/core';
-import {ActivatedRoute, Router, Routes} from '@angular/router';
+import {ActivatedRoute, Router, Routes, Params} from '@angular/router';
 import {Deal} from '../../deal';
 import {DealService, DEAL_SERVICE} from '../../services/deal/deal.service';
 import {HandComponent} from '../hand/hand.component';
@@ -25,10 +25,12 @@ export class DealComponent {
         @Inject(DEAL_SERVICE) private _dealService: DealService) {}
     
     ngOnInit() {
-        this.tournamentId = +this._route.snapshot.params['tournamentId'];
-        this.id = +this._route.snapshot.params['dealId'];
-        console.log("tournamentId is " + this.tournamentId + ", dealId is " + this.id);
-        this._dealService.getDeal(this.tournamentId, this.id).then(deal => {
+        this._route.params.switchMap((params: Params) => {
+            this.tournamentId = +params['tournamentId'];
+            this.id = +params['dealId'];
+            console.log("tournamentId is " + this.tournamentId + ", dealId is " + this.id);
+            return this._dealService.getDeal(this.tournamentId, this.id);
+        }).subscribe((deal: Deal) => {
             console.log("deal service returned", deal);
             this.deal = deal;
             if (this.viewInitialized)
@@ -44,6 +46,7 @@ export class DealComponent {
 
     drawTable() {
         var context = this.tableCanvas.nativeElement.getContext("2d");
+        context.clearRect(0, 0, this.tableCanvas.nativeElement.width, this.tableCanvas.nativeElement.height);
         var size = this.tableCanvas.nativeElement.height;
         var font = (size / 6) + "px arial";
         context.font = font;

@@ -1,5 +1,5 @@
 import {Component, Input, Inject, OnInit} from '@angular/core';
-import {ActivatedRoute, Router, Routes} from '@angular/router';
+import {ActivatedRoute, Router, Routes, Params} from '@angular/router';
 import {Score} from '../../score';
 import {Deal} from '../../deal';
 import {DealService, DEAL_SERVICE} from '../../services/deal/deal.service';
@@ -13,6 +13,7 @@ import {ScoreComponent} from '../score/score.component';
 export class ScoreSheetComponent {
     _scores: Score[] = [];
     _tournamentId: number;
+    _player: string;
     
     constructor(
         private _router: Router,
@@ -20,12 +21,14 @@ export class ScoreSheetComponent {
         @Inject(DEAL_SERVICE) private _dealService: DealService) {}
     
     ngOnInit() {
-        this._tournamentId = +this._route.snapshot.params['tournamentId'];
-        let player = this._route.snapshot.params['player'];
-        console.log("tournamentId is " + this._tournamentId + ", player is " + player);
-        this._dealService.getDeals(this._tournamentId).then(deals  => {
-            this._scores = (<Deal[]>deals).reduce<Score[]>((acc, deal) => acc.concat(deal.scores), [])
-                .filter(s => s.entered && (s.players.north == player || s.players.south == player || s.players.east == player || s.players.west == player));
+        this._route.params.switchMap((params: Params) => {
+            this._tournamentId = +params['tournamentId'];
+            this._player = params['player'];
+            console.log("tournamentId is " + this._tournamentId + ", player is " + this._player);
+            return this._dealService.getDeals(this._tournamentId);
+        }).subscribe((deals: Deal[]) => {
+            this._scores = deals.reduce<Score[]>((acc, deal) => acc.concat(deal.scores), [])
+                .filter(s => s.entered && (s.players.north == this._player || s.players.south == this._player || s.players.east == this._player || s.players.west == this._player));
         });
     }
 }

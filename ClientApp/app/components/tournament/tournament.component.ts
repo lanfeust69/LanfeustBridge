@@ -1,5 +1,6 @@
 import {Component, Input, Inject} from '@angular/core';
-import {ActivatedRoute, Router, Routes} from '@angular/router';
+import {ActivatedRoute, Router, Routes, Params, UrlSegment} from '@angular/router';
+import {Observable} from 'rxjs/Rx';
 import {AlertService} from '../../services/alert/alert.service';
 import {Tournament, Player, Position, Status} from '../../tournament';
 import {TournamentService, TOURNAMENT_SERVICE} from '../../services/tournament/tournament.service';
@@ -42,11 +43,6 @@ export class TournamentComponent {
         @Inject(DEAL_SERVICE) private _dealService: DealService) {}
 
     ngOnInit() {
-        let id = -1;
-        if (this._route.snapshot.url[0].path == 'tournament') {
-            id = +this._route.snapshot.params['id'];
-        }
-        console.log("id is " + id);
         this._tournamentService.getMovements().then(movements => {
             this._knownMovements = movements;
             if (this._tournament && !this._tournament.movement && movements.length > 0) {
@@ -59,27 +55,34 @@ export class TournamentComponent {
                 this._tournament.scoring = scorings[0];
         });
         this._tournamentService.getNames().then(names => this._knownNames = names.filter(v => v != undefined).map(v => v.name));
-        if (id == -1) {
-            // called by NewTournament
-            this._tournament = new Tournament;
-            this._tournament.nbTables = 1;
-            this._tournament.nbRounds = 1;
-            this._tournament.nbDealsPerRound = 2;
-            for (let i = 0; i < 4; i++)
-                this._tournament.players.push({name: "Player " + (i + 1), score: 0, rank: 0});
-            if (this._knownMovements.length > 0)
-                this.movement = this._knownMovements[0].name;
-            if (this._knownScorings.length > 0)
-                this._tournament.scoring = this._knownScorings[0];
-            this._created = false;
-            this._edit = true;
-        } else {
-            this._tournamentService.get(id)
-                .then(tournament => {
+
+        this._route.url
+            .switchMap((urlSegments: UrlSegment[]) => {
+                if (urlSegments[0].path == 'new-tournament') {
+                    let tournament = new Tournament;
+                    tournament.nbTables = 1;
+                    tournament.nbRounds = 1;
+                    tournament.nbDealsPerRound = 2;
+                    for (let i = 0; i < 4; i++)
+                        tournament.players.push({name: "Player " + (i + 1), score: 0, rank: 0});
+                    return Observable.of(tournament);
+                }
+                let id = +urlSegments[1].path;
+                return this._tournamentService.get(id);
+            })
+            .subscribe((tournament: Tournament) => {
+                this._tournament = tournament;
+                if (tournament.id === -1) {
+                    if (this._knownMovements.length > 0)
+                        this.movement = this._knownMovements[0].name;
+                    if (this._knownScorings.length > 0)
+                        this._tournament.scoring = this._knownScorings[0];
+                    this._created = false;
+                    this._edit = true;                    
+                } else {
                     console.log("tournament service returned", tournament);
                     this._created = true;
                     this._edit = false;
-                    this._tournament = tournament;
                     this.movement = tournament.movement;
                     if (tournament.status == Status.Running)
                         this._tournamentService.currentRound(tournament.id)
@@ -90,13 +93,12 @@ export class TournamentComponent {
                                 if (!this._polling)
                                     this.pollEndOfRound(this);
                             });
-                })
-                .catch(reason => {
-                    console.log("no tournament found with id " + id);
-                    this._alertService.newAlert.next({msg: "No tournament found with id " + id, type: 'warning', dismissible: true});
-                    this._router.navigate(['/']);
-                });
-        }
+                }
+            }, error => {
+                console.log("Error loading tournament : ", error);
+                this._alertService.newAlert.next({msg: error, type: 'warning', dismissible: true});
+                this._router.navigate(['/']);
+            });
     }
 
     ngOnDestroy() {
@@ -116,7 +118,6 @@ export class TournamentComponent {
                    // since the route will get back to us (as a component), ngOnInit isn't necessarily called
                    // well, actually it *is* called...
                    this._router.navigate(['/tournament', tournament.id]);
-                   console.log("url : ", this._router.url);
                }).catch(reason => {
                    this._alertService.newAlert.next({msg: "Tournament creation for '" + this._tournament.name + "' failed : " + reason, type: 'warning', dismissible: true});
                    this._edit = true;
@@ -170,6 +171,7 @@ export class TournamentComponent {
             .then(tournament => {
                 this._alertService.newAlert.next({msg: "Tournament '" + tournament.name + "' finished", type: 'success', dismissible: true});
                 this._tournament = tournament;
+                this._stopPolling = true;
             }).catch(reason => {
                 this._alertService.newAlert.next({msg: "Tournament '" + this._tournament.name + "' failed to close : " + reason, type: 'warning', dismissible: true});
                 // go back to running status
