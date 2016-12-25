@@ -43,6 +43,14 @@
     <None Remove="yarn.lock" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="appsettings*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="hosting.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
     <!-- Only publish ClientApp\dist\**, but tell IDE to show all of ClientApp\** in Solution Explorer -->
     <Content Remove="ClientApp\**" />
     <Content Include="ClientApp\**" Exclude="ClientApp\dist\**">

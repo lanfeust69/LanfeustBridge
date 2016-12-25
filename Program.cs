@@ -14,6 +14,7 @@ namespace LanfeustBridge
         {
             var config = new ConfigurationBuilder()
                 .AddCommandLine(args)
+                .AddJsonFile("hosting.json", optional: false)
                 .AddEnvironmentVariables(prefix: "ASPNETCORE_")
                 .Build();
 
