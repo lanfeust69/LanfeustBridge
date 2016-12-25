@@ -1,9 +1,11 @@
+import { browser, by, element } from 'protractor';
+
 export class FrontEndPage {
   navigateTo() {
     return browser.get('/');
   }
 
-  getParagraphText() {
-    return element(by.css('front-end-app p')).getText();
+  getMainTitleText() {
+    return element(by.css('lanfeust-bridge-app h1')).getText();
   }
 }

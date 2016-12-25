@@ -13,6 +13,6 @@
     "target": "es5",
     "inlineSources": true,
     "lib": [ "es6", "dom" ],
-    "types": [ "node" ]
+    "types": [ "node", "jasmine", "chai" ]
   }
 }

@@ -1,7 +1,9 @@
-import {describe, it, expect, beforeEachProviders, inject} from '@angular/core/testing';
+import {TestBed, inject} from '@angular/core/testing';
 import {DealServiceMock} from './deal.service.mock';
 
-beforeEachProviders(() => [DealServiceMock]);
+beforeEach(() => TestBed.configureTestingModule({
+    providers: [DealServiceMock]})
+);
 
 describe('Service Mock: Deal', () => {
     describe('#createRandomDeal', () => {

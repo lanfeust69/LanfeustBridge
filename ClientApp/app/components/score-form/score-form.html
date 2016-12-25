@@ -20,7 +20,7 @@
         <label *ngFor="let declarer of ['N', 'S', 'E', 'W']" class="btn btn-secondary">
             <input type="radio" [value]="declarer" />{{declarer}}</label>
     </fieldset>
-    <fieldset *ngIf="score.contract.level" class="form-group btn-group">
+    <fieldset *ngIf="score.contract.level" class="form-group btn-group" name="result">
         <label class="btn btn-secondary" (click)="changeTricks(-1)">-</label>
         <label class="btn bg-info">{{tricksDisplay}}</label>
         <label class="btn btn-secondary" (click)="changeTricks(1)">+</label>
