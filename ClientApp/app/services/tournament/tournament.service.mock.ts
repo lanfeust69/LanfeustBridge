@@ -108,6 +108,7 @@ export class TournamentServiceMock implements TournamentService {
             promises.push(this._dealService.getScore(id, dealId, tournament.currentRound));
         }
         return Promise.all<Score>(promises).then(scores => {
+            console.log('Entered : ' + scores.filter(s => s.entered).map(s => s.dealId) + ' ; Missing : ' + scores.filter(s => !s.entered).map(s => s.dealId));
             let finished = scores.every(s => s.entered);
             if (finished) console.log("scores : ", scores);
             return {round: tournament.currentRound, finished: finished};

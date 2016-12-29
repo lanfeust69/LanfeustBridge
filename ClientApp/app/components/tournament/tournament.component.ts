@@ -1,6 +1,6 @@
-import {Component, Input, Inject} from '@angular/core';
+import {Component, Input, Inject, NgZone} from '@angular/core';
 import {ActivatedRoute, Router, Routes, Params, UrlSegment} from '@angular/router';
-import {Observable} from 'rxjs/Rx';
+import {Observable, Subscription} from 'rxjs/Rx';
 import {AlertService} from '../../services/alert/alert.service';
 import {Tournament, Player, Position, Status} from '../../tournament';
 import {TournamentService, TOURNAMENT_SERVICE} from '../../services/tournament/tournament.service';
@@ -27,8 +27,7 @@ export class TournamentComponent {
     
     _currentRound: number = 0;
     _roundFinished: boolean = false;
-    _polling: boolean = false;
-    _stopPolling: boolean = false;
+    _roundSubscription: Subscription;
     _currentDeal: number = 1;
     _currentPlayer: number = 0;
     _currentPosition: Position;
@@ -36,6 +35,7 @@ export class TournamentComponent {
     _scoreDisplayed = false;
 
     constructor(
+        private _ngZone: NgZone,
         private _router: Router,
         private _route: ActivatedRoute,
         private _alertService: AlertService,
@@ -90,8 +90,7 @@ export class TournamentComponent {
                                 this._currentRound = r.round;
                                 this._roundFinished = r.finished;
                                 this.initializeScore(true);
-                                if (!this._polling)
-                                    this.pollEndOfRound(this);
+                                this.subscribeToRounds();
                             });
                 }
             }, error => {
@@ -102,7 +101,8 @@ export class TournamentComponent {
     }
 
     ngOnDestroy() {
-        this._stopPolling = true;
+        if (this._roundSubscription)
+            this._roundSubscription.unsubscribe();
     }
 
     onSubmit() {
@@ -137,8 +137,7 @@ export class TournamentComponent {
             .then(tournament => {
                 this._alertService.newAlert.next({msg: "Tournament '" + tournament.name + "' started", type: 'success', dismissible: true});
                 this._tournament = tournament;
-                if (!this._polling)
-                    this.pollEndOfRound(this);
+                this.subscribeToRounds();
             }).catch(reason => {
                 this._alertService.newAlert.next({msg: "Tournament '" + this._tournament.name + "' failed to start : " + reason, type: 'warning', dismissible: true});
                 // go back to setup status
@@ -146,22 +145,30 @@ export class TournamentComponent {
             });
     }
 
-    pollEndOfRound(self: TournamentComponent) {
-        self._polling = true;
-        if (self._stopPolling)
+    subscribeToRounds() {
+        if (this._roundSubscription)
             return;
-        self._tournamentService.currentRound(self._tournament.id)
-            .then(r => {
-                self._roundFinished = r.finished;
-                if (r.round != self._currentRound) {
-                    self._currentRound = r.round;
-                    self.initializeScore(true);
-                }
-                if (self._currentRound < self._tournament.nbRounds)
-                    setTimeout(self.pollEndOfRound, 5000, self);
-                else
-                    self._polling = false;
-            });
+        // not so nice for e2e tests :
+        // run outside angular so that protractor won't timeout waiting for all angular tasks,
+        // which will never happen since we haven't had the opportunity to enter scores !
+        // this means checking in the test that we're done
+        this._ngZone.runOutsideAngular(() => {
+            this._roundSubscription = Observable.interval(5000)
+                .switchMap(_ => this._tournamentService.currentRound(this._tournament.id))
+                .subscribe(r => this._ngZone.run(() => {
+                    this._roundFinished = r.finished;
+                    if (r.round != this._currentRound) {
+                        console.log('new round received ' + JSON.stringify(r))
+                        this._currentRound = r.round;
+                        this.initializeScore(true);
+                    }
+                    if (r.finished && r.round >= this._tournament.nbRounds - 1) {
+                        console.log('callback stopping')
+                        this._roundSubscription.unsubscribe();
+                        this._roundSubscription = undefined;
+                    }
+                }));
+        });
     }
 
     close() {
@@ -171,7 +178,8 @@ export class TournamentComponent {
             .then(tournament => {
                 this._alertService.newAlert.next({msg: "Tournament '" + tournament.name + "' finished", type: 'success', dismissible: true});
                 this._tournament = tournament;
-                this._stopPolling = true;
+                if (this._roundSubscription)
+                    this._roundSubscription.unsubscribe();
             }).catch(reason => {
                 this._alertService.newAlert.next({msg: "Tournament '" + this._tournament.name + "' failed to close : " + reason, type: 'warning', dismissible: true});
                 // go back to running status
@@ -213,7 +221,7 @@ export class TournamentComponent {
 
     nextRound() {
         this._tournamentService.nextRound(this._tournament.id);
-        // simply set _roundFinished for display, and wait for pollEndOfRound
+        // simply set _roundFinished for display, and wait notification of next round
         this._roundFinished = false;
     }
 

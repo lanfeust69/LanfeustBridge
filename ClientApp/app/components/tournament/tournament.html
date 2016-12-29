@@ -61,7 +61,7 @@
                     E : {{_tournament.players[_currentPosition.east].name}}, W : {{_tournament.players[_currentPosition.west].name}}</h4>
                 <div class="form-group">
                     <label for="player">Player</label>
-                    <select class="form-control" required [(ngModel)]="_currentPlayer" (ngModelChange)="initializeScore(true)">
+                    <select class="form-control" required [(ngModel)]="_currentPlayer" (ngModelChange)="initializeScore(true)" name="currentPlayer">
                         <option *ngFor="let p of players; let i = index" [value]="i">{{p.name}}</option>
                     </select>
                 </div>

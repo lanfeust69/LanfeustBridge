@@ -13,8 +13,10 @@ import { TournamentComponent } from './components/tournament/tournament.componen
 import { TournamentListComponent } from './components/tournament-list/tournament-list.component';
 import { LanfeustBridgeApp } from './components/home/lanfeust-bridge.app';
 import { TOURNAMENT_SERVICE } from './services/tournament/tournament.service';
+import { TournamentServiceHttp } from './services/tournament/tournament.service.http';
 import { TournamentServiceMock } from './services/tournament/tournament.service.mock';
 import { DEAL_SERVICE } from './services/deal/deal.service';
+import { DealServiceHttp } from './services/deal/deal.service.http';
 import { DealServiceMock } from './services/deal/deal.service.mock';
 import { AlertService } from './services/alert/alert.service';
 
@@ -38,6 +40,8 @@ import { AlertService } from './services/alert/alert.service';
         ])
     ],
     providers: [
+        // { provide: TOURNAMENT_SERVICE, useClass: TournamentServiceHttp },
+        // { provide: DEAL_SERVICE, useClass: DealServiceHttp },
         { provide: TOURNAMENT_SERVICE, useClass: TournamentServiceMock },
         { provide: DEAL_SERVICE, useClass: DealServiceMock },
         { provide: AlertService, useClass: AlertService }

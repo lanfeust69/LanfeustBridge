@@ -9,10 +9,10 @@
         </label>
     </fieldset>
     <fieldset *ngIf="score.contract.level" class="form-group btn-group" data-toggle="buttons">
-        <label class="btn btn-secondary" [class.active]="score.contract.doubled">
+        <label class="btn btn-secondary" [class.active]="score.contract.doubled" name="doubled">
             <input type="checkbox" [(ngModel)]="score.contract.doubled" (ngModelChange)="doubleFixup($event)" name="doubled" />X
         </label>
-        <label class="btn btn-secondary" [class.active]="score.contract.redoubled">
+        <label class="btn btn-secondary" [class.active]="score.contract.redoubled" name="redoubled">
             <input type="checkbox"  [(ngModel)]="score.contract.redoubled" (ngModelChange)="redoubleFixup($event)" name="redoubled" />XX
         </label>
     </fieldset>

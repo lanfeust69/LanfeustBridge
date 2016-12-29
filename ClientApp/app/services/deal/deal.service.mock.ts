@@ -43,6 +43,7 @@ export class DealServiceMock implements DealService {
             this._deals[tournament][score.dealId - 1] = this.createRandomDeal(tournament, score.dealId);
             //this._deals[tournament][score.dealId - 1] = new Deal(score.dealId);
         score.score = Score.computeScore(score);
+        console.log('score of deal ' + score.dealId + ' for round ' + score.round + ' received');
         this._deals[tournament][score.dealId - 1].scores[score.round] = score;
         // TODO : update nsResult and ewResult
         return Promise.resolve(score);
