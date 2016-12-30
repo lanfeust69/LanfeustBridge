@@ -15,10 +15,10 @@ export class TournamentListComponent {
     {}
 
     ngOnInit() {
-        this._tournamentService.getNames().then(names => { this._tournamentNames = names; });
+        this._tournamentService.getNames().subscribe(names => { this._tournamentNames = names; });
     }
 
     public createTournament() {
-        this._router.navigate( ['new-tournament'] );
+        this._router.navigate(['new-tournament']);
     }
 }

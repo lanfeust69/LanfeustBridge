@@ -43,18 +43,18 @@ export class TournamentComponent {
         @Inject(DEAL_SERVICE) private _dealService: DealService) {}
 
     ngOnInit() {
-        this._tournamentService.getMovements().then(movements => {
+        this._tournamentService.getMovements().subscribe(movements => {
             this._knownMovements = movements;
             if (this._tournament && !this._tournament.movement && movements.length > 0) {
                 this.movement = movements[0].name;
             }
         });
-        this._tournamentService.getScorings().then(scorings => {
+        this._tournamentService.getScorings().subscribe(scorings => {
             this._knownScorings = scorings;
             if (this._tournament && !this._tournament.scoring && scorings.length > 0)
                 this._tournament.scoring = scorings[0];
         });
-        this._tournamentService.getNames().then(names => this._knownNames = names.filter(v => v != undefined).map(v => v.name));
+        this._tournamentService.getNames().subscribe(names => this._knownNames = names.filter(v => v != undefined).map(v => v.name));
 
         this._route.url
             .switchMap((urlSegments: UrlSegment[]) => {
@@ -86,7 +86,7 @@ export class TournamentComponent {
                     this.movement = tournament.movement;
                     if (tournament.status == Status.Running)
                         this._tournamentService.currentRound(tournament.id)
-                            .then(r => {
+                            .subscribe(r => {
                                 this._currentRound = r.round;
                                 this._roundFinished = r.finished;
                                 this.initializeScore(true);
@@ -108,17 +108,24 @@ export class TournamentComponent {
     onSubmit() {
         // isValid if the button could be clicked (and checked on server side)
         if (this._created) {
-           this._tournamentService.update(this._tournament);
+           this._tournamentService.update(this._tournament)
+                .subscribe(tournament => {
+                    this._alertService.newAlert.next({ msg: "Tournament '" + tournament.name + "' successfully updated", type: 'success', dismissible: true });
+                    this._tournament = tournament;
+                }, reason => {
+                    this._alertService.newAlert.next({ msg: "Tournament update for '" + this._tournament.name + "' failed : " + reason, type: 'warning', dismissible: true });
+                    this._edit = true;
+                });
         } else {
            this._tournamentService.create(this._tournament)
-               .then(tournament => {
+               .subscribe(tournament => {
                    this._alertService.newAlert.next({msg: "Tournament '" + tournament.name + "' successfully created", type: 'success', dismissible: true});
                    this._tournament = tournament;
                    this._created = true;
                    // since the route will get back to us (as a component), ngOnInit isn't necessarily called
                    // well, actually it *is* called...
                    this._router.navigate(['/tournament', tournament.id]);
-               }).catch(reason => {
+               }, reason => {
                    this._alertService.newAlert.next({msg: "Tournament creation for '" + this._tournament.name + "' failed : " + reason, type: 'warning', dismissible: true});
                    this._edit = true;
                });
@@ -134,11 +141,11 @@ export class TournamentComponent {
         this._currentPlayer = 0;
         this.initializeScore(true);
         this._tournamentService.start(this._tournament.id)
-            .then(tournament => {
+            .subscribe(tournament => {
                 this._alertService.newAlert.next({msg: "Tournament '" + tournament.name + "' started", type: 'success', dismissible: true});
                 this._tournament = tournament;
                 this.subscribeToRounds();
-            }).catch(reason => {
+            }, reason => {
                 this._alertService.newAlert.next({msg: "Tournament '" + this._tournament.name + "' failed to start : " + reason, type: 'warning', dismissible: true});
                 // go back to setup status
                 this._tournament.status = Status.Setup;
@@ -175,12 +182,12 @@ export class TournamentComponent {
         // tentatively set as finished
         this._tournament.status = Status.Finished;
         this._tournamentService.close(this._tournament.id)
-            .then(tournament => {
+            .subscribe(tournament => {
                 this._alertService.newAlert.next({msg: "Tournament '" + tournament.name + "' finished", type: 'success', dismissible: true});
                 this._tournament = tournament;
                 if (this._roundSubscription)
                     this._roundSubscription.unsubscribe();
-            }).catch(reason => {
+            }, reason => {
                 this._alertService.newAlert.next({msg: "Tournament '" + this._tournament.name + "' failed to close : " + reason, type: 'warning', dismissible: true});
                 // go back to running status
                 this._tournament.status = Status.Running;
@@ -199,7 +206,7 @@ export class TournamentComponent {
         if (this.roundDeals.indexOf(this._currentDeal) == -1)
             return;
         this._dealService.getScore(this._tournament.id, this._currentDeal, this._currentRound)
-            .then(score => {
+            .subscribe(score => {
                 score.players = {
                     north: this._tournament.players[this._currentPosition.north].name,
                     south: this._tournament.players[this._currentPosition.south].name,
@@ -214,7 +221,8 @@ export class TournamentComponent {
     scoreValidated() {
         console.log("scoreValidated");
         // TODO : set to first non-played deal of the round
-        this._dealService.postScore(this._tournament.id, this._currentScore);
+        // need to subscribe so that the POST is actually sent
+        this._dealService.postScore(this._tournament.id, this._currentScore).subscribe(s => console.log('POST score returned', s));
         this._currentDeal++;
         this.initializeScore(false);
     }

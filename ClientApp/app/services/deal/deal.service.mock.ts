@@ -1,4 +1,5 @@
 import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs/Rx';
 import {Suit} from '../../types';
 import {Deal} from '../../deal';
 import {Score} from '../../score';
@@ -8,33 +9,33 @@ import {DealService} from './deal.service';
 export class DealServiceMock implements DealService {
     private _deals: Deal[][] = [];
 
-    getDeal(tournament: number, id: number) : Promise<Deal> {
+    getDeal(tournament: number, id: number) : Observable<Deal> {
         if (!this._deals[tournament])
             this._deals[tournament] = [];
         if (!this._deals[tournament][id - 1])
             this._deals[tournament][id - 1] = this.createRandomDeal(tournament, id);
             //this._deals[tournament][id - 1] = new Deal(id);
-        return new Promise<Deal>(resolve => setTimeout(() => resolve(this._deals[tournament][id - 1]), 400)); // 0.4 seconds
+        return Observable.of(this._deals[tournament][id - 1]).delay(400); // 0.4 seconds
     }
 
-    getDeals(tournament: number) : Promise<Deal[]> {
+    getDeals(tournament: number) : Observable<Deal[]> {
         if (!this._deals[tournament])
-            return Promise.resolve([]);
-        return Promise.resolve<Deal[]>(this._deals[tournament]);
+            return Observable.of([]);
+        return Observable.of(this._deals[tournament]);
     }
 
-    getScore(tournament: number, id: number, round: number) : Promise<Score> {
+    getScore(tournament: number, id: number, round: number) : Observable<Score> {
         if (!this._deals[tournament] || !this._deals[tournament][id - 1] || !this._deals[tournament][id - 1].scores[round]) {
             let score = new Score;
             score.dealId = id;
             score.round = round;
             score.vulnerability = Deal.computeVulnerability(id);
-            return Promise.resolve(score);
+            return Observable.of(score);
         }
-        return Promise.resolve(this._deals[tournament][id - 1].scores[round]);
+        return Observable.of(this._deals[tournament][id - 1].scores[round]);
     }
 
-    postScore(tournament: number, score: Score) : Promise<Score> {
+    postScore(tournament: number, score: Score) : Observable<Score> {
         // if (id < 0 || id >= this._deals.length || !this._deals[id]) 
         //     return Promise.reject<Score>("No tournament with id '" + id + "' found");
         if (!this._deals[tournament])
@@ -46,7 +47,7 @@ export class DealServiceMock implements DealService {
         console.log('score of deal ' + score.dealId + ' for round ' + score.round + ' received');
         this._deals[tournament][score.dealId - 1].scores[score.round] = score;
         // TODO : update nsResult and ewResult
-        return Promise.resolve(score);
+        return Observable.of(score);
     }
 
     createRandomDeal(tournament: number, id: number) : Deal {

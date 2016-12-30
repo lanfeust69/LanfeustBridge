@@ -1,4 +1,5 @@
 import {Inject, Injectable} from '@angular/core';
+import {Observable} from 'rxjs/Rx';
 import {Tournament, Position, Status} from '../../tournament';
 import {Score} from '../../score';
 import {DealService, DEAL_SERVICE} from '../deal/deal.service';
@@ -10,20 +11,20 @@ export class TournamentServiceMock implements TournamentService {
 
     constructor(@Inject(DEAL_SERVICE) private _dealService: DealService) {}
 
-    getNames() : Promise<{id: number; name: string}[]> {
+    getNames() : Observable<{id: number; name: string}[]> {
         let result = this._tournaments.map((value, i) => ({id: i, name: value.name}));
-        return Promise.resolve(result);
+        return Observable.of(result);
     }
 
-    get(id: number) : Promise<Tournament> {
+    get(id: number) : Observable<Tournament> {
         if (id < 0 || id >= this._tournaments.length || !this._tournaments[id]) 
-            return Promise.reject<Tournament>("No tournament with id '" + id + "' found");
+            return Observable.throw("No tournament with id '" + id + "' found");
         let tournament = this._tournaments[id];
         //return Promise.resolve(tournament);
-        return new Promise<Tournament>(resolve => setTimeout(() => resolve(tournament), 2000)); // 2 seconds
+        return Observable.of(tournament).delay(2000); // 2 seconds
     }
 
-    create(tournament: Tournament) : Promise<Tournament> {
+    create(tournament: Tournament) : Observable<Tournament> {
         tournament.id = this._tournaments.length;
         let allPositions: Position[][] = [];
         // mock : mitchell
@@ -51,68 +52,66 @@ export class TournamentServiceMock implements TournamentService {
         tournament.nbDeals = tournament.nbDealsPerRound * tournament.nbRounds;
         this._tournaments.push(tournament);
         //return Promise.resolve(tournament);
-        return new Promise<Tournament>(resolve => setTimeout(() => resolve(tournament), 400)); // 0.4 seconds
+        return Observable.of(tournament).delay(400); // 0.4 seconds
     }
 
-    update(tournament: Tournament) : Promise<Tournament> {
+    update(tournament: Tournament) : Observable<Tournament> {
         let id = tournament.id;
         if (id < 0 || id >= this._tournaments.length || !this._tournaments[id]) 
-            return Promise.reject<Tournament>("No tournament with id '" + id + "' found");
+            return Observable.throw("No tournament with id '" + id + "' found");
         this._tournaments[id] = tournament;
-        return Promise.resolve(tournament);
+        return Observable.of(tournament);
     }
 
-    delete(id: number) : Promise<boolean> {
+    delete(id: number) : Observable<boolean> {
         if (id >= 0 && id < this._tournaments.length && this._tournaments[id]) {
             this._tournaments[id] = undefined;
-            return Promise.resolve(true);
+            return Observable.of(true);
         }
-        return Promise.resolve(false);
+        return Observable.of(false);
     }
 
-    getMovements() : Promise<{name: string, nbTables: number}[]> {
-        return Promise.resolve([{name: "Mitchell", nbTables: -1}, {name: "Teams", nbTables: 2}, {name: "Individual", nbTables: 3}]);
+    getMovements() : Observable<{name: string, nbTables: number}[]> {
+        return Observable.of([{name: "Mitchell", nbTables: -1}, {name: "Teams", nbTables: 2}, {name: "Individual", nbTables: 3}]);
     }
 
-    getScorings() : Promise<string[]> {
-        return Promise.resolve(["Matchpoint", "IMP"]);
+    getScorings() : Observable<string[]> {
+        return Observable.of(["Matchpoint", "IMP"]);
     }
 
-    start(id: number) : Promise<Tournament> {
+    start(id: number) : Observable<Tournament> {
         if (id < 0 || id >= this._tournaments.length || !this._tournaments[id]) 
-            return Promise.reject<Tournament>("No tournament with id '" + id + "' found");
+            return Observable.throw("No tournament with id '" + id + "' found");
         let tournament = this._tournaments[id];
         tournament.status = Status.Running;
         tournament.currentRound = 0;
-        return Promise.resolve(tournament);        
+        return Observable.of(tournament);        
     }
 
-    close(id: number) : Promise<Tournament> {
+    close(id: number) : Observable<Tournament> {
         if (id < 0 || id >= this._tournaments.length || !this._tournaments[id]) 
-            return Promise.reject<Tournament>("No tournament with id '" + id + "' found");
+            return Observable.throw("No tournament with id '" + id + "' found");
         let tournament = this._tournaments[id];
         tournament.status = Status.Finished;
-        return Promise.resolve(tournament);
+        return Observable.of(tournament);
     }
 
-    currentRound(id: number) : Promise<{round: number, finished: boolean}> {
+    currentRound(id: number) : Observable<{round: number, finished: boolean}> {
         if (id < 0 || id >= this._tournaments.length || !this._tournaments[id]) 
-            return Promise.reject<{round: number, finished: boolean}>("No tournament with id '" + id + "' found");
+            return Observable.throw("No tournament with id '" + id + "' found");
         let tournament = this._tournaments[id];
         // finished, waiting for close
         if (tournament.currentRound == tournament.nbRounds)
-            return Promise.resolve({round: tournament.currentRound, finished: true});
+            return Observable.of({round: tournament.currentRound, finished: true});
         // only in mock : assume all deals are played each round
-        let promises: Promise<Score>[] = [];
+        let scores: Observable<Score>;
         for (let dealId = 1; dealId <= tournament.nbDealsPerRound * tournament.nbTables; dealId++) {
-            promises.push(this._dealService.getScore(id, dealId, tournament.currentRound));
+            let score = this._dealService.getScore(id, dealId, tournament.currentRound);
+            scores = scores ? scores.merge(score) : score;
         }
-        return Promise.all<Score>(promises).then(scores => {
-            console.log('Entered : ' + scores.filter(s => s.entered).map(s => s.dealId) + ' ; Missing : ' + scores.filter(s => !s.entered).map(s => s.dealId));
-            let finished = scores.every(s => s.entered);
-            if (finished) console.log("scores : ", scores);
-            return {round: tournament.currentRound, finished: finished};
-        });
+        return scores
+            .reduce((allEntered: boolean, score: Score, _) => allEntered && score.entered, true)
+            .map(b => ({round: tournament.currentRound, finished: b}));
     }
 
     nextRound(id: number) {

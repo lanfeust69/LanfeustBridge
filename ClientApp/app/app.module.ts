@@ -40,10 +40,10 @@ import { AlertService } from './services/alert/alert.service';
         ])
     ],
     providers: [
-        // { provide: TOURNAMENT_SERVICE, useClass: TournamentServiceHttp },
-        // { provide: DEAL_SERVICE, useClass: DealServiceHttp },
-        { provide: TOURNAMENT_SERVICE, useClass: TournamentServiceMock },
-        { provide: DEAL_SERVICE, useClass: DealServiceMock },
+        { provide: TOURNAMENT_SERVICE, useClass: TournamentServiceHttp },
+        { provide: DEAL_SERVICE, useClass: DealServiceHttp },
+        // { provide: TOURNAMENT_SERVICE, useClass: TournamentServiceMock },
+        // { provide: DEAL_SERVICE, useClass: DealServiceMock },
         { provide: AlertService, useClass: AlertService }
     ]
 })

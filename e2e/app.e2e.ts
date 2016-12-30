@@ -46,6 +46,8 @@ describe('front-end App', function() {
         element(by.css('input[name="rounds"]')).clear();
         element(by.css('input[name="rounds"]')).sendKeys('3');
         element(by.buttonText('Create')).click();
+        // apparently the new angular 2 HttpModule's Observable aren't waited by protractor, so :
+        browser.wait(ExpectedConditions.elementToBeClickable(element(by.buttonText('Start'))), 12000);
         element(by.buttonText('Start')).click();
         // polling for scores is done outside angular, so we can keep synchronization
         // but after that, without synchronization, we should wait for the buttons...
