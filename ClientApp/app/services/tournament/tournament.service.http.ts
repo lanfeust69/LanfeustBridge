@@ -1,15 +1,13 @@
 import {Injectable} from '@angular/core';
 import {Http, Headers, RequestOptions, Response} from '@angular/http';
 import {Observable} from 'rxjs/Rx';
-import {Tournament, Status} from '../../tournament';
-import {Score} from '../../score';
+import {Tournament} from '../../tournament';
 import {TournamentService} from './tournament.service';
 
 import 'rxjs/Rx';
 
 @Injectable()
 export class TournamentServiceHttp implements TournamentService {
-    private _tournaments: Tournament[] = [];
     private _baseUrl = 'api/tournament';
 
     constructor(private _http: Http) {}
@@ -28,7 +26,7 @@ export class TournamentServiceHttp implements TournamentService {
         return data;
     }
 
-    get(id: number) : Observable<Tournament> {
+    get(id: number): Observable<Tournament> {
         return this._http.get(this._baseUrl + '/' + id).map(this.extractData);
     }
 
@@ -38,38 +36,39 @@ export class TournamentServiceHttp implements TournamentService {
         return this._http.post(this._baseUrl, JSON.stringify(tournament), options).map(this.extractData);
     }
 
-    update(tournament: Tournament) : Observable<Tournament> {
+    update(tournament: Tournament): Observable<Tournament> {
         let headers = new Headers({ 'Content-Type': 'application/json' });
         let options = new RequestOptions({ headers: headers });
         return this._http.put(this._baseUrl + '/' + tournament.id, JSON.stringify(tournament), options).map(this.extractData);
     }
 
-    delete(id: number) : Observable<boolean> {
+    delete(id: number): Observable<boolean> {
         return this._http.delete(this._baseUrl + '/' + id).map(this.extractData);
     }
 
-    getMovements() : Observable<{name: string, nbTables: number}[]> {
+    getMovements(): Observable<{name: string, nbTables: number}[]> {
         return this._http.get(this._baseUrl + '/movement').map(this.extractData);
     }
 
-    getScorings() : Observable<string[]> {
+    getScorings(): Observable<string[]> {
         return this._http.get(this._baseUrl + '/scoring').map(this.extractData);
     }
 
-    start(id: number) : Observable<Tournament> {
-        return this._http.post(this._baseUrl + '/' + id + '/start', "").map(this.extractData);
+    start(id: number): Observable<Tournament> {
+        return this._http.post(this._baseUrl + '/' + id + '/start', '').map(this.extractData);
     }
 
-    close(id: number) : Observable<Tournament> {
-        return this._http.post(this._baseUrl + '/' + id + '/close', "").map(this.extractData);
+    close(id: number): Observable<Tournament> {
+        return this._http.post(this._baseUrl + '/' + id + '/close', '').map(this.extractData);
     }
 
-    currentRound(id: number) : Observable<{round: number, finished: boolean}> {
+    currentRound(id: number): Observable<{round: number, finished: boolean}> {
         return this._http.get(this._baseUrl + '/' + id + '/current-round').map(this.extractData);
     }
 
     nextRound(id: number) {
         // need to subscribe to actually post
-        this._http.post(this._baseUrl + '/' + id + '/next-round', "").subscribe(r => console.log('Next Round POST returned ' + r.statusText));
+        this._http.post(this._baseUrl + '/' + id + '/next-round', '')
+            .subscribe(r => console.log('Next Round POST returned ' + r.statusText));
     }
 }

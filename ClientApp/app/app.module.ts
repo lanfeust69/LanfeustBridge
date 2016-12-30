@@ -14,10 +14,10 @@ import { TournamentListComponent } from './components/tournament-list/tournament
 import { LanfeustBridgeApp } from './components/home/lanfeust-bridge.app';
 import { TOURNAMENT_SERVICE } from './services/tournament/tournament.service';
 import { TournamentServiceHttp } from './services/tournament/tournament.service.http';
-import { TournamentServiceMock } from './services/tournament/tournament.service.mock';
+// import { TournamentServiceMock } from './services/tournament/tournament.service.mock';
 import { DEAL_SERVICE } from './services/deal/deal.service';
 import { DealServiceHttp } from './services/deal/deal.service.http';
-import { DealServiceMock } from './services/deal/deal.service.mock';
+// import { DealServiceMock } from './services/deal/deal.service.mock';
 import { AlertService } from './services/alert/alert.service';
 
 @NgModule({
@@ -32,10 +32,10 @@ import { AlertService } from './services/alert/alert.service';
         NgbModule.forRoot(),
         RouterModule.forRoot([
             { path: '', component: TournamentListComponent },
-            { path:'tournament/:id', component: TournamentComponent },
-            { path:'tournament/:tournamentId/deal/:dealId', component: DealComponent },
-            { path:'tournament/:tournamentId/scoresheet/:player', component: ScoreSheetComponent },
-            { path:'new-tournament', component: TournamentComponent },
+            { path: 'tournament/:id', component: TournamentComponent },
+            { path: 'tournament/:tournamentId/deal/:dealId', component: DealComponent },
+            { path: 'tournament/:tournamentId/scoresheet/:player', component: ScoreSheetComponent },
+            { path: 'new-tournament', component: TournamentComponent },
             { path: '**', redirectTo: '' }
         ])
     ],

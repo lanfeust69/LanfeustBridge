@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs/Rx';
-import {Suit} from '../../types';
 import {Deal} from '../../deal';
 import {Score} from '../../score';
 import {DealService} from './deal.service';
@@ -9,22 +8,21 @@ import {DealService} from './deal.service';
 export class DealServiceMock implements DealService {
     private _deals: Deal[][] = [];
 
-    getDeal(tournament: number, id: number) : Observable<Deal> {
+    getDeal(tournament: number, id: number): Observable<Deal> {
         if (!this._deals[tournament])
             this._deals[tournament] = [];
         if (!this._deals[tournament][id - 1])
             this._deals[tournament][id - 1] = this.createRandomDeal(tournament, id);
-            //this._deals[tournament][id - 1] = new Deal(id);
         return Observable.of(this._deals[tournament][id - 1]).delay(400); // 0.4 seconds
     }
 
-    getDeals(tournament: number) : Observable<Deal[]> {
+    getDeals(tournament: number): Observable<Deal[]> {
         if (!this._deals[tournament])
             return Observable.of([]);
         return Observable.of(this._deals[tournament]);
     }
 
-    getScore(tournament: number, id: number, round: number) : Observable<Score> {
+    getScore(tournament: number, id: number, round: number): Observable<Score> {
         if (!this._deals[tournament] || !this._deals[tournament][id - 1] || !this._deals[tournament][id - 1].scores[round]) {
             let score = new Score;
             score.dealId = id;
@@ -35,14 +33,11 @@ export class DealServiceMock implements DealService {
         return Observable.of(this._deals[tournament][id - 1].scores[round]);
     }
 
-    postScore(tournament: number, score: Score) : Observable<Score> {
-        // if (id < 0 || id >= this._deals.length || !this._deals[id]) 
-        //     return Promise.reject<Score>("No tournament with id '" + id + "' found");
+    postScore(tournament: number, score: Score): Observable<Score> {
         if (!this._deals[tournament])
             this._deals[tournament] = [];
         if (!this._deals[tournament][score.dealId - 1])
             this._deals[tournament][score.dealId - 1] = this.createRandomDeal(tournament, score.dealId);
-            //this._deals[tournament][score.dealId - 1] = new Deal(score.dealId);
         score.score = Score.computeScore(score);
         console.log('score of deal ' + score.dealId + ' for round ' + score.round + ' received');
         this._deals[tournament][score.dealId - 1].scores[score.round] = score;
@@ -50,7 +45,7 @@ export class DealServiceMock implements DealService {
         return Observable.of(score);
     }
 
-    createRandomDeal(tournament: number, id: number) : Deal {
+    createRandomDeal(tournament: number, id: number): Deal {
         let deal = new Deal(id);
         let cards: number[] = [];
         for (let i = 0; i < 52; i++)
@@ -61,11 +56,11 @@ export class DealServiceMock implements DealService {
             cards[i - 1] = cards[dest];
             cards[dest] = x;
         }
-        let suits = ["spades", "hearts", "diamonds", "clubs"];
-        let cardNames = ["A", "K", "Q", "J", "10", "9", "8", "7", "6", "5", "4", "3", "2"];
+        let suits = ['spades', 'hearts', 'diamonds', 'clubs'];
+        let cardNames = ['A', 'K', 'Q', 'J', '10', '9', '8', '7', '6', '5', '4', '3', '2'];
         for (let i = 0; i < 4; i++) {
-            let player = ["west", "north", "east", "south"][i];
-            let hand = cards.slice(i * 13, (i + 1) * 13).sort(function(a, b) { return a - b });
+            let player = ['west', 'north', 'east', 'south'][i];
+            let hand = cards.slice(i * 13, (i + 1) * 13).sort(function (a, b) { return a - b; });
             for (let j = 0; j < 13; j++)
                 deal.hands[player][suits[Math.floor(hand[j] / 13)]].push(cardNames[hand[j] % 13]);
         }

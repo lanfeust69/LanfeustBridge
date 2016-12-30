@@ -5,17 +5,20 @@ function randomScore() {
     let level = Math.floor((Math.random() * 8) + 1);
     element(by.css('fieldset[name="level"]>label:nth-of-type(' + level + ')')).click();
     if (level > 1) {
-        element(by.css('fieldset[name="suit"]>label:nth-of-type(' + Math.floor((Math.random() * 5) + 1) + ')>suit>span:nth-of-type(1)>span')).click();
+        let suit = Math.floor((Math.random() * 5) + 1);
+        element(by.css('fieldset[name="suit"]>label:nth-of-type(' + suit + ')>suit>span:nth-of-type(1)>span')).click();
         if (Math.random() < 0.25) {
-            if (Math.random() < 0.2)
+            if (Math.random() < 0.2) {
                 element(by.css('label[name="redoubled"]')).click();
-            else
+            } else {
                 element(by.css('label[name="doubled"]')).click();
+            }
         }
-        element(by.css('fieldset[name="declarer"]>label:nth-of-type(' + Math.floor((Math.random() * 4) + 1) + ')')).click();
+        let declarer = Math.floor((Math.random() * 4) + 1);
+        element(by.css('fieldset[name="declarer"]>label:nth-of-type(' + declarer + ')')).click();
         let result = Math.floor((Math.random() * 5) - 2);
         if (result != 0) {
-            let el = element(by.css('fieldset[name="result"]>label:nth-of-type(' + (result < 0 ? 1 : 3) + ')'))
+            let el = element(by.css('fieldset[name="result"]>label:nth-of-type(' + (result < 0 ? 1 : 3) + ')'));
             for (let i = 0; i < Math.abs(result); i++)
                 el.click();
         }
@@ -28,7 +31,7 @@ describe('front-end App', function() {
 
     beforeEach(() => {
         page = new FrontEndPage();
-    })
+    });
 
     it('should display app name', () => {
         page.navigateTo();
@@ -38,7 +41,7 @@ describe('front-end App', function() {
     it('should run a small tournament', () => {
         page.navigateTo();
 
-        //browser.pause();
+        // browser.pause();
         element(by.css('button')).click();
         element(by.css('input[name="name"]')).sendKeys('Test');
         element(by.css('input[name="tables"]')).clear();
@@ -58,7 +61,7 @@ describe('front-end App', function() {
             element.all(by.css('select[name="currentPlayer"]>option')).first().click();
             randomScore();
             randomScore();
-            
+
             element(by.cssContainingText('select[name="currentPlayer"]>option', 'Player 5')).click();
             randomScore();
             randomScore();
@@ -80,13 +83,13 @@ describe('front-end App', function() {
         browser.wait(ExpectedConditions.presenceOf(element(by.buttonText('Close'))), 12000);
         element(by.buttonText('Close')).click();
 
-        element(by.linkText('Play')).isPresent()
-        element(by.linkText('Players')).isPresent()
-        element(by.linkText('Players')).click()
-        element(by.linkText('Player 1')).click()
-        element(by.linkText('2')).click()
-        element(by.linkText('Previous')).click()
+        ExpectedConditions.presenceOf(element(by.linkText('Play')));
+        ExpectedConditions.presenceOf(element(by.linkText('Players')));
+        element(by.linkText('Players')).click();
+        element(by.linkText('Player 1')).click();
+        element(by.linkText('2')).click();
+        element(by.linkText('Previous')).click();
         // browser.pause();
         // browser.manage().logs().get('browser').then(console.log);
-    })
+    });
 });

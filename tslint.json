@@ -1,8 +1,8 @@
 {
   "rulesDirectory": ["node_modules/codelyzer/dist/src"],
   "rules": {
-    "max-line-length": [true, 100],
-    "no-inferrable-types": true,
+    "max-line-length": [true, 128],
+    "no-inferrable-types": [true],
     "class-name": true,
     "comment-format": [
       true,
@@ -45,12 +45,12 @@
         "variable-declaration": "nospace"
       }
     ],
-    "curly": true,
+    "curly": false,
     "variable-name": [
       true,
       "ban-keywords",
       "check-format",
-      "allow-trailing-underscore"
+      "allow-leading-underscore"
     ],
     "whitespace": [
       true,
