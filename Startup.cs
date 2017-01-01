@@ -43,7 +43,8 @@ namespace LanfeustBridge
             services
                 .AddSingleton(DirectoryService.Service)
                 .AddSingleton<IDealsService, SimpleDealsService>()
-                .AddSingleton<ITournamentService, SimpleTournamentsService>();
+                .AddSingleton<ITournamentService, SimpleTournamentsService>()
+                .AddSingleton(MovementService.Service);
 
             services
                 .AddMvc();
@@ -79,9 +80,11 @@ namespace LanfeustBridge
             {
                 await next();
 
-                // If there's no available file and the request doesn't contain an extension, we're probably trying to access a page.
+                // If there's no available file, we're not on an api, and the request doesn't contain an extension, we're probably trying to access a page.
                 // Rewrite request to use app root
-                if (context.Response.StatusCode == 404 && !Path.HasExtension(context.Request.Path.Value))
+                if (context.Response.StatusCode == 404 &&
+                    !context.Request.Path.Value.StartsWith("/api/") &&
+                    !Path.HasExtension(context.Request.Path.Value))
                 {
                     context.Request.Path = "/index.html"; // Angular root page
                     await next();

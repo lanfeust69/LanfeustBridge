@@ -1,12 +1,21 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace LanfeustBridge.Models
 {
     public class Individual : IMovement
     {
+        public MovementDescription MovementDescription { get; } = new MovementDescription
+        {
+            Id = typeof(Individual).Name.ToLower(),
+            Name = "Individual for 12 players",
+            Description = "Only accepts 33 rounds : 3 rounds playing with each of the 11 other players",
+            MinTables = 3,
+            MaxTables = 3,
+            MinRounds = 33,
+            MaxRounds = 33
+        };
+
         public Position[][] GetPositions(int nbTables, int nbRounds, int nbDealsPerRound)
         {
             if (nbTables != 3)
@@ -51,5 +60,10 @@ namespace LanfeustBridge.Models
                 deals[i] = Deal.CreateDeal(i + 1, nbRounds, Deal.ComputeDealer(i % 8 + 1), Deal.ComputeVulnerability(i % 8 + 1));
             return deals;
         }
-    }
+
+        public MovementValidation Validate(int nbTables, int nbRounds)
+        {
+            return new MovementValidation { IsValid = nbTables == 3 && nbRounds == 33 };
+        }
+     }
 }

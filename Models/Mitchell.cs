@@ -1,14 +1,25 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace LanfeustBridge.Models
 {
     public class Mitchell : IMovement
     {
+        public MovementDescription MovementDescription { get; } = new MovementDescription
+        {
+            Id = typeof(Mitchell).Name.ToLower(),
+            Name = "Mitchell",
+            Description = "Standard Mitchell : NS fixed, EW move to next table, boards to previous",
+            MinTables = 3,
+            MinRounds = 2
+        };
+
         public Position[][] GetPositions(int nbTables, int nbRounds, int nbDealsPerRound)
         {
+            if (nbTables < 3)
+                throw new NotSupportedException("At least 3 tables needed for Mitchell");
+            if (nbRounds > nbTables - (nbTables + 1) % 2)
+                throw new NotSupportedException($"At most {nbTables - (nbTables + 1) % 2} rounds possible for a {nbTables} Mitchell");
             // player ids : 0 = N1, 1 = S1, 2 = E1, 3 = W1, etc...
             var allPositions = new Position[nbRounds][];
             for (int round = 0; round < nbRounds; round++)
@@ -43,6 +54,11 @@ namespace LanfeustBridge.Models
             for (int i = 0; i < nbDeals; i++)
                 deals[i] = Deal.CreateDeal(i + 1, nbRounds);
             return deals;
+        }
+
+        public MovementValidation Validate(int nbTables, int nbRounds)
+        {
+            return new MovementValidation { IsValid = nbTables >= 3 && nbRounds >= 2 && nbRounds <= nbTables - (nbTables + 1) % 2 };
         }
     }
 }

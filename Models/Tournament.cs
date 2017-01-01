@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+
+using LanfeustBridge.Services;
 
 namespace LanfeustBridge.Models
 {
@@ -32,19 +33,7 @@ namespace LanfeustBridge.Models
 
         public IMovement GetMovement()
         {
-            switch (Movement)
-            {
-                case "Mitchell":
-                    return new Mitchell();
-                case "Teams":
-                    return new Teams();
-                case "Triplicate":
-                    return new Triplicate();
-                case "Individual":
-                    return new Individual();
-                default:
-                    throw new NotImplementedException($"Movement {Movement} not implemented yet");
-            }
+            return MovementService.Service.GetMovement(Movement);
         }
 
         internal void GeneratePositions()

@@ -1,14 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+using System.IO;
 
 using Microsoft.Extensions.Logging;
 
-using LanfeustBridge.Models;
-using System.IO;
 using Newtonsoft.Json;
+
+using LanfeustBridge.Models;
 
 namespace LanfeustBridge.Services
 {
@@ -42,8 +40,7 @@ namespace LanfeustBridge.Services
 
         public Deal GetDeal(int tournamentId, int dealId)
         {
-            Deal[] deals;
-            Deals.TryGetValue(tournamentId, out deals);
+            Deals.TryGetValue(tournamentId, out var deals);
             if (deals == null || dealId > deals.Length)
                 return null;
             return deals[dealId - 1];
@@ -51,15 +48,13 @@ namespace LanfeustBridge.Services
 
         public Deal[] GetDeals(int tournamentId)
         {
-            Deal[] deals;
-            Deals.TryGetValue(tournamentId, out deals);
+            Deals.TryGetValue(tournamentId, out var deals);
             return deals;
         }
 
         public Deal SaveDeal(int tournamentId, Deal deal)
         {
-            Deal[] deals;
-            Deals.TryGetValue(tournamentId, out deals);
+            Deals.TryGetValue(tournamentId, out var deals);
             if (deals == null || deal.Id > deals.Length)
                 return null;
             deals[deal.Id - 1] = deal;

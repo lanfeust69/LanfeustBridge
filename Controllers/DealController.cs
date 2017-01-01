@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -14,9 +9,9 @@ namespace LanfeustBridge.Controllers
     [Route("api/tournament/{tournamentId}/deal")]
     public class DealController : Controller
     {
-        ILogger _logger;
-        private IDealsService _dealsService;
-        private ITournamentService _tournamentService;
+        private readonly ILogger _logger;
+        private readonly IDealsService _dealsService;
+        private readonly ITournamentService _tournamentService;
         
 
         public DealController(ILogger<DealController> logger, IDealsService dealsService, ITournamentService tournamentService)

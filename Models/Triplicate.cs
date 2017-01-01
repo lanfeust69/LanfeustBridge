@@ -1,12 +1,21 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace LanfeustBridge.Models
 {
     public class Triplicate : IMovement
     {
+        public MovementDescription MovementDescription { get; } = new MovementDescription
+        {
+            Id = typeof(Triplicate).Name.ToLower(),
+            Name = "Triplicate for 6 pairs",
+            Description = "Only accepts 15 rounds : 3 rounds playing against each of the other pairs",
+            MinTables = 3,
+            MaxTables = 3,
+            MinRounds = 15,
+            MaxRounds = 15
+        };
+
         public Position[][] GetPositions(int nbTables, int nbRounds, int nbDealsPerRound)
         {
             if (nbTables != 3)
@@ -53,6 +62,11 @@ namespace LanfeustBridge.Models
                 
             }
             return deals;
+        }
+
+        public MovementValidation Validate(int nbTables, int nbRounds)
+        {
+            return new MovementValidation { IsValid = nbTables == 3 && nbRounds == 15 };
         }
     }
 }

@@ -1,12 +1,20 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace LanfeustBridge.Models
 {
     public class Teams : IMovement
     {
+        public MovementDescription MovementDescription { get; } = new MovementDescription
+        {
+            Id = typeof(Teams).Name.ToLower(),
+            Name = "Teams match",
+            Description = "Pairs are fixed for 2 rounds, where deals are switched, then pairs switch for next set of deals",
+            MinTables = 2,
+            MaxTables = 2,
+            MinRounds = 2
+        };
+
         public Position[][] GetPositions(int nbTables, int nbRounds, int nbDealsPerRound)
         {
             if (nbTables != 2)
@@ -49,6 +57,11 @@ namespace LanfeustBridge.Models
             for (int i = 0; i < nbDeals; i++)
                 deals[i] = Deal.CreateDeal(i + 1, nbRounds);
             return deals;
+        }
+
+        public MovementValidation Validate(int nbTables, int nbRounds)
+        {
+            return new MovementValidation { IsValid = nbTables == 2 && nbRounds % 2 == 0 };
         }
     }
 }

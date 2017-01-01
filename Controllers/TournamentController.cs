@@ -1,7 +1,5 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Mvc;
 
 using LanfeustBridge.Models;
@@ -12,8 +10,8 @@ namespace LanfeustBridge.Controllers
     [Route("api/[controller]")]
     public class TournamentController : Controller
     {
-        private ITournamentService _tournamentService;
-        private IDealsService _dealsService;
+        private readonly ITournamentService _tournamentService;
+        private readonly IDealsService _dealsService;
 
         public TournamentController(ITournamentService tournamentService, IDealsService dealsService)
         {

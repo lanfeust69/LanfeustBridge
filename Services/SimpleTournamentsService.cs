@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 
 using Microsoft.Extensions.Logging;
 
-using LanfeustBridge.Models;
-using System.IO;
 using Newtonsoft.Json;
+
+using LanfeustBridge.Models;
 
 namespace LanfeustBridge.Services
 {
@@ -58,8 +57,7 @@ namespace LanfeustBridge.Services
 
         public Tournament GetTournament(int id)
         {
-            Tournament result;
-            Tournaments.TryGetValue(id, out result);
+            Tournaments.TryGetValue(id, out var result);
             return result; // null if not found
         }
 
