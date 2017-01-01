@@ -3,7 +3,7 @@
 <h3 class="text-xs-center" *ngIf="_tournament && running">
     <span class="text-primary">Now Running</span>
 </h3>
-<pre>{{diagnostic}}</pre>
+<!-- <pre>{{diagnostic}}</pre> -->
 <div class="container" *ngIf="_tournament">
     <ngb-tabset>
         <ngb-tab title='Infos'>
@@ -21,8 +21,8 @@
                         </div>
                         <div class="form-group">
                             <label for="movement">Movement</label>
-                            <select class="form-control" required [(ngModel)]="movement" id="movement" name="movement">
-                                <option *ngFor="let m of _knownMovements" [value]="m.name">{{m.name}}</option>
+                            <select class="form-control" required [(ngModel)]="movementId" id="movement" name="movement" ngbPopover="{{movementDescription}}" triggers="mouseenter:mouseleave" popoverTitle="Description">
+                                <option *ngFor="let m of _sortedMovementIds" [value]="m">{{_knownMovements[m].name}}</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -33,11 +33,11 @@
                         </div>
                         <div class="form-group">
                             <label for="tables">Number of tables</label>
-                            <input type="number" [disabled]="fixedNbTables" class="form-control" [(ngModel)]="nbTables" required id="tables" name="tables">
+                            <input type="number" [disabled]="fixedNbTables" class="form-control" [(ngModel)]="nbTables" required id="tables" name="tables" min="{{minTables}}" max="{{maxTables}}">
                         </div>
                         <div class="form-group">
                             <label for="rounds">Number of rounds</label>
-                            <input type="number" class="form-control" [(ngModel)]="_tournament.nbRounds" required id="rounds" name="rounds">
+                            <input type="number" [disabled]="fixedNbRounds" class="form-control" [(ngModel)]="nbRounds" required id="rounds" name="rounds" min="{{minRounds}}" max="{{maxRounds}}">
                         </div>
                         <div class="form-group">
                             <label for="dealsPerRound">Number of deals per round</label>
@@ -92,9 +92,11 @@
                 <div *ngIf="finished">
                     <table class="table-striped table-bordered table-hover col-xs-12">
                         <thead>
-                            <th style="width: 20%">#</th>
-                            <th style="width: 50%">Name</th>
-                            <th style="width: 30%">Score</th>
+                            <tr>
+                                <th style="width: 20%">#</th>
+                                <th style="width: 50%">Name</th>
+                                <th style="width: 30%">Score</th>
+                            </tr>
                         </thead>
                         <tbody>
                             <tr *ngFor="let player of sortedPlayers">

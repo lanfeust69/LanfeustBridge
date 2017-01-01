@@ -32,11 +32,6 @@ var clientBundleConfig = merge(sharedConfig, {
         new webpack.DllReferencePlugin({
             context: __dirname,
             manifest: require('./wwwroot/dist/vendor-manifest.json')
-        }),
-        // inject in index.html
-        new htmlWebpackPlugin({
-            template: "./ClientApp/index.html",
-            inject: "body"
         })
     ].concat(isDevBuild ? [
         // Plugins that apply in development builds only

@@ -3,9 +3,11 @@ import {ActivatedRoute, Router, UrlSegment} from '@angular/router';
 import {Observable, Subscription} from 'rxjs/Rx';
 import {AlertService} from '../../services/alert/alert.service';
 import {Tournament, Position, Status} from '../../tournament';
-import {TournamentService, TOURNAMENT_SERVICE} from '../../services/tournament/tournament.service';
 import {Score} from '../../score';
+import {MovementDescription} from '../../movement';
+import {TournamentService, TOURNAMENT_SERVICE} from '../../services/tournament/tournament.service';
 import {DealService, DEAL_SERVICE} from '../../services/deal/deal.service';
+import {MovementService, MOVEMENT_SERVICE} from '../../services/movement/movement.service';
 
 @Component({
     selector: 'tournament',
@@ -17,7 +19,8 @@ export class TournamentComponent {
     _created: boolean = false;
     _edit: boolean = false;
     _tournament: Tournament;
-    _knownMovements: {name: string, nbTables: number}[] = [];
+    _knownMovements: Map<string, MovementDescription> = new Map<string, MovementDescription>();
+    _sortedMovementIds: string[] = [];
     _knownScorings: string[] = [];
     _knownNames: string[] = [];
     _invalidReason: string;
@@ -37,13 +40,14 @@ export class TournamentComponent {
         private _route: ActivatedRoute,
         private _alertService: AlertService,
         @Inject(TOURNAMENT_SERVICE) private _tournamentService: TournamentService,
-        @Inject(DEAL_SERVICE) private _dealService: DealService) {}
+        @Inject(DEAL_SERVICE) private _dealService: DealService,
+        @Inject(MOVEMENT_SERVICE) private _movementService: MovementService) { }
 
     ngOnInit() {
-        this._tournamentService.getMovements().subscribe(movements => {
-            this._knownMovements = movements;
+        this._movementService.getMovements().subscribe(movements => {
+            movements.forEach(d => { this._knownMovements[d.id] = d; this._sortedMovementIds.push(d.id); });
             if (this._tournament && !this._tournament.movement && movements.length > 0) {
-                this.movement = movements[0].name;
+                this.movementId = movements[0].id;
             }
         });
         this._tournamentService.getScorings().subscribe(scorings => {
@@ -71,8 +75,8 @@ export class TournamentComponent {
             .subscribe((tournament: Tournament) => {
                 this._tournament = tournament;
                 if (tournament.id === -1) {
-                    if (this._knownMovements.length > 0)
-                        this.movement = this._knownMovements[0].name;
+                    if (this._sortedMovementIds.length > 0)
+                        this.movementId = this._sortedMovementIds[0];
                     if (this._knownScorings.length > 0)
                         this._tournament.scoring = this._knownScorings[0];
                     this._created = false;
@@ -81,7 +85,7 @@ export class TournamentComponent {
                     console.log('tournament service returned', tournament);
                     this._created = true;
                     this._edit = false;
-                    this.movement = tournament.movement;
+                    this.movementId = tournament.movement;
                     if (tournament.status == Status.Running)
                         this._tournamentService.currentRound(tournament.id)
                             .subscribe(r => {
@@ -330,24 +334,62 @@ export class TournamentComponent {
                 this._tournament.players.push({ name: 'Player ' + (i + 1), score: 0, rank: 0 });
     }
 
-    get movement() {
-        return this._tournament ? this._tournament.movement
-            : (this._knownMovements.length > 0 ? this._knownMovements[0].name : undefined);
+    get minTables(): number {
+        return this.movement ? this.movement.minTables : 1;
     }
 
-    set movement(value) {
-        if (this._tournament)
-            this._tournament.movement = value;
-        let movement = this._knownMovements.find(m => m.name == value);
-        if (movement && movement.nbTables != -1)
-            this.nbTables = movement.nbTables;
+    get maxTables(): number {
+        return (this.movement && this.movement.maxTables != -1) ? this.movement.maxTables : 100;
     }
 
     get fixedNbTables() {
-        if (!this._tournament)
-            return false;
-        let movement = this._knownMovements.find(m => m.name == this._tournament.movement);
-        return movement && movement.nbTables != -1;
+        return this.movement && this.movement.minTables == this.movement.maxTables;
+    }
+
+    get nbRounds() {
+        return this._tournament ? this._tournament.nbRounds : 1;
+    }
+
+    set nbRounds(value) {
+        if (!this._tournament || value < this.movement.minRounds || (this.movement.maxRounds != -1 && value > this.movement.maxRounds))
+            return;
+        this._tournament.nbRounds = value;
+    }
+
+    get fixedNbRounds() {
+        return this.movement && this.movement.minRounds == this.movement.maxRounds;
+    }
+
+    get minRounds(): number {
+        return this.movement ? this.movement.minRounds : 1;
+    }
+
+    get maxRounds(): number {
+        return (this.movement && this.movement.maxRounds != -1) ? this.movement.maxRounds : 100;
+    }
+
+    get movementId() {
+        return this._tournament ? this._tournament.movement
+            : (this._sortedMovementIds.length > 0 ? this._sortedMovementIds[0] : undefined);
+    }
+
+    set movementId(value) {
+        if (!this._tournament || this._tournament.movement == value)
+            return;
+        this._tournament.movement = value;
+        let movement: MovementDescription = this._knownMovements[value];
+        this.nbTables = movement.minTables;
+        this._tournament.nbRounds = movement.minRounds;
+    }
+
+    get movement(): MovementDescription {
+        let id = this._tournament ? this._tournament.movement
+            : (this._sortedMovementIds.length > 0 ? this._sortedMovementIds[0] : undefined);
+        return this._knownMovements[id];
+    }
+
+    get movementDescription() {
+        return this.movement ? this.movement.description : '';
     }
 
     get nbDeals() {

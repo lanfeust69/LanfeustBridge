@@ -61,19 +61,6 @@ namespace LanfeustBridge.Controllers
             return _tournamentService.DeleteTournament(id);
         }
 
-        // GET api/tournament/movement
-        [HttpGet("movement")]
-        public IActionResult GetMovements()
-        {
-            return Ok(new[]
-                {
-                    new { Name = "Mitchell", NbTables = -1 },
-                    new { Name = "Teams", NbTables = 2 },
-                    new { Name = "Triplicate", NbTables = 3 },
-                    new { Name = "Individual", NbTables = 3 }
-                });
-        }
-
         // GET api/tournament/scoring
         [HttpGet("scoring")]
         public IActionResult GetScorings()

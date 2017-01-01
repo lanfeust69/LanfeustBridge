@@ -9,7 +9,7 @@
     <GlobalExclude>$(GlobalExclude);bin\**;obj\**;node_modules\**;**\*.user;**\*.suo;**\*.*proj</GlobalExclude>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="**\*" Exclude="$(GlobalExclude)"/>
+    <None Include="**\*" Exclude="$(GlobalExclude)" />
     <Compile Include="**\*.cs" Exclude="$(GlobalExclude)" />
     <EmbeddedResource Include="**\*.resx" Exclude="$(GlobalExclude)" />
   </ItemGroup>
@@ -39,8 +39,11 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <!-- Files not to show in IDE -->
     <None Remove=".bowerrc" />
+    <None Remove="ClientApp\app\services\movement\movement.service.http.ts" />
+    <None Remove="ClientApp\app\services\movement\movement.service.mock.ts" />
+    <None Remove="ClientApp\app\services\movement\movement.service.ts" />
+    <None Remove="ClientApp\app\tournament.ts" />
     <None Remove="yarn.lock" />
   </ItemGroup>
   <ItemGroup>
@@ -52,7 +55,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <!-- Only publish ClientApp\dist\**, but tell IDE to show all of ClientApp\** in Solution Explorer -->
     <Content Remove="ClientApp\**" />
     <Content Include="ClientApp\**" Exclude="ClientApp\dist\**">
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>
@@ -62,7 +64,6 @@
     </Content>
   </ItemGroup>
   <Target Name="RunWebpack" AfterTargets="PrepareForPublish">
-    <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
     <Exec Command="npm install" />
     <Exec Command="node node_modules/webpack/bin/webpack.js --config webpack.config.vendor.js --env.prod" />
     <Exec Command="node node_modules/webpack/bin/webpack.js --env.prod" />

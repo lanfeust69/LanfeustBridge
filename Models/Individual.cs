@@ -7,6 +7,7 @@ namespace LanfeustBridge.Models
     {
         public MovementDescription MovementDescription { get; } = new MovementDescription
         {
+            Order = 3,
             Id = typeof(Individual).Name.ToLower(),
             Name = "Individual for 12 players",
             Description = "Only accepts 33 rounds : 3 rounds playing with each of the 11 other players",

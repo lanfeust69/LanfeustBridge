@@ -7,6 +7,7 @@ namespace LanfeustBridge.Models
     {
         public MovementDescription MovementDescription { get; } = new MovementDescription
         {
+            Order = 1,
             Id = typeof(Teams).Name.ToLower(),
             Name = "Teams match",
             Description = "Pairs are fixed for 2 rounds, where deals are switched, then pairs switch for next set of deals",

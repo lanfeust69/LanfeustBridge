@@ -7,6 +7,7 @@ namespace LanfeustBridge.Models
     {
         public MovementDescription MovementDescription { get; } = new MovementDescription
         {
+            Order = 0,
             Id = typeof(Mitchell).Name.ToLower(),
             Name = "Mitchell",
             Description = "Standard Mitchell : NS fixed, EW move to next table, boards to previous",

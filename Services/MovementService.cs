@@ -20,7 +20,7 @@ namespace LanfeustBridge.Services
 
         public IEnumerable<MovementDescription> GetAllMovements()
         {
-            return MouvementInstances.Values.Select(m => m.MovementDescription);
+            return MouvementInstances.Values.Select(m => m.MovementDescription).OrderBy(m => m.Order);
         }
 
         public IMovement GetMovement(string id)

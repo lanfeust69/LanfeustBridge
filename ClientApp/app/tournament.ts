@@ -1,5 +1,3 @@
-import {Deal} from './deal';
-
 export enum Status {
     Setup,
     Running,
@@ -7,7 +5,7 @@ export enum Status {
 }
 
 export class Player {
-    name: string = "";
+    name: string = '';
     score: number = 0;
     rank: number = 0;
 }
@@ -25,14 +23,14 @@ export class Tournament {
     id: number = -1;
     name: string;
     date: Date = new Date;
-    movement: string = "";
-    scoring: string = "";
+    movement: string = '';
+    scoring: string = '';
     nbTables: number;
     nbRounds: number;
     nbDealsPerRound: number;
     nbDeals: number;
     players: Player[] = []; // names, index in array is id
-    
+
     status: Status = Status.Setup;
     currentRound: number;
     positions: Position[][]; // indexed by round, player

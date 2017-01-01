@@ -4,8 +4,6 @@ import {Observable} from 'rxjs/Rx';
 import {Tournament} from '../../tournament';
 import {TournamentService} from './tournament.service';
 
-import 'rxjs/Rx';
-
 @Injectable()
 export class TournamentServiceHttp implements TournamentService {
     private _baseUrl = 'api/tournament';
@@ -14,16 +12,6 @@ export class TournamentServiceHttp implements TournamentService {
 
     getNames(): Observable<{ id: number; name: string }[]> {
         return this._http.get(this._baseUrl).map(this.extractData);
-    }
-
-    private extractData(res: Response) {
-        if (res.status < 200 || res.status >= 300) {
-            throw new Error('Bad response status: ' + res.status);
-        }
-        let data = res.json();
-        if (data.date)
-            data.date = new Date(data.date);
-        return data;
     }
 
     get(id: number): Observable<Tournament> {
@@ -46,10 +34,6 @@ export class TournamentServiceHttp implements TournamentService {
         return this._http.delete(this._baseUrl + '/' + id).map(this.extractData);
     }
 
-    getMovements(): Observable<{name: string, nbTables: number}[]> {
-        return this._http.get(this._baseUrl + '/movement').map(this.extractData);
-    }
-
     getScorings(): Observable<string[]> {
         return this._http.get(this._baseUrl + '/scoring').map(this.extractData);
     }
@@ -70,5 +54,15 @@ export class TournamentServiceHttp implements TournamentService {
         // need to subscribe to actually post
         this._http.post(this._baseUrl + '/' + id + '/next-round', '')
             .subscribe(r => console.log('Next Round POST returned ' + r.statusText));
+    }
+
+    private extractData(res: Response) {
+        if (res.status < 200 || res.status >= 300) {
+            throw new Error('Bad response status: ' + res.status);
+        }
+        let data = res.json();
+        if (data.date)
+            data.date = new Date(data.date);
+        return data;
     }
 }
