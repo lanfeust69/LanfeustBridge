@@ -14,7 +14,7 @@ namespace LanfeustBridge.Models
             if (nbRounds % 2 != 0)
                 throw new NotSupportedException("Only an even number of rounds are allowed for team matches");
             // player ids : 0 = N1, 1 = S1, 2 = E1, 3 = W1, etc...
-            // each round : switch one team
+            // each odd round : switch boards, each even round : switch one team, next set of boards
             var allPositions = new Position[nbRounds][];
             for (int round = 0; round < nbRounds; round++)
             {
@@ -22,12 +22,12 @@ namespace LanfeustBridge.Models
                 for (int table = 0; table < 2; table++)
                 {
                     var position = new Position { Table = table + 1 };
-                    int firstDeal = (round / 2 + ((round % 2) + table) % 2) * nbDealsPerRound + 1; 
+                    int firstDeal = (round - round % 2 + (round + table) % 2) * nbDealsPerRound + 1; 
                     position.Deals = Enumerable.Range(firstDeal, nbDealsPerRound).ToArray();
-                    position.North = table == 0 ? 0 : (round % 2 == 0 ? 4 : 2);
-                    position.South = table == 0 ? 1 : (round % 2 == 0 ? 5 : 3);
-                    position.East = table == 1 ? 6 : (round % 2 == 0 ? 2 : 4);
-                    position.West = table == 1 ? 7 : (round % 2 == 0 ? 3 : 5);
+                    position.North = table == 0 ? 0 : ((round / 2) % 2 == 0 ? 4 : 2);
+                    position.South = table == 0 ? 1 : ((round / 2) % 2 == 0 ? 5 : 3);
+                    position.East = table == 1 ? 6 : ((round / 2) % 2 == 0 ? 2 : 4);
+                    position.West = table == 1 ? 7 : ((round / 2) % 2 == 0 ? 3 : 5);
                     positions[position.North] = position;
                     positions[position.South] = position;
                     positions[position.East] = position;
