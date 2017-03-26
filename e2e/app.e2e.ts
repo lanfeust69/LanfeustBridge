@@ -35,7 +35,7 @@ describe('front-end App', function() {
 
     it('should display app name', () => {
         page.navigateTo();
-        expect(page.getMainTitleText()).toEqual('Lanfeust Bridge');
+        expect<any>(page.getMainTitleText()).toEqual('Lanfeust Bridge');
     });
 
     it('should run a small tournament', () => {
