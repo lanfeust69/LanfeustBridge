@@ -1,8 +1,7 @@
 import {NgModule} from '@angular/core';
-import {FormsModule} from '@angular/forms';
 import {RouterModule} from '@angular/router';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import {UniversalModule} from 'angular2-universal';
+
 import {DealComponent} from './components/deal/deal.component';
 import {HandComponent} from './components/hand/hand.component';
 import {ScoreComponent} from './components/score/score.component';
@@ -23,15 +22,13 @@ import {MovementServiceHttp} from './services/movement/movement.service.http';
 // import {MovementServiceMock} from './services/movement/movement.service.mock';
 import {AlertService} from './services/alert/alert.service';
 
-@NgModule({
+export const sharedConfig: NgModule = {
     bootstrap: [ LanfeustBridgeApp ],
     declarations: [
         LanfeustBridgeApp, DealComponent, HandComponent, ScoreComponent, ScoreFormComponent, ScoreSheetComponent,
         SuitComponent, TournamentComponent, TournamentListComponent
     ],
     imports: [
-        UniversalModule, // Must be first import. This automatically imports BrowserModule, HttpModule, and JsonpModule too.
-        FormsModule,
         NgbModule.forRoot(),
         RouterModule.forRoot([
             { path: '', component: TournamentListComponent },
@@ -51,6 +48,4 @@ import {AlertService} from './services/alert/alert.service';
         // { provide: MOVEMENT_SERVICE, useClass: MovementServiceMock },
         { provide: AlertService, useClass: AlertService }
     ]
-})
-export class AppModule {
-}
+};

@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.15
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LanfeustBridge", "LanfeustBridge.csproj", "{1C1F832F-A2E7-487A-A93E-563784AC13A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LanfeustBridge", "LanfeustBridge.csproj", "{AE242A77-B592-4BAB-A4DE-2BB37F725AB0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{1C1F832F-A2E7-487A-A93E-563784AC13A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1C1F832F-A2E7-487A-A93E-563784AC13A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1C1F832F-A2E7-487A-A93E-563784AC13A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1C1F832F-A2E7-487A-A93E-563784AC13A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE242A77-B592-4BAB-A4DE-2BB37F725AB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE242A77-B592-4BAB-A4DE-2BB37F725AB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE242A77-B592-4BAB-A4DE-2BB37F725AB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE242A77-B592-4BAB-A4DE-2BB37F725AB0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

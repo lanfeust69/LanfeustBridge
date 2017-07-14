@@ -5,7 +5,6 @@ Web application to manage bridge tournaments
 This is mostly an experimentation around Asp.Net Core and AngularJs 2,
 however it may eventually come to something useful, who knows ?
 
-
 ## Requirements
 
 - [.Net Core 1.1](https://www.microsoft.com/net/core)
@@ -28,10 +27,11 @@ dotnet run
 dotnet test
 
 # Running frontend unit tests
-./node_modules/.bin/karma start ./ClientApp/test/karma.conf.js
+npm test
 
 # Running frontend end-to-end tests
-# run the server in another terminal, then :
-./node_modules/.bin/webdriver-manager update
-./node_modules/.bin/protractor
+# - remove old data : rm data/*.json
+# - run the server in another terminal : dotnet run
+# - finally run the test, --silent is to avoid spurious npm error message in case of failure
+npm run e2e --silent
 ```

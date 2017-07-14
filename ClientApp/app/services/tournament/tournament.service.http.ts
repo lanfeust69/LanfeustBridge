@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {Http, Headers, RequestOptions, Response} from '@angular/http';
 import {Observable} from 'rxjs/Rx';
 import {Tournament} from '../../tournament';
@@ -6,9 +6,11 @@ import {TournamentService} from './tournament.service';
 
 @Injectable()
 export class TournamentServiceHttp implements TournamentService {
-    private _baseUrl = 'api/tournament';
+    private _baseUrl: string;
 
-    constructor(private _http: Http) {}
+    constructor(private _http: Http, @Inject('ORIGIN_URL') originUrl: string) {
+        this._baseUrl = originUrl + '/api/tournament';
+    }
 
     getNames(): Observable<{ id: number; name: string }[]> {
         return this._http.get(this._baseUrl).map(this.extractData);

@@ -3,10 +3,10 @@ import { FrontEndPage } from './app.po';
 
 function randomScore() {
     let level = Math.floor((Math.random() * 8) + 1);
-    element(by.css('fieldset[name="level"]>label:nth-of-type(' + level + ')')).click();
+    element(by.css('div[name="level"]>label:nth-of-type(' + level + ')')).click();
     if (level > 1) {
         let suit = Math.floor((Math.random() * 5) + 1);
-        element(by.css('fieldset[name="suit"]>label:nth-of-type(' + suit + ')>suit>span:nth-of-type(1)>span')).click();
+        element(by.css('div[name="suit"]>label:nth-of-type(' + suit + ')>suit>span:nth-of-type(1)>span')).click();
         if (Math.random() < 0.25) {
             if (Math.random() < 0.2) {
                 element(by.css('label[name="redoubled"]')).click();
@@ -15,10 +15,10 @@ function randomScore() {
             }
         }
         let declarer = Math.floor((Math.random() * 4) + 1);
-        element(by.css('fieldset[name="declarer"]>label:nth-of-type(' + declarer + ')')).click();
+        element(by.css('div[name="declarer"]>label:nth-of-type(' + declarer + ')')).click();
         let result = Math.floor((Math.random() * 5) - 2);
         if (result != 0) {
-            let el = element(by.css('fieldset[name="result"]>label:nth-of-type(' + (result < 0 ? 1 : 3) + ')'));
+            let el = element(by.css('div[name="result"]>label:nth-of-type(' + (result < 0 ? 1 : 3) + ')'));
             for (let i = 0; i < Math.abs(result); i++)
                 el.click();
         }

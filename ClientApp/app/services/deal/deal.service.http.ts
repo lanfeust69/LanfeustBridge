@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Inject, Injectable} from '@angular/core';
 import {Http, Headers, RequestOptions, Response} from '@angular/http';
 import {Observable} from 'rxjs/Rx';
 import {Suit} from '../../types';
@@ -8,9 +8,11 @@ import {DealService} from './deal.service';
 
 @Injectable()
 export class DealServiceHttp implements DealService {
-    private _baseUrl = 'api/tournament/';
+    private _baseUrl: string;
 
-    constructor(private _http: Http) {}
+    constructor(private _http: Http, @Inject('ORIGIN_URL') originUrl: string) {
+        this._baseUrl = originUrl + '/api/tournament/';
+    }
 
     private extractData(res: Response) {
         if (res.status < 200 || res.status >= 300) {

@@ -1,30 +1,30 @@
 <form (ngSubmit)="onSubmit()">
-    <fieldset class="form-group btn-group" [(ngModel)]="score.contract.level" (ngModelChange)="tricksFixup()" ngbRadioGroup name="level">
+    <div class="btn-group mr-2" [(ngModel)]="score.contract.level" (ngModelChange)="tricksFixup()" ngbRadioGroup name="level">
         <label class="btn btn-secondary"><input type="radio" [value]="0" />Pass</label>
         <label *ngFor="let level of [1, 2, 3, 4, 5, 6, 7]" class="btn btn-secondary"><input type="radio" [value]="level" />{{level}}</label>
-    </fieldset>
-    <fieldset *ngIf="score.contract.level" class="form-group btn-group" [(ngModel)]="score.contract.suit" ngbRadioGroup name="suit">
+    </div>
+    <div class="btn-group mr-2" *ngIf="score.contract.level" [(ngModel)]="score.contract.suit" ngbRadioGroup name="suit">
         <label *ngFor="let suit of _suits" class="btn btn-secondary">
             <input type="radio" [value]="suit" /><suit [suit]="suit"></suit>
         </label>
-    </fieldset>
-    <fieldset *ngIf="score.contract.level" class="form-group btn-group" data-toggle="buttons">
+    </div>
+    <div class="btn-group mr-2" *ngIf="score.contract.level" data-toggle="buttons">
         <label class="btn btn-secondary" [class.active]="score.contract.doubled" name="doubled">
             <input type="checkbox" [(ngModel)]="score.contract.doubled" (ngModelChange)="doubleFixup($event)" name="doubled" />X
         </label>
         <label class="btn btn-secondary" [class.active]="score.contract.redoubled" name="redoubled">
             <input type="checkbox"  [(ngModel)]="score.contract.redoubled" (ngModelChange)="redoubleFixup($event)" name="redoubled" />XX
         </label>
-    </fieldset>
-    <fieldset *ngIf="score.contract.level" class="form-group btn-group" [(ngModel)]="score.contract.declarer" ngbRadioGroup name="declarer">
+    </div>
+    <div class="btn-group mr-2" *ngIf="score.contract.level" [(ngModel)]="score.contract.declarer" ngbRadioGroup name="declarer">
         <label *ngFor="let declarer of ['N', 'S', 'E', 'W']" class="btn btn-secondary">
             <input type="radio" [value]="declarer" />{{declarer}}</label>
-    </fieldset>
-    <fieldset *ngIf="score.contract.level" class="form-group btn-group" name="result">
+    </div>
+    <div class="btn-group mr-2" *ngIf="score.contract.level" name="result">
         <label class="btn btn-secondary" (click)="changeTricks(-1)">-</label>
         <label class="btn bg-info">{{tricksDisplay}}</label>
         <label class="btn btn-secondary" (click)="changeTricks(1)">+</label>
-    </fieldset>
+    </div>
     <div class="form-group">
         <div class="panel panel-body" *ngIf="!score.contract.level" style="font-size: 18px">Pass</div>
         <div class="panel panel-body" *ngIf="score.contract.level" style="font-size: 18px">

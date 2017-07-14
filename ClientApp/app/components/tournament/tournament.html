@@ -1,13 +1,13 @@
-<h2 class="text-xs-center">Tournament {{_tournament ? _tournament.name : tournamentName}}</h2>
-<p class="text-xs-center" *ngIf="_tournament">Created on : {{_tournament.date.toLocaleDateString('en-US')}}</p>
-<h3 class="text-xs-center" *ngIf="_tournament && running">
+<h2 class="text-center">Tournament {{_tournament ? _tournament.name : tournamentName}}</h2>
+<p class="text-center" *ngIf="_tournament">Created on : {{_tournament.date.toLocaleDateString('en-US')}}</p>
+<h3 class="text-center" *ngIf="_tournament && running">
     <span class="text-primary">Now Running</span>
 </h3>
 <!-- <pre>{{diagnostic}}</pre> -->
 <div class="container" *ngIf="_tournament">
     <ngb-tabset>
         <ngb-tab title='Infos'>
-            <template ngbTabContent>
+            <ng-template ngbTabContent>
                 <form (ngSubmit)="onSubmit()" #tournamentForm="ngForm">
                     <fieldset *ngIf="true" [disabled]="!(setup && _edit)">
                         <!-- *ngIf is a workaround for a known angular2 bug -->
@@ -46,10 +46,10 @@
                     </fieldset>
                     <button *ngIf="setup && _edit" class="btn btn-primary" [disabled]="!tournamentForm.form.valid || !isValid" (click)="onSubmit()">{{_created ? "Update" : "Create"}}</button>
                 </form>
-            </template>
+            </ng-template>
         </ngb-tab>
         <ngb-tab title="Play" *ngIf="(running && _currentRound < _tournament.nbRounds && _currentPosition) || (finished && _edit)">
-            <template ngbTabContent>
+            <ng-template ngbTabContent>
                 <div *ngIf="_edit" class="form-group">
                     <label for="round">Round</label>
                     <select class="form-control" required [(ngModel)]="_currentRound" (ngModelChange)="initializeScore(true)">
@@ -75,22 +75,22 @@
                 <div *ngIf="running && _currentRound < _tournament.nbRounds - 1" class="form-group">
                     <button class="btn btn-primary" [disabled]="!roundFinished" (click)="nextRound()">Next Round</button>
                 </div>
-            </template>
+            </ng-template>
         </ngb-tab>
         <ngb-tab title="Play" *ngIf="running && _currentRound >= _tournament.nbRounds">
-            <template ngbTabContent>
+            <ng-template ngbTabContent>
                 <h4>All rounds Finished</h4>
-            </template>
+            </ng-template>
         </ngb-tab>
         <ngb-tab title="Players" *ngIf="_tournament.players">
-            <template ngbTabContent>
+            <ng-template ngbTabContent>
                 <div *ngIf="!finished && !_edit" class="list-group">
                     <a [routerLink]="['/tournament', _tournament.id]" class="list-group-item"
                         *ngFor="let player of players; let i = index">Player {{i + 1}} : {{player.name}}</a>
                     <!--<a [routerLink]="['/user', player?.name]" class="list-group-item" *ngFor="let player of _tournament.players">{{player?.name}}</a>-->
                 </div>
                 <div *ngIf="finished">
-                    <table class="table-striped table-bordered table-hover col-xs-12">
+                    <table class="table-striped table-bordered table-hover col-12">
                         <thead>
                             <tr>
                                 <th style="width: 20%">#</th>
@@ -109,20 +109,20 @@
                 </div>
                 <form *ngIf="setup && _edit" class="list-group form-horizontal">
                     <div *ngFor="let p of players; let i = index" class="list-group-item row from-group">
-                        <label for="player" class="control-label col-xs-3">Player {{i + 1}}</label>
-                        <div class="col-xs-9">
+                        <label for="player" class="control-label col-3">Player {{i + 1}}</label>
+                        <div class="col-9">
                             <input type="text" class="form-control" [(ngModel)]="p.name" placeholder="Player name" id="player" name="player{{i}}">
                         </div>
                     </div>
                 </form>
-            </template>
+            </ng-template>
         </ngb-tab>
         <ngb-tab title="Deals" *ngIf="finished && nbDeals > 0">
-            <template ngbTabContent>
+            <ng-template ngbTabContent>
                 <div class="list-group">
                     <a [routerLink]="['deal', deal.id]" class="list-group-item" *ngFor="let deal of deals">Deal {{deal.id}}</a>
                 </div>
-            </template>
+            </ng-template>
         </ngb-tab>
     </ngb-tabset>
     <div [hidden]="!_edit || isValid" class="alert alert-danger">
@@ -133,6 +133,6 @@
         <button *ngIf="setup && _created && !_edit" class="btn btn-primary" (click)="start()">Start</button>
         <!--<button *ngIf="running" class="btn btn-primary" (click)="play()">Play</button>-->
         <button *ngIf="(running && _roundFinished && _currentRound == _tournament.nbRounds - 1) || (finished && _edit)" class="btn btn-primary" (click)="close()">Close</button>
-        <a [routerLink]="['/']" class="float-xs-right">Back</a>
+        <a [routerLink]="['/']" class="float-right">Back</a>
     </div>
 </div>
