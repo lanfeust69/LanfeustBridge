@@ -13,7 +13,7 @@ namespace LanfeustBridge.Services
 {
     public class SimpleTournamentsService : ITournamentService
     {
-        private int _nextId = 0;
+        private int _nextId = 1;
         ILogger _logger;
         IDealsService _dealsService;
         string _dataFile;
@@ -63,11 +63,10 @@ namespace LanfeustBridge.Services
 
         public Tournament SaveTournament(Tournament tournament)
         {
-            if (tournament.Id == -1)
+            if (tournament.Id == 0)
             {
                 tournament.Id = GetNextId();
                 _logger.LogInformation($"New tournament created with Id {tournament.Id}");
-                
             }
             if (tournament.Status == TournamentStatus.Setup)
             {

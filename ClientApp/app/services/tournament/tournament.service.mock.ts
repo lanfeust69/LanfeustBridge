@@ -12,19 +12,19 @@ export class TournamentServiceMock implements TournamentService {
     constructor(@Inject(DEAL_SERVICE) private _dealService: DealService) {}
 
     getNames(): Observable<{id: number; name: string}[]> {
-        let result = this._tournaments.map((value, i) => ({id: i, name: value.name}));
+        let result = this._tournaments.map((value, i) => ({id: i + 1, name: value.name}));
         return Observable.of(result);
     }
 
     get(id: number): Observable<Tournament> {
-        if (id < 0 || id >= this._tournaments.length || !this._tournaments[id])
+        if (id <= 0 || id > this._tournaments.length || !this._tournaments[id - 1])
             return Observable.throw("No tournament with id '" + id + "' found");
-        let tournament = this._tournaments[id];
+        const tournament = this._tournaments[id - 1];
         return Observable.of(tournament).delay(2000); // 2 seconds
     }
 
     create(tournament: Tournament): Observable<Tournament> {
-        tournament.id = this._tournaments.length;
+        tournament.id = this._tournaments.length + 1;
         let allPositions: Position[][] = [];
         // mock : mitchell
         let nbDeals = tournament.nbTables * tournament.nbDealsPerRound;
@@ -55,16 +55,16 @@ export class TournamentServiceMock implements TournamentService {
     }
 
     update(tournament: Tournament): Observable<Tournament> {
-        let id = tournament.id;
-        if (id < 0 || id >= this._tournaments.length || !this._tournaments[id])
+        const id = tournament.id;
+        if (id <= 0 || id > this._tournaments.length || !this._tournaments[id - 1])
             return Observable.throw("No tournament with id '" + id + "' found");
-        this._tournaments[id] = tournament;
+        this._tournaments[id - 1] = tournament;
         return Observable.of(tournament);
     }
 
     delete(id: number): Observable<boolean> {
-        if (id >= 0 && id < this._tournaments.length && this._tournaments[id]) {
-            this._tournaments[id] = undefined;
+        if (id > 0 && id <= this._tournaments.length && this._tournaments[id - 1]) {
+            this._tournaments[id - 1] = undefined;
             return Observable.of(true);
         }
         return Observable.of(false);
@@ -75,26 +75,26 @@ export class TournamentServiceMock implements TournamentService {
     }
 
     start(id: number): Observable<Tournament> {
-        if (id < 0 || id >= this._tournaments.length || !this._tournaments[id])
+        if (id <= 0 || id > this._tournaments.length || !this._tournaments[id - 1])
             return Observable.throw('No tournament with id "' + id + '" found');
-        let tournament = this._tournaments[id];
+        const tournament = this._tournaments[id - 1];
         tournament.status = Status.Running;
         tournament.currentRound = 0;
         return Observable.of(tournament);
     }
 
     close(id: number): Observable<Tournament> {
-        if (id < 0 || id >= this._tournaments.length || !this._tournaments[id])
+        if (id <= 0 || id > this._tournaments.length || !this._tournaments[id - 1])
             return Observable.throw('No tournament with id "' + id + '" found');
-        let tournament = this._tournaments[id];
+        const tournament = this._tournaments[id - 1];
         tournament.status = Status.Finished;
         return Observable.of(tournament);
     }
 
     currentRound(id: number): Observable<{round: number, finished: boolean}> {
-        if (id < 0 || id >= this._tournaments.length || !this._tournaments[id])
+        if (id <= 0 || id > this._tournaments.length || !this._tournaments[id - 1])
             return Observable.throw('No tournament with id "' + id + '" found');
-        let tournament = this._tournaments[id];
+        const tournament = this._tournaments[id - 1];
         // finished, waiting for close
         if (tournament.currentRound == tournament.nbRounds)
             return Observable.of({round: tournament.currentRound, finished: true});
@@ -110,9 +110,9 @@ export class TournamentServiceMock implements TournamentService {
     }
 
     nextRound(id: number) {
-        if (id < 0 || id >= this._tournaments.length || !this._tournaments[id])
+        if (id <= 0 || id > this._tournaments.length || !this._tournaments[id - 1])
             return Observable.throw('No tournament with id "' + id + '" found');
-        let tournament = this._tournaments[id];
+        const tournament = this._tournaments[id - 1];
         if (tournament.currentRound < tournament.nbRounds)
             tournament.currentRound++;
     }

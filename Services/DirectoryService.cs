@@ -5,10 +5,6 @@ namespace LanfeustBridge.Services
 {
     public class DirectoryService
     {
-        private static Lazy<DirectoryService> _service = new Lazy<DirectoryService>(() => new DirectoryService());
-
-        public static DirectoryService Service { get { return _service.Value; } }
-
         public string LogDirectory { get; private set; }
         public string DataDirectory { get; private set; }
 

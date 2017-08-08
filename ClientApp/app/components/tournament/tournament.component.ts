@@ -74,7 +74,7 @@ export class TournamentComponent {
             })
             .subscribe((tournament: Tournament) => {
                 this._tournament = tournament;
-                if (tournament.id === -1) {
+                if (tournament.id === 0) {
                     if (this._sortedMovementIds.length > 0)
                         this.movementId = this._sortedMovementIds[0];
                     if (this._knownScorings.length > 0)

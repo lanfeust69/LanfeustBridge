@@ -2,65 +2,57 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using Microsoft.EntityFrameworkCore;
+using LiteDB;
 
 using LanfeustBridge.Models;
+using Microsoft.Extensions.Logging;
 
 namespace LanfeustBridge.Services
 {
-    public class DbTournamentsService : DbContext, ITournamentService
+    public class DbTournamentsService : ITournamentService
     {
-        private int _nextId = 0;
+        private ILogger _logger;
+        private LiteCollection<Tournament> _tournaments;
+        private IDealsService _dealsService;
 
-        public DbSet<Tournament> Tournaments { get; set; }
+        public DbTournamentsService(ILogger<DbTournamentsService> logger, IDealsService dealsService, DbService dbService)
+        {
+            _logger = logger;
+            _dealsService = dealsService;
+            _tournaments = dbService.Db.GetCollection<Tournament>();
+        }
 
         public IEnumerable<Tuple<int, string>> GetNames()
         {
-            throw new NotImplementedException();
-        }
-
-        public int GetNextId()
-        {
-            return _nextId++;
+            return _tournaments.FindAll().Select(t => Tuple.Create(t.Id, t.Name));
         }
 
         public Tournament GetTournament(int id)
         {
-            return Tournaments.FirstOrDefault(t => t.Id == id);
+            return _tournaments.FindById(id);
         }
 
         public Tournament SaveTournament(Tournament tournament)
         {
-            var existing = GetTournament(tournament.Id);
-            if (existing != null)
-                Tournaments.Remove(tournament);
-            else
-                tournament.Id = GetNextId();
-            Tournaments.Add(tournament);
-            SaveChanges();
+            bool newTournament = tournament.Id == 0;
+            _tournaments.Upsert(tournament);
+            if (newTournament)
+                _logger.LogInformation($"New tournament created with Id {tournament.Id}");
+            if (tournament.Status == TournamentStatus.Setup)
+            {
+                _dealsService.SetDealsForTournament(tournament.Id, tournament.CreateDeals());
+                // define positions
+                tournament.GeneratePositions();
+                _tournaments.Update(tournament);
+                _logger.LogInformation($"Deals and positions created for tournament {tournament.Id}");
+            }
+
             return tournament;
         }
 
         public bool DeleteTournament(int id)
         {
-            var toRemove = Tournaments.FirstOrDefault(t => t.Id == id);
-            if (toRemove == null)
-                return false;
-            Tournaments.Remove(toRemove);
-            return true;
-        }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            // Make Tournament.Id required
-            modelBuilder.Entity<Tournament>()
-                .Property(t => t.Id)
-                .IsRequired();
-
-            // Make Deal.Id required
-            modelBuilder.Entity<Deal>()
-                .Property(d => d.Id)
-                .IsRequired();
+            return _tournaments.Delete(id);
         }
     }
 }

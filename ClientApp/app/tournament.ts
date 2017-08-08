@@ -20,7 +20,7 @@ export class Position {
 }
 
 export class Tournament {
-    id: number = -1;
+    id: number = 0;
     name: string;
     date: Date = new Date;
     movement: string = '';

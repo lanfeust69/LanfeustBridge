@@ -39,9 +39,11 @@ namespace LanfeustBridge
             // Add framework services.
             //services.AddEntityFramework().AddInMemoryDatabase().AddDbContext<TournamentsContext>(options => options.UseInMemoryDatabase());
             services
-                .AddSingleton(DirectoryService.Service)
+                .AddSingleton<DirectoryService>()
+                .AddSingleton<DbService>()
                 .AddSingleton<IDealsService, SimpleDealsService>()
-                .AddSingleton<ITournamentService, SimpleTournamentsService>()
+                .AddSingleton<ITournamentService, DbTournamentsService>()
+                //.AddSingleton<ITournamentService, SimpleTournamentsService>()
                 .AddSingleton(MovementService.Service);
 
             services.AddMvc();
@@ -52,7 +54,7 @@ namespace LanfeustBridge
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
-            var logFilePattern = Path.Combine(DirectoryService.Service.LogDirectory, "LanfeustBridge-{Date}.log");
+            var logFilePattern = Path.Combine(app.ApplicationServices.GetService<DirectoryService>().LogDirectory, "LanfeustBridge-{Date}.log");
             var log = new LoggerConfiguration()
                 .MinimumLevel.Information()
                 .WriteTo.RollingFile(pathFormat: logFilePattern)
