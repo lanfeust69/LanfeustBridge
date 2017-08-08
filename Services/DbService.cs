@@ -1,4 +1,5 @@
 ﻿using LiteDB;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -10,10 +11,17 @@ namespace LanfeustBridge.Services
 {
     public class DbService
     {
-        public DbService(DirectoryService directoryService)
+        public DbService(DirectoryService directoryService, IHostingEnvironment hostingEnvironment)
         {
-            var dataFile = Path.Combine(directoryService.DataDirectory, "lanfeust.db");
-            Db = new LiteDatabase(dataFile);
+            if (hostingEnvironment.IsDevelopment())
+            {
+                Db = new LiteDatabase(new MemoryStream());
+            }
+            else
+            {
+                var dataFile = Path.Combine(directoryService.DataDirectory, "lanfeust.db");
+                Db = new LiteDatabase(dataFile);
+            }
         }
 
         public LiteDatabase Db { get; }
