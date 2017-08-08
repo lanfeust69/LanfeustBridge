@@ -4,8 +4,9 @@ using System.Linq;
 
 using LiteDB;
 
-using LanfeustBridge.Models;
 using Microsoft.Extensions.Logging;
+
+using LanfeustBridge.Models;
 
 namespace LanfeustBridge.Services
 {

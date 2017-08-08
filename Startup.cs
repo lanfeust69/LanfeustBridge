@@ -1,8 +1,5 @@
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.Webpack;
@@ -10,11 +7,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-using Newtonsoft.Json.Serialization;
-
 using Serilog;
 
-using LanfeustBridge.Models;
 using LanfeustBridge.Services;
 
 namespace LanfeustBridge
@@ -37,11 +31,11 @@ namespace LanfeustBridge
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
-            //services.AddEntityFramework().AddInMemoryDatabase().AddDbContext<TournamentsContext>(options => options.UseInMemoryDatabase());
             services
                 .AddSingleton<DirectoryService>()
                 .AddSingleton<DbService>()
-                .AddSingleton<IDealsService, SimpleDealsService>()
+                .AddSingleton<IDealsService, DbDealsService>()
+                //.AddSingleton<IDealsService, SimpleDealsService>()
                 .AddSingleton<ITournamentService, DbTournamentsService>()
                 //.AddSingleton<ITournamentService, SimpleTournamentsService>()
                 .AddSingleton(MovementService.Service);
