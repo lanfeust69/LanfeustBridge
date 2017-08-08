@@ -1,11 +1,11 @@
 <form (ngSubmit)="onSubmit()">
-    <div class="btn-group mr-2" [(ngModel)]="score.contract.level" (ngModelChange)="tricksFixup()" ngbRadioGroup name="level">
-        <label class="btn btn-secondary"><input type="radio" [value]="0" />Pass</label>
-        <label *ngFor="let level of [1, 2, 3, 4, 5, 6, 7]" class="btn btn-secondary"><input type="radio" [value]="level" />{{level}}</label>
+    <div class="btn-group mr-2" ngbRadioGroup name="level">
+        <label class="btn btn-secondary"><input type="radio" [(ngModel)]="score.contract.level" (ngModelChange)="tricksFixup()" name="level" [value]="0" />Pass</label>
+        <label *ngFor="let level of [1, 2, 3, 4, 5, 6, 7]" class="btn btn-secondary"><input type="radio" [value]="level" [(ngModel)]="score.contract.level" (ngModelChange)="tricksFixup()" name="level" />{{level}}</label>
     </div>
-    <div class="btn-group mr-2" *ngIf="score.contract.level" [(ngModel)]="score.contract.suit" ngbRadioGroup name="suit">
+    <div class="btn-group mr-2" *ngIf="score.contract.level" ngbRadioGroup name="suit">
         <label *ngFor="let suit of _suits" class="btn btn-secondary">
-            <input type="radio" [value]="suit" /><suit [suit]="suit"></suit>
+            <input type="radio" [value]="suit" [(ngModel)]="score.contract.suit" name="suit" /><suit [suit]="suit"></suit>
         </label>
     </div>
     <div class="btn-group mr-2" *ngIf="score.contract.level" data-toggle="buttons">
@@ -16,9 +16,9 @@
             <input type="checkbox"  [(ngModel)]="score.contract.redoubled" (ngModelChange)="redoubleFixup($event)" name="redoubled" />XX
         </label>
     </div>
-    <div class="btn-group mr-2" *ngIf="score.contract.level" [(ngModel)]="score.contract.declarer" ngbRadioGroup name="declarer">
+    <div class="btn-group mr-2" *ngIf="score.contract.level" ngbRadioGroup name="declarer">
         <label *ngFor="let declarer of ['N', 'S', 'E', 'W']" class="btn btn-secondary">
-            <input type="radio" [value]="declarer" />{{declarer}}</label>
+            <input type="radio" [value]="declarer" [(ngModel)]="score.contract.declarer" name="declarer" />{{declarer}}</label>
     </div>
     <div class="btn-group mr-2" *ngIf="score.contract.level" name="result">
         <label class="btn btn-secondary" (click)="changeTricks(-1)">-</label>
