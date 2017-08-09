@@ -5,7 +5,8 @@ import {SuitComponent} from '../suit/suit.component';
 
 @Component({
     selector: 'score-form',
-    templateUrl: './score-form.html'
+    templateUrl: './score-form.html',
+    styles: ['.score-display {font-size: 18px}']
 })
 export class ScoreFormComponent {
     _score: Score; // bound to score as a property, so that we can update _nbTricksDisplay

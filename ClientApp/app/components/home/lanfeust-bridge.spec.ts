@@ -8,7 +8,7 @@ import {LanfeustBridgeApp} from './lanfeust-bridge.app';
 export class RouterOutletStubComponent { }
 
 class RouterStub {
-  navigateByUrl(url: string) { return url; }
+    navigateByUrl(url: string) { return url; }
 }
 
 beforeEach(() => TestBed.configureTestingModule({

@@ -9,7 +9,7 @@ import {Alert, AlertService} from '../../services/alert/alert.service';
 export class LanfeustBridgeApp {
 
     constructor(private _alertService: AlertService) {}
-    
+
     ngOnInit() {
         this._alertService.newAlert.subscribe(alert => this.alerts.push(alert));
     }
