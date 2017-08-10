@@ -1,5 +1,7 @@
-import {Inject, Injectable} from '@angular/core';
+import {isPlatformBrowser} from '@angular/common';
+import {Inject, Injectable, NgZone, PLATFORM_ID} from '@angular/core';
 import {Http, Headers, RequestOptions, Response} from '@angular/http';
+import {HttpConnection, HubConnection} from '@aspnet/signalr';
 import {Observable} from 'rxjs/Rx';
 import {Tournament} from '../../tournament';
 import {TournamentService} from './tournament.service';
@@ -7,9 +9,33 @@ import {TournamentService} from './tournament.service';
 @Injectable()
 export class TournamentServiceHttp implements TournamentService {
     private _baseUrl: string;
+    private _hubUrl: string;
+    hubConnection: HubConnection;
 
-    constructor(private _http: Http, @Inject('ORIGIN_URL') originUrl: string) {
+    newTournamentObservable: Observable<void>;
+    tournamentStartedObservable: Observable<number>;
+    tournamentFinishedObservable: Observable<number>;
+
+    constructor(private _http: Http, private _ngZone: NgZone,
+        @Inject('ORIGIN_URL') originUrl: string,
+        @Inject(PLATFORM_ID) platformId: Object) {
         this._baseUrl = originUrl + '/api/tournament';
+        this._hubUrl = originUrl + '/hub/tournament';
+        // no point in having signalR on server side (pre-rendering), which would require XMLHttpRequest
+        if (isPlatformBrowser(platformId))
+            this.initSignalR();
+    }
+
+    initSignalR() {
+        const cnx = new HttpConnection(this._hubUrl);
+        this.hubConnection = new HubConnection(cnx);
+        this.newTournamentObservable = this.wrapObservable(Observable.fromEvent(this.hubConnection, 'NewTournament').map((v, i) => void 0));
+        this.tournamentStartedObservable = this.wrapObservable(Observable.fromEvent(this.hubConnection, 'TournamentStarted'));
+        this.tournamentFinishedObservable = this.wrapObservable(Observable.fromEvent(this.hubConnection, 'TournamentFinished'));
+        // not so nice for e2e tests :
+        // run outside angular so that protractor won't timeout waiting for tasks managed by signalR
+        this._ngZone.runOutsideAngular(() =>
+            this.hubConnection.start().then(() => console.log('hub connection started')));
     }
 
     getNames(): Observable<{ id: number; name: string }[]> {
@@ -58,6 +84,24 @@ export class TournamentServiceHttp implements TournamentService {
             .subscribe(r => console.log('Next Round POST returned ' + r.statusText));
     }
 
+    getNextRoundObservable(id: number): Observable<number> {
+        return this.wrapObservable(Observable.fromEventPattern(
+            handler => this.hubConnection.on('NextRound', handler as (...args: any[]) => void),
+            handler => this.hubConnection.off('NextRound', handler as (...args: any[]) => void),
+            (tournamentId, round) => ({tournamentId, round}))
+            .filter(({tournamentId, round}) => tournamentId === id)
+            .map(({tournamentId, round}) => round));
+    }
+
+    getRoundFinishedObservable(id: number): Observable<number> {
+        return this.wrapObservable(Observable.fromEventPattern(
+            handler => this.hubConnection.on('RoundFinished', handler as (...args: any[]) => void),
+            handler => this.hubConnection.off('RoundFinished', handler as (...args: any[]) => void),
+            (tournamentId, round) => ({tournamentId, round}))
+            .filter(({tournamentId, round}) => tournamentId === id)
+            .map(({tournamentId, round}) => round));
+    }
+
     private extractData(res: Response) {
         if (res.status < 200 || res.status >= 300) {
             throw new Error('Bad response status: ' + res.status);
@@ -66,5 +110,18 @@ export class TournamentServiceHttp implements TournamentService {
         if (data.date)
             data.date = new Date(data.date);
         return data;
+    }
+
+    // we wrap observables created from signalR callbacks so that the subscribers run in angular zone
+    private wrapObservable<T>(observable: Observable<T>): Observable<T> {
+        const wrapped = Observable.create(subscriber => {
+            const innerSub = observable.subscribe(
+                t => this._ngZone.run(() => subscriber.next(t)),
+                err => this._ngZone.run(() => subscriber.error(err)),
+                () => this._ngZone.run(() => subscriber.complete())
+            );
+            return () => innerSub.unsubscribe();
+        });
+        return wrapped;
     }
 }

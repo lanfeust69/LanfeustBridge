@@ -116,4 +116,16 @@ export class TournamentServiceMock implements TournamentService {
         if (tournament.currentRound < tournament.nbRounds)
             tournament.currentRound++;
     }
+
+    newTournamentObservable: Observable<void>;
+    tournamentStartedObservable: Observable<number>;
+    tournamentFinishedObservable: Observable<number>;
+
+    getNextRoundObservable(id: number): Observable<number> {
+        return Observable.of(0);
+    }
+
+    getRoundFinishedObservable(id: number): Observable<number> {
+        return Observable.of(0);
+    }
 }

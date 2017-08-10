@@ -19,4 +19,10 @@ export interface TournamentService {
 
     currentRound(id: number): Observable<{round: number, finished: boolean}>;
     nextRound(id: number): void;
+
+    newTournamentObservable: Observable<void>;
+    tournamentStartedObservable: Observable<number>;
+    tournamentFinishedObservable: Observable<number>;
+    getNextRoundObservable(id: number): Observable<number>;
+    getRoundFinishedObservable(id: number): Observable<number>;
 }

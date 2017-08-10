@@ -83,5 +83,18 @@ namespace LanfeustBridge.Models
             foreach (var rank in ranks)
                 Players[rank].Rank = currentRank++;
         }
+
+        internal bool AreAllScoresEntered(Deal[] deals)
+        {
+            if (Status != TournamentStatus.Running)
+                return false;
+            foreach (var deal in deals)
+            {
+                // TODO : handle movements where deals are not played on every round
+                if (!deal.Scores[CurrentRound].Entered)
+                    return false;
+            }
+            return true;
+        }
     }
 }

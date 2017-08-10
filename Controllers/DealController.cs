@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
 using LanfeustBridge.Models;
 using LanfeustBridge.Services;
+using LanfeustBridge.Hubs;
 
 namespace LanfeustBridge.Controllers
 {
@@ -12,13 +14,15 @@ namespace LanfeustBridge.Controllers
         private readonly ILogger _logger;
         private readonly IDealsService _dealsService;
         private readonly ITournamentService _tournamentService;
+        private readonly IHubContext<TournamentHub, ITournamentNotifier> _tournamentHubContext;
         
-
-        public DealController(ILogger<DealController> logger, IDealsService dealsService, ITournamentService tournamentService)
+        public DealController(ILogger<DealController> logger, IDealsService dealsService, ITournamentService tournamentService,
+            IHubContext<TournamentHub, ITournamentNotifier> tournamentHubContext)
         {
             _logger = logger;
             _dealsService = dealsService;
             _tournamentService = tournamentService;
+            _tournamentHubContext = tournamentHubContext;
         }
 
         // GET api/tournament/1/deal/3
@@ -60,8 +64,15 @@ namespace LanfeustBridge.Controllers
             if (deal == null || round < 0 || round >= deal.Scores.Length)
                 return NotFound();
             deal.Scores[round] = score;
-            deal.ComputeResults(_tournamentService.GetTournament(tournamentId).Scoring);
+            var tournament = _tournamentService.GetTournament(tournamentId);
+            deal.ComputeResults(tournament.Scoring);
             _dealsService.SaveDeal(tournamentId, deal);
+            if (tournament.AreAllScoresEntered(_dealsService.GetDeals(tournamentId)))
+            {
+                _logger.LogInformation($"Sending notification of round {round} finished");
+                _tournamentHubContext.Clients.All.RoundFinished(tournamentId, round);
+            }
+
             return Ok(score);
         }
     }

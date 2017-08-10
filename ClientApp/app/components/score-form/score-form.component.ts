@@ -16,7 +16,7 @@ export class ScoreFormComponent {
     _nbTricksDisplay = 0;
 
     ngOnInit() {
-        console.log(this.score);
+        console.log('ScoreFormComponent.ngOnInit', this.score);
     }
 
     doubleFixup(doubled: boolean) {
@@ -90,7 +90,6 @@ export class ScoreFormComponent {
     }
 
     onSubmit() {
-        console.log("onSubmit");
         this.score.entered = true;
         this.validated.next(this.score);
     }

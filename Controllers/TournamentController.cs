@@ -1,22 +1,30 @@
 using System.Linq;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
 
 using LanfeustBridge.Models;
 using LanfeustBridge.Services;
+using LanfeustBridge.Hubs;
 
 namespace LanfeustBridge.Controllers
 {
     [Route("api/[controller]")]
     public class TournamentController : Controller
     {
+        private readonly ILogger _logger;
         private readonly ITournamentService _tournamentService;
         private readonly IDealsService _dealsService;
+        private readonly IHubContext<TournamentHub, ITournamentNotifier> _tournamentHubContext;
 
-        public TournamentController(ITournamentService tournamentService, IDealsService dealsService)
+        public TournamentController(ILogger<TournamentController> logger, ITournamentService tournamentService, IDealsService dealsService,
+            IHubContext<TournamentHub, ITournamentNotifier> tournamentHubContext)
         {
+            _logger = logger;
             _tournamentService = tournamentService;
             _dealsService = dealsService;
+            _tournamentHubContext = tournamentHubContext;
         }
 
         // GET: api/tournament
@@ -41,6 +49,7 @@ namespace LanfeustBridge.Controllers
         public IActionResult Post([FromBody]Tournament tournament)
         {
             tournament = _tournamentService.SaveTournament(tournament);
+            _tournamentHubContext.Clients.All.NewTournament();
             return Ok(tournament);
         }
 
@@ -80,6 +89,7 @@ namespace LanfeustBridge.Controllers
 
             tournament.Status = TournamentStatus.Running;
             tournament = _tournamentService.SaveTournament(tournament);
+            _tournamentHubContext.Clients.All.TournamentStarted(id);
             return Ok(tournament);
         }
 
@@ -95,6 +105,7 @@ namespace LanfeustBridge.Controllers
 
             tournament.Close(_dealsService.GetDeals(id));
             tournament = _tournamentService.SaveTournament(tournament);
+            _tournamentHubContext.Clients.All.TournamentFinished(id);
             return Ok(tournament);
         }
 
@@ -128,6 +139,8 @@ namespace LanfeustBridge.Controllers
 
             tournament.CurrentRound++;
             _tournamentService.SaveTournament(tournament);
+            _logger.LogInformation($"Sending notification of round {tournament.CurrentRound} started");
+            _tournamentHubContext.Clients.All.NextRound(id, tournament.CurrentRound);
             return Ok();
         }
     }

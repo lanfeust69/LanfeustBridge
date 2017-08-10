@@ -1,6 +1,7 @@
-import {Component, Input, Inject, NgZone} from '@angular/core';
+import {Component, Input, Inject} from '@angular/core';
 import {ActivatedRoute, Router, UrlSegment} from '@angular/router';
-import {Observable, Subscription} from 'rxjs/Rx';
+import {HttpConnection, HubConnection} from '@aspnet/signalr';
+import {Observable, Subscription, Subscriber} from 'rxjs/Rx';
 import {AlertService} from '../../services/alert/alert.service';
 import {Tournament, Position, Status} from '../../tournament';
 import {Score} from '../../score';
@@ -27,7 +28,6 @@ export class TournamentComponent {
 
     _currentRound: number = 0;
     _roundFinished: boolean = false;
-    _roundSubscription: Subscription;
     _currentDeal: number = 1;
     _currentPlayer: number = 0;
     _currentPosition: Position;
@@ -35,7 +35,6 @@ export class TournamentComponent {
     _scoreDisplayed = false;
 
     constructor(
-        private _ngZone: NgZone,
         private _router: Router,
         private _route: ActivatedRoute,
         private _alertService: AlertService,
@@ -87,24 +86,27 @@ export class TournamentComponent {
                     this._edit = false;
                     this.movementId = tournament.movement;
                     if (tournament.status == Status.Running)
-                        this._tournamentService.currentRound(tournament.id)
-                            .subscribe(r => {
-                                this._currentRound = r.round;
-                                this._roundFinished = r.finished;
-                                this.initializeScore(true);
-                                this.subscribeToRounds();
-                            });
+                        this.processRunning(tournament.id);
                 }
             }, error => {
                 console.log('Error loading tournament : ', error);
                 this._alertService.newAlert.next({msg: error, type: 'warning', dismissible: true});
                 this._router.navigate(['/']);
             });
+        this._tournamentService.tournamentStartedObservable.subscribe(tournamentId => {
+            if (this._tournament && this._tournament.id === tournamentId) {
+                this._tournament.status = Status.Running;
+                this.processRunning(tournamentId);
+            }
+        });
+        this._tournamentService.tournamentFinishedObservable.subscribe(tournamentId => {
+            if (this._tournament && this._tournament.id === tournamentId) {
+                this._tournament.status = Status.Finished;
+            }
+        });
     }
 
     ngOnDestroy() {
-        if (this._roundSubscription)
-            this._roundSubscription.unsubscribe();
     }
 
     onSubmit() {
@@ -166,7 +168,6 @@ export class TournamentComponent {
                     dismissible: true
                 });
                 this._tournament = tournament;
-                this.subscribeToRounds();
             }, reason => {
                 this._alertService.newAlert.next({
                     msg: 'Tournament "' + this._tournament.name + '" failed to start : ' + reason,
@@ -176,32 +177,6 @@ export class TournamentComponent {
                 // go back to setup status
                 this._tournament.status = Status.Setup;
             });
-    }
-
-    subscribeToRounds() {
-        if (this._roundSubscription)
-            return;
-        // not so nice for e2e tests :
-        // run outside angular so that protractor won't timeout waiting for all angular tasks,
-        // which will never happen since we haven't had the opportunity to enter scores !
-        // this means checking in the test that we're done
-        this._ngZone.runOutsideAngular(() => {
-            this._roundSubscription = Observable.interval(5000)
-                .switchMap(_ => this._tournamentService.currentRound(this._tournament.id))
-                .subscribe(r => this._ngZone.run(() => {
-                    this._roundFinished = r.finished;
-                    if (r.round != this._currentRound) {
-                        console.log('new round received ' + JSON.stringify(r));
-                        this._currentRound = r.round;
-                        this.initializeScore(true);
-                    }
-                    if (r.finished && r.round >= this._tournament.nbRounds - 1) {
-                        console.log('callback stopping');
-                        this._roundSubscription.unsubscribe();
-                        this._roundSubscription = undefined;
-                    }
-                }));
-        });
     }
 
     close() {
@@ -215,8 +190,6 @@ export class TournamentComponent {
                     dismissible: true
                 });
                 this._tournament = tournament;
-                if (this._roundSubscription)
-                    this._roundSubscription.unsubscribe();
             }, reason => {
                 this._alertService.newAlert.next({
                     msg: 'Tournament "' + this._tournament.name + '" failed to close : ' + reason,
@@ -226,6 +199,28 @@ export class TournamentComponent {
                 // go back to running status
                 this._tournament.status = Status.Running;
             });
+    }
+
+    processRunning(tournamentId: number) {
+        this._tournamentService.currentRound(tournamentId)
+        .subscribe(r => {
+            this._currentRound = r.round;
+            this._roundFinished = r.finished;
+            this.initializeScore(true);
+        });
+        this._tournamentService.getRoundFinishedObservable(tournamentId)
+            .subscribe(r => {
+                console.log('RoundFinished received', r);
+                this._currentRound = r;
+                this._roundFinished = true;
+        });
+        this._tournamentService.getNextRoundObservable(tournamentId)
+            .subscribe(r => {
+                console.log('NextRound received', r);
+                this._currentRound = r;
+                this._roundFinished = false;
+                this.initializeScore(true);
+        });
     }
 
     initializeScore(resetCurrentDeal: boolean) {
@@ -253,7 +248,6 @@ export class TournamentComponent {
     }
 
     scoreValidated() {
-        console.log('scoreValidated');
         // TODO : set to first non-played deal of the round
         // need to subscribe so that the POST is actually sent
         this._dealService.postScore(this._tournament.id, this._currentScore)

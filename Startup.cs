@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 
 using Serilog;
 
+using LanfeustBridge.Hubs;
 using LanfeustBridge.Services;
 
 namespace LanfeustBridge
@@ -41,6 +42,7 @@ namespace LanfeustBridge
                 .AddSingleton(MovementService.Service);
 
             services.AddMvc();
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -59,8 +61,10 @@ namespace LanfeustBridge
             {
                 app.UseDeveloperExceptionPage();
                 app.UseWebpackDevMiddleware(new WebpackDevMiddlewareOptions {
-                    HotModuleReplacement = true
+                    HotModuleReplacement = true,
+                    HotModuleReplacementEndpoint = "/dist/__webpack_hmr"
                 });
+                log.Information("Running in dev, use WebpackDevMiddleware");
             }
             else
             {
@@ -68,6 +72,8 @@ namespace LanfeustBridge
             }
 
             app.UseStaticFiles();
+
+            app.UseSignalR(routes => routes.MapHub<TournamentHub>("/hub/tournament"));
 
             app.UseMvc(routes =>
             {
