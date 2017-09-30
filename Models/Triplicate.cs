@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace LanfeustBridge.Models
@@ -19,10 +20,7 @@ namespace LanfeustBridge.Models
 
         public Position[][] GetPositions(int nbTables, int nbRounds, int nbDealsPerRound)
         {
-            if (nbTables != 3)
-                throw new NotSupportedException("Only three tables allowed for triplicates");
-            if (nbRounds != 15)
-                throw new NotSupportedException("Only 15 rounds are allowed for triplicates");
+            CheckValidity(nbTables, nbRounds);
             // player ids : 0 = N1, 1 = S1, 2 = E1, 3 = W1, etc...
             var allPositions = new Position[nbRounds][];
             for (int round = 0; round < nbRounds; round++)
@@ -31,7 +29,7 @@ namespace LanfeustBridge.Models
                 for (int table = 0; table < 3; table++)
                 {
                     var position = new Position { Table = table + 1 };
-                    int firstDeal = (round / 3 * 3 + ((round % 3) + table) % 3) * nbDealsPerRound + 1; 
+                    int firstDeal = (round / 3 * 3 + ((round % 3) + table) % 3) * nbDealsPerRound + 1;
                     position.Deals = Enumerable.Range(firstDeal, nbDealsPerRound).ToArray();
                     position.North = table == 0 ? 0 : (table == 1 ? ((5 - round / 3) % 5 + 1) * 2 : ((6 - round / 3) % 5 + 1) * 2);
                     position.South = table == 0 ? 1 : (table == 1 ? ((5 - round / 3) % 5 + 1) * 2 + 1 : ((6 - round / 3) % 5 + 1) * 2 + 1);
@@ -47,12 +45,16 @@ namespace LanfeustBridge.Models
             return allPositions;
         }
 
+        private void CheckValidity(int nbTables, int nbRounds)
+        {
+            var validity = Validate(nbTables, nbRounds);
+            if (!validity.IsValid)
+                throw new NotSupportedException(validity.Reason);
+        }
+
         public Deal[] CreateDeals(int nbTables, int nbRounds, int nbDealsPerRound)
         {
-            if (nbTables != 3)
-                throw new NotSupportedException("Only three tables allowed for triplicates");
-            if (nbRounds != 15)
-                throw new NotSupportedException("Only 15 rounds are allowed for triplicates");
+            CheckValidity(nbTables, nbRounds);
             int nbDeals = nbRounds * nbDealsPerRound;
             var deals = new Deal[nbDeals];
             for (int i = 0; i < nbDeals; i++)
@@ -67,7 +69,12 @@ namespace LanfeustBridge.Models
 
         public MovementValidation Validate(int nbTables, int nbRounds)
         {
-            return new MovementValidation { IsValid = nbTables == 3 && nbRounds == 15 };
+            var reasons = new List<string>();
+            if (nbTables != 3)
+                reasons.Add("Only three tables allowed for triplicates");
+            if (nbRounds != 15)
+                reasons.Add("Only 15 rounds are allowed for triplicates");
+            return new MovementValidation { IsValid = reasons.Count == 0, Reason = string.Join(" ; ", reasons) };
         }
     }
 }

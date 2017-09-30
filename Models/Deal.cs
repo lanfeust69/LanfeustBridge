@@ -78,7 +78,7 @@ namespace LanfeustBridge.Models
                     if (other == score)
                         continue;
                     nsScore += isImp
-                        ? ConvertToImps((int)(score.BridgeScore - other.BridgeScore))
+                        ? ConvertToImps(score.BridgeScore - other.BridgeScore)
                         : score.BridgeScore > other.BridgeScore ? 1 : (score.BridgeScore == other.BridgeScore ? 0.5 : 0);
                 }
                 score.NSResult = nsScore / (knownScores.Count - 1) * (isImp ? 1 : 100);

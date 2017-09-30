@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 using Xunit;
@@ -36,6 +37,21 @@ namespace LanfeustBridge.Tests
             var positions = _teams.GetPositions(2, 4, 2);
             var actual = positions[round][player];
             Assert.Equal(expected, actual, new PositionComparer());
+        }
+
+        [Theory]
+        [InlineData(1, 2, true, 0)]
+        [InlineData(3, 2, true, 0)]
+        [InlineData(4, 2, true, 0)]
+        [InlineData(2, 3, true, 0)]
+        [InlineData(2, 2, false, 6)]
+        [InlineData(2, 8, false, 24)]
+        public void DealsAreCorrect(int nbTables, int nbRounds, bool expectThrows, int expectedNumberOfDeals)
+        {
+            if (expectThrows)
+                Assert.ThrowsAny<Exception>(() => _teams.CreateDeals(nbTables, nbRounds, 3));
+            else
+                Assert.Equal(expectedNumberOfDeals, _teams.CreateDeals(nbTables, nbRounds, 3).Length);
         }
     }
 }

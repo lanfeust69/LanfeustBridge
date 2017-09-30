@@ -44,20 +44,12 @@ namespace LanfeustBridge.Tests
             Assert.Equal(expected, actual, new PositionComparer());
         }
 
-        public static IEnumerable<object[]> IndividualDeals
-        {
-            get
-            {
-                yield return new object[] { 0, 1 };
-                yield return new object[] { 7, 8 };
-                yield return new object[] { 8, 1 };
-                yield return new object[] { 9, 2 };
-                yield return new object[] { 31, 8 };
-            }
-        }
-
         [Theory]
-        [MemberData("IndividualDeals")]
+        [InlineData(0, 1)]
+        [InlineData(7, 8)]
+        [InlineData(8, 1)]
+        [InlineData(9, 2)]
+        [InlineData(31, 8)]
         public void DealsAreCorrect(int index, int expectedEquivalent)
         {
             var deals = _individual.CreateDeals(3, 33, 1);

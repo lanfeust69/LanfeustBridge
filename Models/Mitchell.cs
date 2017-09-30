@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace LanfeustBridge.Models
@@ -17,10 +18,7 @@ namespace LanfeustBridge.Models
 
         public Position[][] GetPositions(int nbTables, int nbRounds, int nbDealsPerRound)
         {
-            if (nbTables < 3)
-                throw new NotSupportedException("At least 3 tables needed for Mitchell");
-            if (nbRounds > nbTables - (nbTables + 1) % 2)
-                throw new NotSupportedException($"At most {nbTables - (nbTables + 1) % 2} rounds possible for a {nbTables} Mitchell");
+            CheckValidity(nbTables, nbRounds);
             // player ids : 0 = N1, 1 = S1, 2 = E1, 3 = W1, etc...
             var allPositions = new Position[nbRounds][];
             for (int round = 0; round < nbRounds; round++)
@@ -29,7 +27,7 @@ namespace LanfeustBridge.Models
                 for (int table = 0; table < nbTables; table++)
                 {
                     var position = new Position { Table = table + 1 };
-                    int firstDeal = ((table + round) % nbTables) * nbDealsPerRound + 1; 
+                    int firstDeal = ((table + round) % nbTables) * nbDealsPerRound + 1;
                     position.Deals = Enumerable.Range(firstDeal, nbDealsPerRound).ToArray();
                     position.North = table * 4;
                     position.South = table * 4 + 1;
@@ -48,8 +46,16 @@ namespace LanfeustBridge.Models
             return allPositions;
         }
 
+        private void CheckValidity(int nbTables, int nbRounds)
+        {
+            var validity = Validate(nbTables, nbRounds);
+            if (!validity.IsValid)
+                throw new NotSupportedException(validity.Reason);
+        }
+
         public Deal[] CreateDeals(int nbTables, int nbRounds, int nbDealsPerRound)
         {
+            CheckValidity(nbTables, nbRounds);
             int nbDeals = nbTables * nbDealsPerRound;
             var deals = new Deal[nbDeals];
             for (int i = 0; i < nbDeals; i++)
@@ -59,7 +65,12 @@ namespace LanfeustBridge.Models
 
         public MovementValidation Validate(int nbTables, int nbRounds)
         {
-            return new MovementValidation { IsValid = nbTables >= 3 && nbRounds >= 2 && nbRounds <= nbTables - (nbTables + 1) % 2 };
+            var reasons = new List<string>();
+            if (nbTables < 3)
+                reasons.Add("At least 3 tables needed for Mitchell");
+            if (nbRounds > nbTables - (nbTables + 1) % 2)
+                reasons.Add($"At most {nbTables - (nbTables + 1) % 2} rounds possible for a {nbTables} Mitchell");
+            return new MovementValidation { IsValid = reasons.Count == 0, Reason = string.Join(" ; ", reasons) };
         }
     }
 }

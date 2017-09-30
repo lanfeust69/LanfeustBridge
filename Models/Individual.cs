@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace LanfeustBridge.Models
@@ -19,10 +20,7 @@ namespace LanfeustBridge.Models
 
         public Position[][] GetPositions(int nbTables, int nbRounds, int nbDealsPerRound)
         {
-            if (nbTables != 3)
-                throw new NotSupportedException("Only three tables allowed for individuals");
-            if (nbRounds != 33)
-                throw new NotSupportedException("Only 33 rounds are allowed for individuals");
+            CheckValidity(nbTables, nbRounds);
             // player ids : 0 = N1, 1 = S1, 2 = E1, 3 = W1, etc...
             // each round : switch one team
             var allPositions = new Position[nbRounds][];
@@ -33,7 +31,7 @@ namespace LanfeustBridge.Models
                 for (int table = 0; table < 3; table++)
                 {
                     var position = new Position { Table = table + 1 };
-                    int firstDeal = (round - (round % 3) + ((round % 3) + table) % 3) * nbDealsPerRound + 1; 
+                    int firstDeal = (round - (round % 3) + ((round % 3) + table) % 3) * nbDealsPerRound + 1;
                     position.Deals = Enumerable.Range(firstDeal, nbDealsPerRound).ToArray();
                     position.North = table == 0 ? 11 : (table == 1 ? (playerRound + 1) % 11 : (playerRound + 3) % 11);
                     position.South = table == 0 ? playerRound : (table == 1 ? (playerRound + 8) % 11 : (playerRound + 2) % 11);
@@ -49,12 +47,16 @@ namespace LanfeustBridge.Models
             return allPositions;
         }
 
+        private void CheckValidity(int nbTables, int nbRounds)
+        {
+            var validity = Validate(nbTables, nbRounds);
+            if (!validity.IsValid)
+                throw new NotSupportedException(validity.Reason);
+        }
+
         public Deal[] CreateDeals(int nbTables, int nbRounds, int nbDealsPerRound)
         {
-            if (nbTables != 3)
-                throw new NotSupportedException("Only three tables allowed for individuals");
-            if (nbRounds != 33)
-                throw new NotSupportedException("Only 33 rounds are allowed for individuals");
+            CheckValidity(nbTables, nbRounds);
             int nbDeals = nbRounds * nbDealsPerRound;
             var deals = new Deal[nbDeals];
             for (int i = 0; i < nbDeals; i++)
@@ -64,7 +66,12 @@ namespace LanfeustBridge.Models
 
         public MovementValidation Validate(int nbTables, int nbRounds)
         {
-            return new MovementValidation { IsValid = nbTables == 3 && nbRounds == 33 };
+            var reasons = new List<string>();
+            if (nbTables != 3)
+                reasons.Add("Only three tables allowed for individuals");
+            if (nbRounds != 33)
+                reasons.Add("Only 33 rounds are allowed for individuals");
+            return new MovementValidation { IsValid = reasons.Count == 0, Reason = string.Join(" ; ", reasons) };
         }
-     }
+    }
 }

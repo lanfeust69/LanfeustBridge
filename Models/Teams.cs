@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace LanfeustBridge.Models
@@ -18,10 +19,7 @@ namespace LanfeustBridge.Models
 
         public Position[][] GetPositions(int nbTables, int nbRounds, int nbDealsPerRound)
         {
-            if (nbTables != 2)
-                throw new NotSupportedException("Only two tables allowed for team matches");
-            if (nbRounds % 2 != 0)
-                throw new NotSupportedException("Only an even number of rounds are allowed for team matches");
+            CheckValidity(nbTables, nbRounds);
             // player ids : 0 = N1, 1 = S1, 2 = E1, 3 = W1, etc...
             // each odd round : switch boards, each even round : switch one team, next set of boards
             var allPositions = new Position[nbRounds][];
@@ -31,7 +29,7 @@ namespace LanfeustBridge.Models
                 for (int table = 0; table < 2; table++)
                 {
                     var position = new Position { Table = table + 1 };
-                    int firstDeal = (round - round % 2 + (round + table) % 2) * nbDealsPerRound + 1; 
+                    int firstDeal = (round - round % 2 + (round + table) % 2) * nbDealsPerRound + 1;
                     position.Deals = Enumerable.Range(firstDeal, nbDealsPerRound).ToArray();
                     position.North = table == 0 ? 0 : ((round / 2) % 2 == 0 ? 4 : 2);
                     position.South = table == 0 ? 1 : ((round / 2) % 2 == 0 ? 5 : 3);
@@ -47,12 +45,16 @@ namespace LanfeustBridge.Models
             return allPositions;
         }
 
+        private void CheckValidity(int nbTables, int nbRounds)
+        {
+            var validity = Validate(nbTables, nbRounds);
+            if (!validity.IsValid)
+                throw new NotSupportedException(validity.Reason);
+        }
+
         public Deal[] CreateDeals(int nbTables, int nbRounds, int nbDealsPerRound)
         {
-            if (nbTables != 2)
-                throw new NotSupportedException("Only two tables allowed for team matches");
-            if (nbRounds % 2 != 0)
-                throw new NotSupportedException("Only an even number of rounds are allowed for team matches");
+            CheckValidity(nbTables, nbRounds);
             int nbDeals = nbRounds * nbDealsPerRound;
             var deals = new Deal[nbDeals];
             for (int i = 0; i < nbDeals; i++)
@@ -62,7 +64,12 @@ namespace LanfeustBridge.Models
 
         public MovementValidation Validate(int nbTables, int nbRounds)
         {
-            return new MovementValidation { IsValid = nbTables == 2 && nbRounds % 2 == 0 };
+            var reasons = new List<string>();
+            if (nbTables != 2)
+                reasons.Add("Only two tables allowed for team matches");
+            if (nbRounds % 2 != 0)
+                reasons.Add("Only an even number of rounds are allowed for team matches");
+            return new MovementValidation { IsValid = reasons.Count == 0, Reason = string.Join(" ; ", reasons) };
         }
     }
 }
