@@ -23,9 +23,9 @@ namespace LanfeustBridge.Services
             _tournaments = dbService.Db.GetCollection<Tournament>();
         }
 
-        public IEnumerable<Tuple<int, string>> GetNames()
+        public IEnumerable<(int, string)> GetNames()
         {
-            return _tournaments.FindAll().Select(t => Tuple.Create(t.Id, t.Name));
+            return _tournaments.FindAll().Select(t => (t.Id, t.Name));
         }
 
         public Tournament GetTournament(int id)

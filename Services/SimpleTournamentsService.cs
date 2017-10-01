@@ -50,9 +50,9 @@ namespace LanfeustBridge.Services
             return _nextId++;
         }
 
-        public IEnumerable<Tuple<int, string>> GetNames()
+        public IEnumerable<(int, string)> GetNames()
         {
-            return Tournaments.Values.Select(t => Tuple.Create(t.Id, t.Name));
+            return Tournaments.Values.Select(t => (t.Id, t.Name));
         }
 
         public Tournament GetTournament(int id)
