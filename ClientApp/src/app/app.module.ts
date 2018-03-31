@@ -1,6 +1,6 @@
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -14,6 +14,8 @@ import { SuitComponent } from './components/suit/suit.component';
 import { TournamentComponent } from './components/tournament/tournament.component';
 import { TournamentListComponent } from './components/tournament-list/tournament-list.component';
 import { LanfeustBridgeApp } from './components/home/lanfeust-bridge.app';
+
+import { DateInterceptor } from './services/date.interceptor';
 import { TOURNAMENT_SERVICE } from './services/tournament/tournament.service';
 import { TournamentServiceHttp } from './services/tournament/tournament.service.http';
 // import { TournamentServiceMock } from './services/tournament/tournament.service.mock';
@@ -42,7 +44,7 @@ import 'rxjs/add/operator/switchMap';
         BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
         NgbModule.forRoot(),
         FormsModule,
-        HttpModule,
+        HttpClientModule,
         RouterModule.forRoot([
             { path: '', component: TournamentListComponent },
             { path: 'tournament/:id', component: TournamentComponent },
@@ -53,6 +55,7 @@ import 'rxjs/add/operator/switchMap';
         ])
     ],
     providers: [
+        { provide: HTTP_INTERCEPTORS, useClass: DateInterceptor, multi: true },
         { provide: TOURNAMENT_SERVICE, useClass: TournamentServiceHttp },
         { provide: DEAL_SERVICE, useClass: DealServiceHttp },
         { provide: MOVEMENT_SERVICE, useClass: MovementServiceHttp },

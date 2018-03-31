@@ -1,6 +1,6 @@
 import { isPlatformBrowser } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable, NgZone, PLATFORM_ID } from '@angular/core';
-import { Http, Headers, RequestOptions, Response } from '@angular/http';
 import { HttpConnection, HubConnection } from '@aspnet/signalr';
 import { Observable } from 'rxjs/Observable';
 
@@ -17,7 +17,7 @@ export class TournamentServiceHttp implements TournamentService {
     tournamentStartedObservable: Observable<number>;
     tournamentFinishedObservable: Observable<number>;
 
-    constructor(private _http: Http, private _ngZone: NgZone,
+    constructor(private _http: HttpClient, private _ngZone: NgZone,
         @Inject('BASE_URL') originUrl: string,
         @Inject(PLATFORM_ID) platformId: Object) {
         this._baseUrl = originUrl + 'api/tournament';
@@ -40,49 +40,45 @@ export class TournamentServiceHttp implements TournamentService {
     }
 
     getNames(): Observable<{ id: number; name: string }[]> {
-        return this._http.get(this._baseUrl).map(this.extractData);
+        return this._http.get<{ id: number; name: string }[]>(this._baseUrl);
     }
 
     get(id: number): Observable<Tournament> {
-        return this._http.get(this._baseUrl + '/' + id).map(this.extractData);
+        return this._http.get<Tournament>(this._baseUrl + '/' + id);
     }
 
     create(tournament: Tournament): Observable<Tournament> {
-        const headers = new Headers({ 'Content-Type': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
-        return this._http.post(this._baseUrl, JSON.stringify(tournament), options).map(this.extractData);
+        return this._http.post<Tournament>(this._baseUrl, tournament);
     }
 
     update(tournament: Tournament): Observable<Tournament> {
-        const headers = new Headers({ 'Content-Type': 'application/json' });
-        const options = new RequestOptions({ headers: headers });
-        return this._http.put(this._baseUrl + '/' + tournament.id, JSON.stringify(tournament), options).map(this.extractData);
+        return this._http.put<Tournament>(this._baseUrl + '/' + tournament.id, tournament);
     }
 
     delete(id: number): Observable<boolean> {
-        return this._http.delete(this._baseUrl + '/' + id).map(this.extractData);
+        return this._http.delete<boolean>(this._baseUrl + '/' + id);
     }
 
     getScorings(): Observable<string[]> {
-        return this._http.get(this._baseUrl + '/scoring').map(this.extractData);
+        return this._http.get<string[]>(this._baseUrl + '/scoring');
     }
 
     start(id: number): Observable<Tournament> {
-        return this._http.post(this._baseUrl + '/' + id + '/start', '').map(this.extractData);
+        return this._http.post<Tournament>(this._baseUrl + '/' + id + '/start', '');
     }
 
     close(id: number): Observable<Tournament> {
-        return this._http.post(this._baseUrl + '/' + id + '/close', '').map(this.extractData);
+        return this._http.post<Tournament>(this._baseUrl + '/' + id + '/close', '');
     }
 
     currentRound(id: number): Observable<{round: number, finished: boolean}> {
-        return this._http.get(this._baseUrl + '/' + id + '/current-round').map(this.extractData);
+        return this._http.get<{round: number, finished: boolean}>(this._baseUrl + '/' + id + '/current-round');
     }
 
     nextRound(id: number) {
         // need to subscribe to actually post
-        this._http.post(this._baseUrl + '/' + id + '/next-round', '')
-            .subscribe(r => console.log('Next Round POST returned ' + r.statusText));
+        this._http.post(this._baseUrl + '/' + id + '/next-round', '', { observe: 'response' })
+            .subscribe();
     }
 
     getNextRoundObservable(id: number): Observable<number> {
@@ -101,16 +97,6 @@ export class TournamentServiceHttp implements TournamentService {
             (tournamentId, round) => ({tournamentId, round}))
             .filter(({tournamentId, round}) => tournamentId === id)
             .map(({tournamentId, round}) => round));
-    }
-
-    private extractData(res: Response) {
-        if (res.status < 200 || res.status >= 300) {
-            throw new Error('Bad response status: ' + res.status);
-        }
-        const data = res.json();
-        if (data.date)
-            data.date = new Date(data.date);
-        return data;
     }
 
     // we wrap observables created from signalR callbacks so that the subscribers run in angular zone
