@@ -1,10 +1,11 @@
-import {isPlatformBrowser} from '@angular/common';
-import {Inject, Injectable, NgZone, PLATFORM_ID} from '@angular/core';
-import {Http, Headers, RequestOptions, Response} from '@angular/http';
-import {HttpConnection, HubConnection} from '@aspnet/signalr';
-import {Observable} from 'rxjs/Rx';
-import {Tournament} from '../../tournament';
-import {TournamentService} from './tournament.service';
+import { isPlatformBrowser } from '@angular/common';
+import { Inject, Injectable, NgZone, PLATFORM_ID } from '@angular/core';
+import { Http, Headers, RequestOptions, Response } from '@angular/http';
+import { HttpConnection, HubConnection } from '@aspnet/signalr';
+import { Observable } from 'rxjs/Observable';
+
+import { Tournament } from '../../tournament';
+import { TournamentService } from './tournament.service';
 
 @Injectable()
 export class TournamentServiceHttp implements TournamentService {
@@ -47,14 +48,14 @@ export class TournamentServiceHttp implements TournamentService {
     }
 
     create(tournament: Tournament): Observable<Tournament> {
-        let headers = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
+        const headers = new Headers({ 'Content-Type': 'application/json' });
+        const options = new RequestOptions({ headers: headers });
         return this._http.post(this._baseUrl, JSON.stringify(tournament), options).map(this.extractData);
     }
 
     update(tournament: Tournament): Observable<Tournament> {
-        let headers = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
+        const headers = new Headers({ 'Content-Type': 'application/json' });
+        const options = new RequestOptions({ headers: headers });
         return this._http.put(this._baseUrl + '/' + tournament.id, JSON.stringify(tournament), options).map(this.extractData);
     }
 
@@ -106,7 +107,7 @@ export class TournamentServiceHttp implements TournamentService {
         if (res.status < 200 || res.status >= 300) {
             throw new Error('Bad response status: ' + res.status);
         }
-        let data = res.json();
+        const data = res.json();
         if (data.date)
             data.date = new Date(data.date);
         return data;

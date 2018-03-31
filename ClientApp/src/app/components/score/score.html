@@ -21,7 +21,11 @@
             <td *ngIf="individual"><a [routerLink]="['/tournament', tournamentId, 'scoresheet', score.players.south]">{{score.players.south}}</a></td>
             <td><a [routerLink]="['/tournament', tournamentId, 'scoresheet', score.players.east]">{{score.players.east}}</a></td>
             <td *ngIf="individual"><a [routerLink]="['/tournament', tournamentId, 'scoresheet', score.players.west]">{{score.players.west}}</a></td>
-            <td *ngIf="score.contract.level > 0">{{score.contract.level}}<suit [suit]="score.contract.suit"></suit><span *ngIf="score.contract.doubled">X</span><span *ngIf="score.contract.redoubled">XX</span>&nbsp;{{score.contract.declarer}}</td>
+            <td *ngIf="score.contract.level > 0">{{score.contract.level}}
+                <lanfeust-bridge-suit [suit]="score.contract.suit"></lanfeust-bridge-suit>
+                <span *ngIf="score.contract.doubled">X</span>
+                <span *ngIf="score.contract.redoubled">XX</span>&nbsp;{{score.contract.declarer}}
+            </td>
             <td *ngIf="score.contract.level == 0">Pass</td>
             <td *ngIf="score.contract.level > 0">{{score.tricks}}</td>
             <td *ngIf="score.contract.level == 0"></td>

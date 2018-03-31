@@ -1,8 +1,9 @@
-import {Inject, Injectable} from '@angular/core';
-import {Http} from '@angular/http';
-import {Observable} from 'rxjs/Rx';
-import {MovementDescription} from '../../movement';
-import {MovementService} from './movement.service';
+import { Inject, Injectable } from '@angular/core';
+import { Http } from '@angular/http';
+import { Observable } from 'rxjs/Observable';
+
+import { MovementDescription } from '../../movement';
+import { MovementService } from './movement.service';
 
 @Injectable()
 export class MovementServiceHttp implements MovementService {

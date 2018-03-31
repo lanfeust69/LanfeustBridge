@@ -13,7 +13,7 @@ describe('Component: score', () => {
     let element: HTMLElement;
     let debugElement: DebugElement;
 
-    //setup
+    // setup
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [FormsModule],
@@ -109,4 +109,4 @@ describe('Component: score', () => {
         expect(display.nativeElement.innerText).toMatch(/^4\s*.\s*N\s*=\s*\+420$/);
         expect(debugElement.query(By.css('button')).nativeElement.disabled).toBe(false);
     }));
-}) 
+});

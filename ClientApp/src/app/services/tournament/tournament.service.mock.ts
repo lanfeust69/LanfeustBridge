@@ -1,38 +1,43 @@
-import {Inject, Injectable} from '@angular/core';
-import {Observable} from 'rxjs/Rx';
-import {Tournament, Position, Status} from '../../tournament';
-import {Score} from '../../score';
-import {DealService, DEAL_SERVICE} from '../deal/deal.service';
-import {TournamentService} from './tournament.service';
+import { Inject, Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+
+import { Tournament, Position, Status } from '../../tournament';
+import { Score } from '../../score';
+import { DealService, DEAL_SERVICE } from '../deal/deal.service';
+import { TournamentService } from './tournament.service';
 
 @Injectable()
 export class TournamentServiceMock implements TournamentService {
     private _tournaments: Tournament[] = [];
 
+    newTournamentObservable: Observable<void>;
+    tournamentStartedObservable: Observable<number>;
+    tournamentFinishedObservable: Observable<number>;
+
     constructor(@Inject(DEAL_SERVICE) private _dealService: DealService) {}
 
     getNames(): Observable<{id: number; name: string}[]> {
-        let result = this._tournaments.map((value, i) => ({id: i + 1, name: value.name}));
+        const result = this._tournaments.map((value, i) => ({id: i + 1, name: value.name}));
         return Observable.of(result);
     }
 
     get(id: number): Observable<Tournament> {
         if (id <= 0 || id > this._tournaments.length || !this._tournaments[id - 1])
-            return Observable.throw("No tournament with id '" + id + "' found");
+            return Observable.throw('No tournament with id \'' + id + '\' found');
         const tournament = this._tournaments[id - 1];
         return Observable.of(tournament).delay(2000); // 2 seconds
     }
 
     create(tournament: Tournament): Observable<Tournament> {
         tournament.id = this._tournaments.length + 1;
-        let allPositions: Position[][] = [];
+        const allPositions: Position[][] = [];
         // mock : mitchell
-        let nbDeals = tournament.nbTables * tournament.nbDealsPerRound;
+        const nbDeals = tournament.nbTables * tournament.nbDealsPerRound;
         for (let r = 0; r < tournament.nbRounds; r++) {
-            let positions: Position[] = [];
+            const positions: Position[] = [];
             for (let t = 0; t < tournament.nbTables; t++) {
                 for (let i = 0; i < 4; i++) {
-                    let position = new Position;
+                    const position = new Position;
                     position.table = t + 1;
                     position.north = t * 4;
                     position.south = t * 4 + 1;
@@ -57,7 +62,7 @@ export class TournamentServiceMock implements TournamentService {
     update(tournament: Tournament): Observable<Tournament> {
         const id = tournament.id;
         if (id <= 0 || id > this._tournaments.length || !this._tournaments[id - 1])
-            return Observable.throw("No tournament with id '" + id + "' found");
+            return Observable.throw('No tournament with id \'' + id + '\' found');
         this._tournaments[id - 1] = tournament;
         return Observable.of(tournament);
     }
@@ -96,12 +101,12 @@ export class TournamentServiceMock implements TournamentService {
             return Observable.throw('No tournament with id "' + id + '" found');
         const tournament = this._tournaments[id - 1];
         // finished, waiting for close
-        if (tournament.currentRound == tournament.nbRounds)
+        if (tournament.currentRound === tournament.nbRounds)
             return Observable.of({round: tournament.currentRound, finished: true});
         // only in mock : assume all deals are played each round
         let scores: Observable<Score>;
         for (let dealId = 1; dealId <= tournament.nbDealsPerRound * tournament.nbTables; dealId++) {
-            let score = this._dealService.getScore(id, dealId, tournament.currentRound);
+            const score = this._dealService.getScore(id, dealId, tournament.currentRound);
             scores = scores ? scores.merge(score) : score;
         }
         return scores
@@ -116,10 +121,6 @@ export class TournamentServiceMock implements TournamentService {
         if (tournament.currentRound < tournament.nbRounds)
             tournament.currentRound++;
     }
-
-    newTournamentObservable: Observable<void>;
-    tournamentStartedObservable: Observable<number>;
-    tournamentFinishedObservable: Observable<number>;
 
     getNextRoundObservable(id: number): Observable<number> {
         return Observable.of(0);

@@ -5,9 +5,9 @@ export enum Status {
 }
 
 export class Player {
-    name: string = '';
-    score: number = 0;
-    rank: number = 0;
+    name = '';
+    score = 0;
+    rank = 0;
 }
 
 export class Position {
@@ -20,11 +20,11 @@ export class Position {
 }
 
 export class Tournament {
-    id: number = 0;
+    id = 0;
     name: string;
     date: Date = new Date;
-    movement: string = '';
-    scoring: string = '';
+    movement = '';
+    scoring = '';
     nbTables: number;
     nbRounds: number;
     nbDealsPerRound: number;

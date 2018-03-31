@@ -1,12 +1,13 @@
 import { browser, by, element, ExpectedConditions } from 'protractor';
+
 import { FrontEndPage } from './app.po';
 
 function randomScore() {
-    let level = Math.floor((Math.random() * 8) + 1);
+    const level = Math.floor((Math.random() * 8) + 1);
     element(by.css('div[name="level"]>label:nth-of-type(' + level + ')')).click();
     if (level > 1) {
-        let suit = Math.floor((Math.random() * 5) + 1);
-        element(by.css('div[name="suit"]>label:nth-of-type(' + suit + ')>suit>span:nth-of-type(1)>span')).click();
+        const suit = Math.floor((Math.random() * 5) + 1);
+        element(by.css('div[name="suit"]>label:nth-of-type(' + suit + ')>lanfeust-bridge-suit>span:nth-of-type(1)>span')).click();
         if (Math.random() < 0.25) {
             if (Math.random() < 0.2) {
                 element(by.css('label[name="redoubled"]')).click();
@@ -14,11 +15,11 @@ function randomScore() {
                 element(by.css('label[name="doubled"]')).click();
             }
         }
-        let declarer = Math.floor((Math.random() * 4) + 1);
+        const declarer = Math.floor((Math.random() * 4) + 1);
         element(by.css('div[name="declarer"]>label:nth-of-type(' + declarer + ')')).click();
-        let result = Math.floor((Math.random() * 5) - 2);
-        if (result != 0) {
-            let el = element(by.css('div[name="result"]>label:nth-of-type(' + (result < 0 ? 1 : 3) + ')'));
+        const result = Math.floor((Math.random() * 5) - 2);
+        if (result !== 0) {
+            const el = element(by.css('div[name="result"]>label:nth-of-type(' + (result < 0 ? 1 : 3) + ')'));
             for (let i = 0; i < Math.abs(result); i++)
                 el.click();
         }
@@ -75,7 +76,7 @@ describe('front-end App', function() {
                 browser.wait(ExpectedConditions.elementToBeClickable(element(by.buttonText('Next Round'))), 12000);
                 element(by.buttonText('Next Round')).click();
                 // then wait for next round to actually begin
-                let roundSummary = element(by.cssContainingText('h4', 'Round'));
+                const roundSummary = element(by.cssContainingText('h4', 'Round'));
                 browser.wait(ExpectedConditions.textToBePresentInElement(roundSummary, 'Round ' + (round + 2)), 12000);
             }
         }

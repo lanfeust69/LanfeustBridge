@@ -1,7 +1,8 @@
-import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs/Rx';
-import {MovementDescription} from '../../movement';
-import {MovementService} from './movement.service';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+
+import { MovementDescription } from '../../movement';
+import { MovementService } from './movement.service';
 
 @Injectable()
 export class MovementServiceMock implements MovementService {

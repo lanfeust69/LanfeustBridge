@@ -5,7 +5,8 @@
     </div>
     <div class="btn-group mr-2" *ngIf="score.contract.level" ngbRadioGroup name="suit">
         <label *ngFor="let suit of _suits" class="btn btn-secondary">
-            <input type="radio" [value]="suit" [(ngModel)]="score.contract.suit" name="suit" /><suit [suit]="suit"></suit>
+            <input type="radio" [value]="suit" [(ngModel)]="score.contract.suit" name="suit" />
+            <lanfeust-bridge-suit [suit]="suit"></lanfeust-bridge-suit>
         </label>
     </div>
     <div class="btn-group mr-2" *ngIf="score.contract.level" data-toggle="buttons">
@@ -28,7 +29,8 @@
     <div class="form-group">
         <div class="panel panel-body score-display" *ngIf="!score.contract.level">Pass</div>
         <div class="panel panel-body score-display" *ngIf="score.contract.level">
-            {{score.contract.level}}<suit *ngIf="score.contract.suit != undefined" [suit]="score.contract.suit"></suit>
+            {{score.contract.level}}
+            <lanfeust-bridge-suit *ngIf="score.contract.suit != undefined" [suit]="score.contract.suit"></lanfeust-bridge-suit>
             <span *ngIf="score.contract.doubled">X&nbsp;</span><span *ngIf="score.contract.redoubled">XX&nbsp;</span>
             {{score.contract.declarer}}&nbsp;{{tricksDisplay}}&nbsp;&nbsp;&nbsp;<strong>{{computedScore}}</strong>
         </div>

@@ -1,24 +1,25 @@
-import {Component, Input, Inject} from '@angular/core';
-import {ActivatedRoute, Router, UrlSegment} from '@angular/router';
-import {HttpConnection, HubConnection} from '@aspnet/signalr';
-import {Observable, Subscription, Subscriber} from 'rxjs/Rx';
-import {AlertService} from '../../services/alert/alert.service';
-import {Tournament, Position, Status} from '../../tournament';
-import {Score} from '../../score';
-import {MovementDescription} from '../../movement';
-import {TournamentService, TOURNAMENT_SERVICE} from '../../services/tournament/tournament.service';
-import {DealService, DEAL_SERVICE} from '../../services/deal/deal.service';
-import {MovementService, MOVEMENT_SERVICE} from '../../services/movement/movement.service';
+import { Component, Input, Inject, OnInit } from '@angular/core';
+import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
+import { HttpConnection, HubConnection } from '@aspnet/signalr';
+import { Observable, Subscriber, Subscription } from 'rxjs/';
+
+import { AlertService } from '../../services/alert/alert.service';
+import { Tournament, Position, Status } from '../../tournament';
+import { Score } from '../../score';
+import { MovementDescription } from '../../movement';
+import { TournamentService, TOURNAMENT_SERVICE } from '../../services/tournament/tournament.service';
+import { DealService, DEAL_SERVICE } from '../../services/deal/deal.service';
+import { MovementService, MOVEMENT_SERVICE } from '../../services/movement/movement.service';
 
 @Component({
-    selector: 'tournament',
+    selector: 'lanfeust-bridge-tournament',
     templateUrl: './tournament.html'
 })
-export class TournamentComponent {
+export class TournamentComponent implements OnInit {
     @Input() id: number;
 
-    _created: boolean = false;
-    _edit: boolean = false;
+    _created = false;
+    _edit = false;
     _tournament: Tournament;
     _knownMovements: Map<string, MovementDescription> = new Map<string, MovementDescription>();
     _sortedMovementIds: string[] = [];
@@ -26,10 +27,10 @@ export class TournamentComponent {
     _knownNames: string[] = [];
     _invalidReason: string;
 
-    _currentRound: number = 0;
-    _roundFinished: boolean = false;
-    _currentDeal: number = 1;
-    _currentPlayer: number = 0;
+    _currentRound = 0;
+    _roundFinished = false;
+    _currentDeal = 1;
+    _currentPlayer = 0;
     _currentPosition: Position;
     _currentScore: Score = new Score;
     _scoreDisplayed = false;
@@ -55,12 +56,12 @@ export class TournamentComponent {
                 this._tournament.scoring = scorings[0];
         });
         this._tournamentService.getNames()
-            .subscribe(names => this._knownNames = names.filter(v => v != undefined).map(v => v.name));
+            .subscribe(names => this._knownNames = names.filter(v => v !== undefined).map(v => v.name));
 
         this._route.url
             .switchMap((urlSegments: UrlSegment[]) => {
-                if (urlSegments[0].path == 'new-tournament') {
-                    let tournament = new Tournament;
+                if (urlSegments[0].path === 'new-tournament') {
+                    const tournament = new Tournament;
                     tournament.nbTables = 1;
                     tournament.nbRounds = 1;
                     tournament.nbDealsPerRound = 2;
@@ -68,7 +69,7 @@ export class TournamentComponent {
                         tournament.players.push({name: 'Player ' + (i + 1), score: 0, rank: 0});
                     return Observable.of(tournament);
                 }
-                let id = +urlSegments[1].path;
+                const id = +urlSegments[1].path;
                 return this._tournamentService.get(id);
             })
             .subscribe((tournament: Tournament) => {
@@ -85,7 +86,7 @@ export class TournamentComponent {
                     this._created = true;
                     this._edit = false;
                     this.movementId = tournament.movement;
-                    if (tournament.status == Status.Running)
+                    if (tournament.status === Status.Running)
                         this.processRunning(tournament.id);
                 }
             }, error => {
@@ -106,23 +107,20 @@ export class TournamentComponent {
         });
     }
 
-    ngOnDestroy() {
-    }
-
     onSubmit() {
         // isValid if the button could be clicked (and checked on server side)
         if (this._created) {
            this._tournamentService.update(this._tournament)
                 .subscribe(tournament => {
                     this._alertService.newAlert.next({
-                        msg: "Tournament '" + tournament.name + "' successfully updated",
+                        msg: 'Tournament \'' + tournament.name + '\' successfully updated',
                         type: 'success',
                         dismissible: true
                     });
                     this._tournament = tournament;
                 }, reason => {
                     this._alertService.newAlert.next({
-                        msg: "Tournament update for '" + this._tournament.name + "' failed : " + reason,
+                        msg: 'Tournament update for \'' + this._tournament.name + '\' failed : ' + reason,
                         type: 'warning',
                         dismissible: true
                     });
@@ -132,7 +130,7 @@ export class TournamentComponent {
            this._tournamentService.create(this._tournament)
                .subscribe(tournament => {
                    this._alertService.newAlert.next({
-                       msg: "Tournament '" + tournament.name + "' successfully created",
+                       msg: 'Tournament \'' + tournament.name + '\' successfully created',
                        type: 'success',
                        dismissible: true
                    });
@@ -143,7 +141,7 @@ export class TournamentComponent {
                    this._router.navigate(['/tournament', tournament.id]);
                }, reason => {
                    this._alertService.newAlert.next({
-                       msg: "Tournament creation for '" + this._tournament.name + "' failed : " + reason,
+                       msg: 'Tournament creation for \'' + this._tournament.name + '\' failed : ' + reason,
                        type: 'warning',
                        dismissible: true
                    });
@@ -232,7 +230,7 @@ export class TournamentComponent {
         // only display score form for deals from round
         if (resetCurrentDeal)
             this._currentDeal = this.roundDeals[0];
-        if (this.roundDeals.indexOf(this._currentDeal) == -1)
+        if (this.roundDeals.indexOf(this._currentDeal) === -1)
             return;
         this._dealService.getScore(this._tournament.id, this._currentDeal, this._currentRound)
             .subscribe(score => {
@@ -264,7 +262,7 @@ export class TournamentComponent {
 
     get rounds(): number[] {
         if (this._tournament) {
-            let rounds = [];
+            const rounds = [];
             for (let i = 0; i < this._tournament.nbRounds; i++)
                 rounds.push(i);
             return rounds;
@@ -291,19 +289,19 @@ export class TournamentComponent {
     }
 
     get setup() {
-        return this._tournament.status == Status.Setup;
+        return this._tournament.status === Status.Setup;
     }
 
     get running() {
-        return this._tournament.status == Status.Running;
+        return this._tournament.status === Status.Running;
     }
 
     get finished() {
-        return this._tournament.status == Status.Finished;
+        return this._tournament.status === Status.Finished;
     }
 
     get players() {
-        let nbPlayers = this._tournament.nbTables * 4;
+        const nbPlayers = this._tournament.nbTables * 4;
         if (this._tournament.players.length < nbPlayers)
             for (let i = this._tournament.players.length; i < nbPlayers; i++)
                 this._tournament.players.push({name: 'Player ' + (i + 1), score: 0, rank: 0});
@@ -322,7 +320,7 @@ export class TournamentComponent {
         if (!this._tournament)
             return;
         this._tournament.nbTables = value;
-        let nbPlayers = this._tournament.nbTables * 4;
+        const nbPlayers = this._tournament.nbTables * 4;
         if (this._tournament.players.length < nbPlayers)
             for (let i = this._tournament.players.length; i < nbPlayers; i++)
                 this._tournament.players.push({ name: 'Player ' + (i + 1), score: 0, rank: 0 });
@@ -333,11 +331,11 @@ export class TournamentComponent {
     }
 
     get maxTables(): number {
-        return (this.movement && this.movement.maxTables != -1) ? this.movement.maxTables : 100;
+        return (this.movement && this.movement.maxTables !== -1) ? this.movement.maxTables : 100;
     }
 
     get fixedNbTables() {
-        return this.movement && this.movement.minTables == this.movement.maxTables;
+        return this.movement && this.movement.minTables === this.movement.maxTables;
     }
 
     get nbRounds() {
@@ -345,13 +343,13 @@ export class TournamentComponent {
     }
 
     set nbRounds(value) {
-        if (!this._tournament || value < this.movement.minRounds || (this.movement.maxRounds != -1 && value > this.movement.maxRounds))
+        if (!this._tournament || value < this.movement.minRounds || (this.movement.maxRounds !== -1 && value > this.movement.maxRounds))
             return;
         this._tournament.nbRounds = value;
     }
 
     get fixedNbRounds() {
-        return this.movement && this.movement.minRounds == this.movement.maxRounds;
+        return this.movement && this.movement.minRounds === this.movement.maxRounds;
     }
 
     get minRounds(): number {
@@ -359,7 +357,7 @@ export class TournamentComponent {
     }
 
     get maxRounds(): number {
-        return (this.movement && this.movement.maxRounds != -1) ? this.movement.maxRounds : 100;
+        return (this.movement && this.movement.maxRounds !== -1) ? this.movement.maxRounds : 100;
     }
 
     get movementId() {
@@ -368,16 +366,16 @@ export class TournamentComponent {
     }
 
     set movementId(value) {
-        if (!this._tournament || this._tournament.movement == value)
+        if (!this._tournament || this._tournament.movement === value)
             return;
         this._tournament.movement = value;
-        let movement: MovementDescription = this._knownMovements[value];
+        const movement: MovementDescription = this._knownMovements[value];
         this.nbTables = movement.minTables;
         this._tournament.nbRounds = movement.minRounds;
     }
 
     get movement(): MovementDescription {
-        let id = this._tournament ? this._tournament.movement
+        const id = this._tournament ? this._tournament.movement
             : (this._sortedMovementIds.length > 0 ? this._sortedMovementIds[0] : undefined);
         return this._knownMovements[id];
     }
@@ -391,7 +389,7 @@ export class TournamentComponent {
     }
 
     get deals() {
-        let result = [];
+        const result = [];
         for (let i = 0; i < this.nbDeals; i++)
             result.push({id: i + 1});
         return result;
@@ -411,18 +409,18 @@ export class TournamentComponent {
             this._invalidReason = 'Number of deals per round must be between 1 and 100';
             return false;
         }
-        let nbPlayers = this._tournament.nbTables * 4;
-        let emptyNames = this._tournament.players.filter((p, i) => i < nbPlayers && !p.name);
+        const nbPlayers = this._tournament.nbTables * 4;
+        const emptyNames = this._tournament.players.filter((p, i) => i < nbPlayers && !p.name);
         if (emptyNames.length > 0) {
             this._invalidReason = 'All players must be filled';
             return false;
         }
-        let distinctPlayers = new Set(this._tournament.players.filter((p, i) => i < nbPlayers).map(p => p.name));
-        if (distinctPlayers.size != nbPlayers) {
+        const distinctPlayers = new Set(this._tournament.players.filter((p, i) => i < nbPlayers).map(p => p.name));
+        if (distinctPlayers.size !== nbPlayers) {
             this._invalidReason = 'All players must have distinct names';
             return false;
         }
-        if (!this._created && this._knownNames.indexOf(this._tournament.name) != -1) {
+        if (!this._created && this._knownNames.indexOf(this._tournament.name) !== -1) {
             this._invalidReason = 'Name already exists';
             return false;
         }

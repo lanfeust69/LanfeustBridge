@@ -1,5 +1,5 @@
-import {Deal} from './deal';
-import {Suit} from './types'
+import { Deal } from './deal';
+import { Suit } from './types';
 
 export class Contract {
     declarer: string;
@@ -29,18 +29,19 @@ export class Score {
     public static computeScore(s: Score): number {
         if (s.vulnerability === undefined || s.contract === undefined || s.contract.level === undefined
             || s.contract.level === 0 || s.contract.suit === undefined
-            || s.contract.declarer === undefined || s.tricks == undefined)
+            || s.contract.declarer === undefined || s.tricks === undefined)
             return 0;
-        let level = s.contract.level;
-        let doubled: boolean = s.contract.doubled;
-        let redoubled: boolean = s.contract.redoubled;
-        let vulnerable = s.vulnerability == "Both" || (s.vulnerability != "None" && s.vulnerability.indexOf(s.contract.declarer) != -1);
-        let sign = s.contract.declarer == "N" || s.contract.declarer == "S" ? 1 : -1;
-        let result = s.tricks - 6 - level;
+        const level = s.contract.level;
+        const doubled: boolean = s.contract.doubled;
+        const redoubled: boolean = s.contract.redoubled;
+        const vulnerable = s.vulnerability === 'Both'
+            || (s.vulnerability !== 'None' && s.vulnerability.indexOf(s.contract.declarer) !== -1);
+        const sign = s.contract.declarer === 'N' || s.contract.declarer === 'S' ? 1 : -1;
+        const result = s.tricks - 6 - level;
         let score = 0;
         if (result < 0) {
             if (!doubled && !redoubled)
-                return sign * result * (vulnerable ? 100: 50);
+                return sign * result * (vulnerable ? 100 : 50);
             score = result * 300 + 100;
             if (!vulnerable)
                 score += result < -3 ? 300 : result * -100;
@@ -66,9 +67,9 @@ export class Score {
         score += level * trickValue;
         score *= redoubled ? 4 : (doubled ? 2 : 1);
         score += score >= 100 ? (vulnerable ? 500 : 300) : 50;
-        if (level == 6)
+        if (level === 6)
             score += vulnerable ? 750 : 500;
-        if (level == 7)
+        if (level === 7)
             score += vulnerable ? 1500 : 1000;
         let overtrickValue = trickValue;
         if (doubled || redoubled) {

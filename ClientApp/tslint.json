@@ -88,7 +88,7 @@
       true,
       "single"
     ],
-    "radix": true,
+    "radix": false,
     "semicolon": [
       true,
       "always"
@@ -121,13 +121,13 @@
     "directive-selector": [
       true,
       "attribute",
-      "app",
+      "lanfeust-bridge",
       "camelCase"
     ],
     "component-selector": [
       true,
       "element",
-      "app",
+      "lanfeust-bridge",
       "kebab-case"
     ],
     "no-output-on-prefix": true,

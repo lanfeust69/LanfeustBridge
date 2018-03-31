@@ -1,6 +1,7 @@
-import {InjectionToken} from '@angular/core';
-import {Observable} from 'rxjs/Rx';
-import {MovementDescription} from '../../movement';
+import { InjectionToken } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+
+import { MovementDescription } from '../../movement';
 
 export let MOVEMENT_SERVICE = new InjectionToken('MovementService');
 

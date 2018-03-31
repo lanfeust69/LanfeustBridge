@@ -1,17 +1,18 @@
-import {EventEmitter, Component, Input, Output} from '@angular/core';
-import {Score} from '../../score';
-import {Suit} from '../../types';
-import {SuitComponent} from '../suit/suit.component';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+
+import { Score } from '../../score';
+import { Suit } from '../../types';
+import { SuitComponent } from '../suit/suit.component';
 
 @Component({
-    selector: 'score-form',
+    selector: 'lanfeust-bridge-score-form',
     templateUrl: './score-form.html',
     styles: ['.score-display {font-size: 18px}']
 })
-export class ScoreFormComponent {
+export class ScoreFormComponent implements OnInit {
     _score: Score; // bound to score as a property, so that we can update _nbTricksDisplay
     @Output() validated = new EventEmitter();
-    
+
     _suits = [Suit.Clubs, Suit.Diamonds, Suit.Hearts, Suit.Spades, Suit.NoTrump];
     _nbTricksDisplay = 0;
 
@@ -21,12 +22,12 @@ export class ScoreFormComponent {
 
     doubleFixup(doubled: boolean) {
         if (doubled)
-            this.score.contract.redoubled = false
+            this.score.contract.redoubled = false;
     }
 
     redoubleFixup(redoubled: boolean) {
         if (redoubled)
-            this.score.contract.doubled = false
+            this.score.contract.doubled = false;
     }
 
     tricksFixup() {
@@ -60,7 +61,7 @@ export class ScoreFormComponent {
             value.contract.suit = undefined;
             value.contract.declarer = undefined;
         }
-        if (value.contract.level != undefined && value.tricks != undefined)
+        if (value.contract.level !== undefined && value.tricks !== undefined)
             this._nbTricksDisplay = value.tricks - 6 - value.contract.level;
         else
             this._nbTricksDisplay = 0;
@@ -68,22 +69,22 @@ export class ScoreFormComponent {
     }
 
     get tricksDisplay() {
-        if (this._nbTricksDisplay == 0)
-            return "=";
+        if (this._nbTricksDisplay === 0)
+            return '=';
         if (this._nbTricksDisplay < 0)
-            return "" + this._nbTricksDisplay;
-        return "+" + this._nbTricksDisplay;
+            return '' + this._nbTricksDisplay;
+        return '+' + this._nbTricksDisplay;
     }
 
     get computedScore() {
         if (!this.isValid)
-            return "";
-        let result = Score.computeScore(this.score);
-        return (result > 0 ? "+" : "") + result;
+            return '';
+        const result = Score.computeScore(this.score);
+        return (result > 0 ? '+' : '') + result;
     }
 
     get isValid(): boolean {
-        if (this.score.contract.level == 0)
+        if (this.score.contract.level === 0)
             return true;
         return this.score.contract.level !== undefined && this.score.contract.suit !== undefined
             && this.score.contract.declarer !== undefined;

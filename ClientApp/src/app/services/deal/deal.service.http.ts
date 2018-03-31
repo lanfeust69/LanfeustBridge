@@ -1,10 +1,11 @@
-import {Inject, Injectable} from '@angular/core';
-import {Http, Headers, RequestOptions, Response} from '@angular/http';
-import {Observable} from 'rxjs/Rx';
-import {Suit} from '../../types';
-import {Deal} from '../../deal';
-import {Score} from '../../score';
-import {DealService} from './deal.service';
+import { Inject, Injectable } from '@angular/core';
+import { Http, Headers, RequestOptions, Response } from '@angular/http';
+import { Observable } from 'rxjs/Observable';
+
+import { Suit } from '../../types';
+import { Deal } from '../../deal';
+import { Score } from '../../score';
+import { DealService } from './deal.service';
 
 @Injectable()
 export class DealServiceHttp implements DealService {
@@ -21,23 +22,24 @@ export class DealServiceHttp implements DealService {
         return res.json();
     }
 
-    getDeal(tournament: number, id: number) : Observable<Deal> {
+    getDeal(tournament: number, id: number): Observable<Deal> {
         return this._http.get(this._baseUrl + tournament + '/deal/' + id).map(this.extractData);
     }
 
-    getDeals(tournament: number) : Observable<Deal[]> {
+    getDeals(tournament: number): Observable<Deal[]> {
         return this._http.get(this._baseUrl + tournament + '/deal').map(this.extractData);
     }
 
-    getScore(tournament: number, id: number, round: number) : Observable<Score> {
+    getScore(tournament: number, id: number, round: number): Observable<Score> {
         return this._http.get(this._baseUrl + tournament + '/deal/' + id + '/score/' + round).map(this.extractData);
     }
 
-    postScore(tournament: number, score: Score) : Observable<Score> {
+    postScore(tournament: number, score: Score): Observable<Score> {
         // TODO : don't trust client side : compute on server
         score.score = Score.computeScore(score);
-        let headers = new Headers({ 'Content-Type': 'application/json' });
-        let options = new RequestOptions({ headers: headers });
-        return this._http.post(this._baseUrl + tournament + '/deal/' + score.dealId + '/score/' + score.round, JSON.stringify(score), options).map(this.extractData);
+        const headers = new Headers({ 'Content-Type': 'application/json' });
+        const options = new RequestOptions({ headers: headers });
+        return this._http.post(this._baseUrl + tournament + '/deal/' + score.dealId + '/score/' + score.round,
+            JSON.stringify(score), options).map(this.extractData);
     }
 }

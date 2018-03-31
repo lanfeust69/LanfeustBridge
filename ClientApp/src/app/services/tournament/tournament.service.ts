@@ -1,10 +1,15 @@
-import {InjectionToken} from '@angular/core';
-import {Observable} from 'rxjs/Rx';
-import {Tournament} from '../../tournament';
+import { InjectionToken } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+
+import { Tournament } from '../../tournament';
 
 export let TOURNAMENT_SERVICE = new InjectionToken('TournamentService');
 
 export interface TournamentService {
+    newTournamentObservable: Observable<void>;
+    tournamentStartedObservable: Observable<number>;
+    tournamentFinishedObservable: Observable<number>;
+
     getNames(): Observable<{id: number; name: string}[]>;
     get(id: number): Observable<Tournament>;
     create(tournament: Tournament): Observable<Tournament>;
@@ -20,9 +25,6 @@ export interface TournamentService {
     currentRound(id: number): Observable<{round: number, finished: boolean}>;
     nextRound(id: number): void;
 
-    newTournamentObservable: Observable<void>;
-    tournamentStartedObservable: Observable<number>;
-    tournamentFinishedObservable: Observable<number>;
     getNextRoundObservable(id: number): Observable<number>;
     getRoundFinishedObservable(id: number): Observable<number>;
 }

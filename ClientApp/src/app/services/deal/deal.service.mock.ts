@@ -1,8 +1,9 @@
-import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs/Rx';
-import {Deal} from '../../deal';
-import {Score} from '../../score';
-import {DealService} from './deal.service';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+
+import { Deal } from '../../deal';
+import { Score } from '../../score';
+import { DealService } from './deal.service';
 
 @Injectable()
 export class DealServiceMock implements DealService {
@@ -24,7 +25,7 @@ export class DealServiceMock implements DealService {
 
     getScore(tournament: number, id: number, round: number): Observable<Score> {
         if (!this._deals[tournament] || !this._deals[tournament][id - 1] || !this._deals[tournament][id - 1].scores[round]) {
-            let score = new Score;
+            const score = new Score;
             score.dealId = id;
             score.round = round;
             score.vulnerability = Deal.computeVulnerability(id);
@@ -46,21 +47,21 @@ export class DealServiceMock implements DealService {
     }
 
     createRandomDeal(tournament: number, id: number): Deal {
-        let deal = new Deal(id);
-        let cards: number[] = [];
+        const deal = new Deal(id);
+        const cards: number[] = [];
         for (let i = 0; i < 52; i++)
             cards[i] = i;
         for (let i = 52; i > 0; i--) {
-            let dest = Math.floor(Math.random() * i);
-            let x = cards[i - 1];
+            const dest = Math.floor(Math.random() * i);
+            const x = cards[i - 1];
             cards[i - 1] = cards[dest];
             cards[dest] = x;
         }
-        let suits = ['spades', 'hearts', 'diamonds', 'clubs'];
-        let cardNames = ['A', 'K', 'Q', 'J', '10', '9', '8', '7', '6', '5', '4', '3', '2'];
+        const suits = ['spades', 'hearts', 'diamonds', 'clubs'];
+        const cardNames = ['A', 'K', 'Q', 'J', '10', '9', '8', '7', '6', '5', '4', '3', '2'];
         for (let i = 0; i < 4; i++) {
-            let player = ['west', 'north', 'east', 'south'][i];
-            let hand = cards.slice(i * 13, (i + 1) * 13).sort(function (a, b) { return a - b; });
+            const player = ['west', 'north', 'east', 'south'][i];
+            const hand = cards.slice(i * 13, (i + 1) * 13).sort(function (a, b) { return a - b; });
             for (let j = 0; j < 13; j++)
                 deal.hands[player][suits[Math.floor(hand[j] / 13)]].push(cardNames[hand[j] % 13]);
         }

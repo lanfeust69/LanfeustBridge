@@ -4,4 +4,4 @@ export enum Suit {
     Hearts,
     Spades,
     NoTrump
-};
+}
