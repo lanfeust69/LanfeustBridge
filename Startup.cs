@@ -17,12 +17,18 @@ namespace LanfeustBridge
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        ILogger<Startup> _logger;
+
+        public Startup(ILogger<Startup> logger, IConfiguration configuration)
         {
+            _logger = logger;
             Configuration = configuration;
+            IsBackendOnly = Configuration.GetValue("BackendOnly", false);
         }
 
         public IConfiguration Configuration { get; }
+
+        public bool IsBackendOnly { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -66,11 +72,18 @@ namespace LanfeustBridge
             {
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
+                app.UseHttpsRedirection();
             }
 
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
-            app.UseSpaStaticFiles();
+            if (IsBackendOnly)
+            {
+                _logger.LogInformation("Skipping serving static files for backend-only use");
+            }
+            else
+            {
+                app.UseStaticFiles();
+                app.UseSpaStaticFiles();
+            }
 
             app.UseSignalR(routes => routes.MapHub<TournamentHub>("/hub/tournament"));
             app.UseMvc(routes =>
@@ -80,18 +93,19 @@ namespace LanfeustBridge
                     template: "{controller}/{action=Index}/{id?}");
             });
 
-            app.UseSpa(spa =>
-            {
-                // To learn more about options for serving an Angular SPA from ASP.NET Core,
-                // see https://go.microsoft.com/fwlink/?linkid=864501
-
-                spa.Options.SourcePath = "ClientApp";
-
-                if (env.IsDevelopment())
+            if (!IsBackendOnly)
+                app.UseSpa(spa =>
                 {
-                    spa.UseAngularCliServer(npmScript: "start");
-                }
-            });
+                    // To learn more about options for serving an Angular SPA from ASP.NET Core,
+                    // see https://go.microsoft.com/fwlink/?linkid=864501
+
+                    spa.Options.SourcePath = "ClientApp";
+
+                    if (env.IsDevelopment())
+                    {
+                        spa.UseAngularCliServer(npmScript: "start");
+                    }
+                });
         }
     }
 }

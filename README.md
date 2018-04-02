@@ -24,9 +24,7 @@ cd ClientApp
 npm test
 
 # Running frontend end-to-end tests
-# - if not in development mode (where data is only kept in memory), remove old data : rm data/*
-# - run the server in another terminal : dotnet run
-# - finally run the test, --silent is to avoid spurious npm error message in case of failure
+# --silent is to avoid spurious npm error message in case of failure
 cd ClientApp
 npm run e2e --silent
 ```
