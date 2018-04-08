@@ -1,6 +1,6 @@
 import { browser, by, element, ExpectedConditions } from 'protractor';
 
-import { FrontEndPage } from './app.po';
+import { parse as parseUrl } from 'url';
 
 function randomScore() {
     const level = Math.floor((Math.random() * 8) + 1);
@@ -28,19 +28,35 @@ function randomScore() {
 }
 
 describe('front-end App', function() {
-    let page: FrontEndPage;
-
-    beforeEach(() => {
-        page = new FrontEndPage();
-    });
-
-    it('should display app name', () => {
-        page.navigateTo();
-        expect<any>(page.getMainTitleText()).toEqual('Lanfeust Bridge');
+    it('should start on login page', () => {
+        browser.waitForAngularEnabled(false);
+        browser.get('/');
+        browser.wait(ExpectedConditions.urlContains('/Identity/Account/Login'), 12000);
+        expect(element(by.id('account'))).toBeTruthy(); // the account form is present
+        expect(element(by.css('form#account'))).toBeTruthy(); // the account form is present
+        const registerLink = element(by.css('form#account p:nth-of-type(2) a'));
+        expect(registerLink).toBeTruthy();
+        expect(registerLink.getText()).toBe('Register as a new user');
+        registerLink.click();
+        browser.wait(ExpectedConditions.urlContains('/Identity/Account/Register'), 12000);
     });
 
     it('should run a small tournament', () => {
-        page.navigateTo();
+        browser.waitForAngularEnabled(false);
+        browser.get('/');
+        browser.wait(ExpectedConditions.urlContains('/Identity/Account/Login'), 12000);
+        const registerLink = element(by.css('form#account p:nth-of-type(2) a'));
+        registerLink.click();
+        browser.wait(ExpectedConditions.urlContains('/Identity/Account/Register'), 12000);
+
+        // register user
+        element(by.id('Input_Email')).sendKeys('test@example.com');
+        element(by.id('Input_Password')).sendKeys('123456');
+        element(by.id('Input_ConfirmPassword')).sendKeys('123456');
+        element(by.css('form button')).click();
+        browser.wait(ExpectedConditions.not(ExpectedConditions.urlContains('/Identity')), 12000);
+        expect(browser.getCurrentUrl().then(s => parseUrl(s).pathname)).toBe('/');
+        browser.waitForAngularEnabled(true);
 
         // browser.pause();
         element(by.css('button')).click();
@@ -84,8 +100,8 @@ describe('front-end App', function() {
         browser.wait(ExpectedConditions.presenceOf(element(by.buttonText('Close'))), 12000);
         element(by.buttonText('Close')).click();
 
-        ExpectedConditions.presenceOf(element(by.linkText('Play')));
-        ExpectedConditions.presenceOf(element(by.linkText('Players')));
+        expect(element(by.linkText('Play'))).toBeTruthy();
+        expect(element(by.linkText('Players'))).toBeTruthy();
         element(by.linkText('Players')).click();
         element(by.linkText('Player 1')).click();
         element(by.linkText('2')).click();

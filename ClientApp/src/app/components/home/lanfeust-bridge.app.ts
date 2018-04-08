@@ -1,6 +1,9 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, Inject, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
-import {Alert, AlertService} from '../../services/alert/alert.service';
+import { Alert, AlertService } from '../../services/alert/alert.service';
+import { UserService } from '../../services/user/user.service';
 
 @Component({
     selector: 'lanfeust-bridge-app',
@@ -10,11 +13,23 @@ import {Alert, AlertService} from '../../services/alert/alert.service';
 export class LanfeustBridgeApp implements OnInit {
     randomDeal: number = Math.floor(Math.random() * 32) + 1;
     alerts: Object[] = [];
+    user = '';
 
-    constructor(private _alertService: AlertService) {}
+    constructor(private _http: HttpClient, private _router: Router,
+        private _userService: UserService,
+        private _alertService: AlertService) {}
 
     ngOnInit() {
         this._alertService.newAlert.subscribe(alert => this.alerts.push(alert));
+        this._userService.isLoggedIn()
+            .subscribe(b => {
+                if (b) {
+                    this.user = this._userService.currentUser;
+                } else {
+                    console.log('trying to navigate to login page');
+                    window.location.href = '/Identity/Account/Login';
+                }
+            });
     }
 
     public addAlert() {

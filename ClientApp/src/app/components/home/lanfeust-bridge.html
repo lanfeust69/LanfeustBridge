@@ -1,4 +1,4 @@
 <ngb-alert *ngFor="let alert of alerts;let i = index" [type]="alert.type" dismissible="true" (close)="closeAlert(i)">
   {{alert?.msg}}
 </ngb-alert>
-<router-outlet></router-outlet>
+<router-outlet *ngIf="user"></router-outlet>

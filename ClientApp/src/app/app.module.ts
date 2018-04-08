@@ -25,11 +25,14 @@ import { DealServiceHttp } from './services/deal/deal.service.http';
 import { MOVEMENT_SERVICE } from './services/movement/movement.service';
 import { MovementServiceHttp } from './services/movement/movement.service.http';
 // import { MovementServiceMock } from './services/movement/movement.service.mock';
+import { UserService } from './services/user/user.service';
 import { AlertService } from './services/alert/alert.service';
 
 // import used rxjs bits
 import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/observable/fromEventPattern';
+import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/switchMap';
@@ -62,6 +65,7 @@ import 'rxjs/add/operator/switchMap';
         // { provide: TOURNAMENT_SERVICE, useClass: TournamentServiceMock },
         // { provide: DEAL_SERVICE, useClass: DealServiceMock },
         // { provide: MOVEMENT_SERVICE, useClass: MovementServiceMock },
+        { provide: UserService, useClass: UserService },
         { provide: AlertService, useClass: AlertService }
     ]
 })
