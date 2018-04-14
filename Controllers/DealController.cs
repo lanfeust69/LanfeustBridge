@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
@@ -9,6 +10,7 @@ using LanfeustBridge.Hubs;
 namespace LanfeustBridge.Controllers
 {
     [Route("api/tournament/{tournamentId}/deal")]
+    [Authorize]
     public class DealController : Controller
     {
         private readonly ILogger _logger;

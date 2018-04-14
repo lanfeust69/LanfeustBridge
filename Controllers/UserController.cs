@@ -14,6 +14,7 @@ using System.Security.Claims;
 namespace LanfeustBridge.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     public class UserController : Controller
     {
         IUserStore<IdentityUser> _userStore;

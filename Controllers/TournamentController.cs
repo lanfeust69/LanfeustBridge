@@ -1,5 +1,6 @@
 using System.Linq;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
@@ -11,6 +12,7 @@ using LanfeustBridge.Hubs;
 namespace LanfeustBridge.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     public class TournamentController : Controller
     {
         private readonly ILogger _logger;

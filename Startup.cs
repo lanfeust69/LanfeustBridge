@@ -91,14 +91,14 @@ namespace LanfeustBridge
                 });
             }
 
-            services.AddMvc(config =>
+            services.AddAuthentication().AddGoogle(googleOptions =>
             {
-                var policy = new AuthorizationPolicyBuilder()
-                                .RequireAuthenticatedUser()
-                                .Build();
-                config.Filters.Add(new AuthorizeFilter(policy));
-            })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+                googleOptions.ClientId = Configuration["Authentication:Google:ClientId"];
+                googleOptions.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
+            });
+
+            // no global "RequireAuthenticatedUser", as it interferes with (external) login mechanism
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddSignalR();
 
             // In production, the Angular files will be served from this directory

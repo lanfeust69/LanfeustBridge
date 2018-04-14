@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using LanfeustBridge.Services;
@@ -5,6 +6,7 @@ using LanfeustBridge.Services;
 namespace LanfeustBridge.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     public class MovementController : Controller
     {
         private readonly MovementService _movementService;

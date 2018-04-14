@@ -11,11 +11,14 @@ using Microsoft.Extensions.Logging;
 namespace LanfeustBridge.Services
 {
     public partial class UserStoreService : IUserStore<IdentityUser>, 
-        IUserPasswordStore<IdentityUser>, IUserEmailStore<IdentityUser>, IUserPhoneNumberStore<IdentityUser>
+        IUserPasswordStore<IdentityUser>, IUserEmailStore<IdentityUser>,
+        IUserPhoneNumberStore<IdentityUser>, IUserLoginStore<IdentityUser>
     {
         private ILogger _logger;
         private LiteCollection<IdentityUser> _users;
         private LiteCollection<IdentityRole> _roles;
+        private Dictionary<string, string> _usersByGoogleId = new Dictionary<string, string>();
+        private Dictionary<string, List<UserLoginInfo>> _usersLogins = new Dictionary<string, List<UserLoginInfo>>();
 
         public UserStoreService(ILogger<UserStoreService> logger, DbService dbService)
         {
@@ -38,6 +41,7 @@ namespace LanfeustBridge.Services
                 throw new ArgumentNullException(nameof(user));
 
             _users.Insert(user);
+            _usersLogins[user.Id] = new List<UserLoginInfo>();
             return Task.FromResult(IdentityResult.Success);
         }
 
@@ -271,6 +275,34 @@ namespace LanfeustBridge.Services
 
             user.PhoneNumberConfirmed = confirmed;
             return Task.FromResult<object>(null);
+        }
+
+        public Task AddLoginAsync(IdentityUser user, UserLoginInfo login, CancellationToken cancellationToken)
+        {
+            _usersByGoogleId[login.ProviderKey] = user.Id;
+            _usersLogins[user.Id].Add(login);
+            return Task.FromResult<object>(null);
+        }
+
+        public Task RemoveLoginAsync(IdentityUser user, string loginProvider, string providerKey, CancellationToken cancellationToken)
+        {
+            _usersByGoogleId.Remove(providerKey);
+            _usersLogins[user.Id].RemoveAll(l => l.LoginProvider == loginProvider && l.ProviderKey == providerKey);
+            return Task.FromResult<object>(null);
+        }
+
+        public Task<IList<UserLoginInfo>> GetLoginsAsync(IdentityUser user, CancellationToken cancellationToken)
+        {
+            return Task.FromResult<IList<UserLoginInfo>>(_usersLogins[user.Id]);
+        }
+
+        public Task<IdentityUser> FindByLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken)
+        {
+            _usersByGoogleId.TryGetValue(providerKey, out var userId);
+            if (userId == null)
+                return Task.FromResult<IdentityUser>(null);
+            var user = _users.FindById(userId);
+            return Task.FromResult(user);
         }
     }
 }
