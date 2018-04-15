@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -53,6 +54,8 @@ namespace LanfeustBridge
 
             services.AddSingleton<IUserStore<User>, UserStoreService>();
             services.AddSingleton<IRoleStore<IdentityRole>, UserStoreService>();
+            if (!IsDevelopment)
+                services.AddSingleton<IEmailSender, SendMail>();
             services.AddIdentity<User, IdentityRole>(options => options.Stores.MaxLengthForKeys = 128)
                 .AddDefaultUI()
                 .AddDefaultTokenProviders();
