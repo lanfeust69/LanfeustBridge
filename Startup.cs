@@ -16,6 +16,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 
 using LanfeustBridge.Hubs;
+using LanfeustBridge.Models;
 using LanfeustBridge.Services;
 
 namespace LanfeustBridge
@@ -50,9 +51,9 @@ namespace LanfeustBridge
                 //.AddSingleton<ITournamentService, SimpleTournamentsService>()
                 .AddSingleton(MovementService.Service);
 
-            services.AddSingleton<IUserStore<IdentityUser>, UserStoreService>();
+            services.AddSingleton<IUserStore<User>, UserStoreService>();
             services.AddSingleton<IRoleStore<IdentityRole>, UserStoreService>();
-            services.AddIdentity<IdentityUser, IdentityRole>(options => options.Stores.MaxLengthForKeys = 128)
+            services.AddIdentity<User, IdentityRole>(options => options.Stores.MaxLengthForKeys = 128)
                 .AddDefaultUI()
                 .AddDefaultTokenProviders();
 

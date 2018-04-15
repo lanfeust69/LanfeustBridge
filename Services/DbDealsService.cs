@@ -59,13 +59,8 @@ namespace LanfeustBridge.Services
 
         public void SetDealsForTournament(int tournamentId, Deal[] deals)
         {
-            using (var transaction = _db.BeginTrans())
-            {
-                foreach (var deal in deals)
-                    _deals.Upsert(new DealWrapper(tournamentId, deal));
-
-                transaction.Commit();
-            }
+            foreach (var deal in deals)
+                _deals.Upsert(new DealWrapper(tournamentId, deal));
             _logger.LogInformation($"Deals for tournament {tournamentId} saved");
         }
     }

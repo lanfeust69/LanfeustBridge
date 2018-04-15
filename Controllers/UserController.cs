@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -8,8 +9,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
+using LanfeustBridge.Models;
 using LanfeustBridge.Services;
-using System.Security.Claims;
 
 namespace LanfeustBridge.Controllers
 {
@@ -17,10 +18,10 @@ namespace LanfeustBridge.Controllers
     [Authorize]
     public class UserController : Controller
     {
-        IUserStore<IdentityUser> _userStore;
-        SignInManager<IdentityUser> _signInManager;
+        IUserStore<User> _userStore;
+        SignInManager<User> _signInManager;
 
-        public UserController(IUserStore<IdentityUser> userStore, SignInManager<IdentityUser> signInManager)
+        public UserController(IUserStore<User> userStore, SignInManager<User> signInManager)
         {
             _userStore = userStore;
             _signInManager = signInManager;
@@ -34,7 +35,7 @@ namespace LanfeustBridge.Controllers
                 return Unauthorized();
 
             // also handle the case where the account has been deleted (but there is still a valid cookie)
-            IdentityUser user = null;
+            User user = null;
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId != null) // should probably always be true...
                 user = await _userStore.FindByIdAsync(userId, CancellationToken.None);
