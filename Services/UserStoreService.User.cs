@@ -15,7 +15,9 @@ namespace LanfeustBridge.Services
 {
     public partial class UserStoreService : IUserStore<User>,
         IUserPasswordStore<User>, IUserEmailStore<User>,
-        IUserPhoneNumberStore<User>, IUserLoginStore<User>
+        IUserPhoneNumberStore<User>, IUserLoginStore<User>,
+        IUserTwoFactorStore<User>, IUserAuthenticatorKeyStore<User>,
+        IUserTwoFactorRecoveryCodeStore<User>
     {
         private ILogger _logger;
         private LiteCollection<User> _users;
@@ -331,6 +333,80 @@ namespace LanfeustBridge.Services
             var loginString = $"{loginProvider}|{providerKey}";
             var user = _users.FindOne(u => u.ExternalLogins.Contains(loginString));
             return Task.FromResult(user);
+        }
+
+        public Task<bool> GetTwoFactorEnabledAsync(User user, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+
+            return Task.FromResult(user.IsTwoFactorEnabled);
+        }
+
+        public Task SetTwoFactorEnabledAsync(User user, bool enabled, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+
+            user.IsTwoFactorEnabled = enabled;
+            return Task.FromResult<object>(null);
+        }
+
+        public Task<string> GetAuthenticatorKeyAsync(User user, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+
+            return Task.FromResult(user.AuthenticatorKey);
+        }
+
+        public Task SetAuthenticatorKeyAsync(User user, string key, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+            if (key == null)
+                throw new ArgumentNullException(nameof(key));
+
+            user.AuthenticatorKey = key;
+            return Task.FromResult<object>(null);
+        }
+
+        public Task ReplaceCodesAsync(User user, IEnumerable<string> recoveryCodes, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+            if (recoveryCodes == null)
+                throw new ArgumentNullException(nameof(recoveryCodes));
+
+            user.RecoveryCodes.Clear();
+            user.RecoveryCodes.AddRange(recoveryCodes);
+            return Task.FromResult<object>(null);
+        }
+
+        public Task<bool> RedeemCodeAsync(User user, string code, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+            if (code == null)
+                throw new ArgumentNullException(nameof(code));
+
+            // allow if code was successfully found *and* removed
+            return Task.FromResult(user.RecoveryCodes.Remove(code));
+        }
+
+        public Task<int> CountCodesAsync(User user, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+
+            return Task.FromResult(user.RecoveryCodes.Count);
         }
     }
 }

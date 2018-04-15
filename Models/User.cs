@@ -9,5 +9,8 @@ namespace LanfeustBridge.Models
         public string DisplayName { get; set; }
         // use strings to help indexing
         public List<string> ExternalLogins { get; set; } = new List<string>();
+        public bool IsTwoFactorEnabled { get; set; }
+        public string AuthenticatorKey { get; set; }
+        public List<string> RecoveryCodes { get; set; } = new List<string>();
     }
 }
