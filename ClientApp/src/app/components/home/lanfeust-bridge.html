@@ -1,3 +1,11 @@
+<nav class="navbar navbar-expand navbar-dark bg-dark">
+  <a class="navbar-brand" [routerLink]="['']">Lanfeust Bridge</a>
+  <ul class="navbar-nav ml-auto">
+    <li class="nav-item">
+      <a class="nav-link" href="/Identity/Account/Manage">{{user}}</a>
+    </li>
+  </ul>
+</nav>
 <ngb-alert *ngFor="let alert of alerts;let i = index" [type]="alert.type" dismissible="true" (close)="closeAlert(i)">
   {{alert?.msg}}
 </ngb-alert>
