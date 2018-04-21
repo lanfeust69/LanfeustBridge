@@ -17,11 +17,14 @@ namespace LanfeustBridge.Services
         IUserPasswordStore<User>, IUserEmailStore<User>,
         IUserPhoneNumberStore<User>, IUserLoginStore<User>,
         IUserTwoFactorStore<User>, IUserAuthenticatorKeyStore<User>,
-        IUserTwoFactorRecoveryCodeStore<User>
+        IUserTwoFactorRecoveryCodeStore<User>,
+        IQueryableUserStore<User>
     {
         private ILogger _logger;
         private LiteCollection<User> _users;
         private LiteCollection<IdentityRole> _roles;
+
+        public IQueryable<User> Users => _users.FindAll().AsQueryable();
 
         public UserStoreService(ILogger<UserStoreService> logger, DbService dbService)
         {
@@ -43,6 +46,9 @@ namespace LanfeustBridge.Services
             cancellationToken.ThrowIfCancellationRequested();
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
+
+            if (string.IsNullOrWhiteSpace(user.DisplayName))
+                user.DisplayName = user.UserName;
 
             _users.Insert(user);
             return Task.FromResult(IdentityResult.Success);

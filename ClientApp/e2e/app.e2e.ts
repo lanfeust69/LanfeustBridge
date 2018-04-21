@@ -58,13 +58,18 @@ describe('front-end App', function() {
         expect(browser.getCurrentUrl().then(s => parseUrl(s).pathname)).toBe('/');
         browser.waitForAngularEnabled(true);
 
-        // browser.pause();
         element(by.css('button')).click();
         element(by.css('input[name="name"]')).sendKeys('Test');
         element(by.css('input[name="tables"]')).clear();
         element(by.css('input[name="tables"]')).sendKeys('3');
         element(by.css('input[name="rounds"]')).clear();
         element(by.css('input[name="rounds"]')).sendKeys('3');
+        // fill in players
+        element(by.linkText('Players')).click();
+        for (let i = 1; i <= 12; i++)
+            element(by.css(`form div:nth-of-type(${i}) input`)).sendKeys(`Player ${i}`);
+        element(by.linkText('Infos')).click();
+
         element(by.buttonText('Create')).click();
         // apparently the new angular 2 HttpModule's Observable aren't waited by protractor, so :
         browser.wait(ExpectedConditions.elementToBeClickable(element(by.buttonText('Start'))), 12000);

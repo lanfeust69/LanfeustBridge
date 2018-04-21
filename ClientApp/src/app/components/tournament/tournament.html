@@ -48,7 +48,7 @@
                 </form>
             </ng-template>
         </ngb-tab>
-        <ngb-tab title="Play" *ngIf="(running && _currentRound < _tournament.nbRounds && _currentPosition) || (finished && _edit)">
+        <ngb-tab title="Play" id="tab-play" *ngIf="(running && _currentRound < _tournament.nbRounds && _currentPosition) || (finished && _edit)">
             <ng-template ngbTabContent>
                 <div *ngIf="_edit" class="form-group">
                     <label for="round">Round</label>
@@ -82,7 +82,7 @@
                 <h4>All rounds Finished</h4>
             </ng-template>
         </ngb-tab>
-        <ngb-tab title="Players" *ngIf="_tournament.players">
+        <ngb-tab title="Players" id="tab-players" *ngIf="_tournament.players">
             <ng-template ngbTabContent>
                 <div *ngIf="!finished && !_edit" class="list-group">
                     <a [routerLink]="['/tournament', _tournament.id]" class="list-group-item"
@@ -107,11 +107,16 @@
                         </tbody>
                     </table>
                 </div>
-                <form *ngIf="setup && _edit" class="list-group form-horizontal">
-                    <div *ngFor="let p of players; let i = index" class="list-group-item row from-group">
-                        <label for="player" class="control-label col-3">Player {{i + 1}}</label>
-                        <div class="col-9">
-                            <input type="text" class="form-control" [(ngModel)]="p.name" placeholder="Player name" id="player" name="player{{i}}">
+                <form *ngIf="setup && _edit">
+                    <div *ngFor="let p of players; let i = index" class="row from-group">
+                        <div class="input-group m-2">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" style="width: 8em">Player {{i + 1}}</span>
+                            </div>
+                            <input type="text" class="form-control" [(ngModel)]="p.name" [ngbTypeahead]="getSearch(i)"
+                                   (focus)="playerTypeahead.next({ player: i, text: $event.target.value})"
+                                   (click)="playerTypeahead.next({ player: i, text: $event.target.value})"
+                                   placeholder="Player name" id="player" name="player{{i}}">
                         </div>
                     </div>
                 </form>
@@ -133,6 +138,5 @@
         <button *ngIf="setup && _created && !_edit" class="btn btn-primary" (click)="start()">Start</button>
         <!--<button *ngIf="running" class="btn btn-primary" (click)="play()">Play</button>-->
         <button *ngIf="(running && _roundFinished && _currentRound == _tournament.nbRounds - 1) || (finished && _edit)" class="btn btn-primary" (click)="close()">Close</button>
-        <a [routerLink]="['/']" class="float-right">Back</a>
     </div>
 </div>

@@ -3,7 +3,7 @@ import { Observable } from 'rxjs/Observable';
 
 import { Tournament } from '../../tournament';
 
-export let TOURNAMENT_SERVICE = new InjectionToken('TournamentService');
+export const TOURNAMENT_SERVICE = new InjectionToken('TournamentService');
 
 export interface TournamentService {
     newTournamentObservable: Observable<void>;

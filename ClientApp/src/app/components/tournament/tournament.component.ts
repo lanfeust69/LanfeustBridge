@@ -1,7 +1,8 @@
-import { Component, Input, Inject, OnInit } from '@angular/core';
+import { Component, Input, Inject, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
 import { HttpConnection, HubConnection } from '@aspnet/signalr';
-import { Observable, Subscriber, Subscription } from 'rxjs/';
+import { NgbTabset } from '@ng-bootstrap/ng-bootstrap';
+import { Observable, Subject, Subscriber, Subscription } from 'rxjs/';
 
 import { AlertService } from '../../services/alert/alert.service';
 import { Tournament, Position, Status } from '../../tournament';
@@ -10,6 +11,7 @@ import { MovementDescription } from '../../movement';
 import { TournamentService, TOURNAMENT_SERVICE } from '../../services/tournament/tournament.service';
 import { DealService, DEAL_SERVICE } from '../../services/deal/deal.service';
 import { MovementService, MOVEMENT_SERVICE } from '../../services/movement/movement.service';
+import { UserService, USER_SERVICE } from '../../services/user/user.service';
 
 @Component({
     selector: 'lanfeust-bridge-tournament',
@@ -25,6 +27,7 @@ export class TournamentComponent implements OnInit {
     _sortedMovementIds: string[] = [];
     _knownScorings: string[] = [];
     _knownNames: string[] = [];
+    _allUsers: string[] = [];
     _invalidReason: string;
 
     _currentRound = 0;
@@ -35,10 +38,14 @@ export class TournamentComponent implements OnInit {
     _currentScore: Score = new Score;
     _scoreDisplayed = false;
 
+    @ViewChild(NgbTabset) tabs: NgbTabset;
+    playerTypeahead = new Subject<{ player: number, text: string }>();
+
     constructor(
         private _router: Router,
         private _route: ActivatedRoute,
         private _alertService: AlertService,
+        @Inject(USER_SERVICE) private _userService: UserService,
         @Inject(TOURNAMENT_SERVICE) private _tournamentService: TournamentService,
         @Inject(DEAL_SERVICE) private _dealService: DealService,
         @Inject(MOVEMENT_SERVICE) private _movementService: MovementService) { }
@@ -57,6 +64,8 @@ export class TournamentComponent implements OnInit {
         });
         this._tournamentService.getNames()
             .subscribe(names => this._knownNames = names.filter(v => v !== undefined).map(v => v.name));
+        this._userService.getAllUsers()
+            .subscribe(users => this._allUsers = users.map(u => u.name));
 
         this._route.url
             .switchMap((urlSegments: UrlSegment[]) => {
@@ -66,7 +75,7 @@ export class TournamentComponent implements OnInit {
                     tournament.nbRounds = 1;
                     tournament.nbDealsPerRound = 2;
                     for (let i = 0; i < 4; i++)
-                        tournament.players.push({name: 'Player ' + (i + 1), score: 0, rank: 0});
+                        tournament.players.push({name: '', score: 0, rank: 0});
                     return Observable.of(tournament);
                 }
                 const id = +urlSegments[1].path;
@@ -103,6 +112,7 @@ export class TournamentComponent implements OnInit {
         this._tournamentService.tournamentFinishedObservable.subscribe(tournamentId => {
             if (this._tournament && this._tournament.id === tournamentId) {
                 this._tournament.status = Status.Finished;
+                this.tabs.select('tab-players');
             }
         });
     }
@@ -156,7 +166,8 @@ export class TournamentComponent implements OnInit {
         this._tournament.status = Status.Running;
         this._currentRound = 0;
         this._currentDeal = 1;
-        this._currentPlayer = 0;
+        const userAsPlayerIndex = this.players.findIndex(p => p.name === this._userService.currentUser);
+        this._currentPlayer = userAsPlayerIndex === -1 ? 0 : userAsPlayerIndex;
         this.initializeScore(true);
         this._tournamentService.start(this._tournament.id)
             .subscribe(tournament => {
@@ -200,12 +211,14 @@ export class TournamentComponent implements OnInit {
     }
 
     processRunning(tournamentId: number) {
+        const userAsPlayerIndex = this.players.findIndex(p => p.name === this._userService.currentUser);
+        this._currentPlayer = userAsPlayerIndex === -1 ? 0 : userAsPlayerIndex;
         this._tournamentService.currentRound(tournamentId)
-        .subscribe(r => {
-            this._currentRound = r.round;
-            this._roundFinished = r.finished;
-            this.initializeScore(true);
-        });
+            .subscribe(r => {
+                this._currentRound = r.round;
+                this._roundFinished = r.finished;
+                this.initializeScore(true);
+            });
         this._tournamentService.getRoundFinishedObservable(tournamentId)
             .subscribe(r => {
                 console.log('RoundFinished received', r);
@@ -222,6 +235,7 @@ export class TournamentComponent implements OnInit {
     }
 
     initializeScore(resetCurrentDeal: boolean) {
+        this.tabs.select('tab-play');
         this._scoreDisplayed = false;
         this._currentRound = +this._currentRound; // string if set from html
         if (this._currentRound >= this._tournament.nbRounds)
@@ -258,6 +272,18 @@ export class TournamentComponent implements OnInit {
         this._tournamentService.nextRound(this._tournament.id);
         // simply set _roundFinished for display, and wait notification of next round
         this._roundFinished = false;
+    }
+
+    getSearch(player: number): (text: Observable<string>) => Observable<string[]> {
+        // not directly as a method because not bound to this when called from ngTypeahead
+        return (text: Observable<string>) =>
+            text.debounceTime(200).distinctUntilChanged()
+                .merge(this.playerTypeahead.filter(e => e.player === player).map(e => e.text))
+                .map(s => {
+                    const eligibleUsers = this._allUsers.filter(u => this.players.map(p => p.name).indexOf(u) === -1);
+                    return s === '' ? eligibleUsers :
+                        eligibleUsers.filter(u => u.toLocaleLowerCase().indexOf(s.toLocaleLowerCase()) !== -1);
+                });
     }
 
     get rounds(): number[] {
@@ -300,11 +326,11 @@ export class TournamentComponent implements OnInit {
         return this._tournament.status === Status.Finished;
     }
 
-    get players() {
+    get players(): { name: string, score: number, rank: number }[] {
         const nbPlayers = this._tournament.nbTables * 4;
         if (this._tournament.players.length < nbPlayers)
             for (let i = this._tournament.players.length; i < nbPlayers; i++)
-                this._tournament.players.push({name: 'Player ' + (i + 1), score: 0, rank: 0});
+                this._tournament.players.push({name: '', score: 0, rank: 0});
         return this._tournament.players.filter((p, i) => i < nbPlayers);
     }
 
@@ -323,7 +349,7 @@ export class TournamentComponent implements OnInit {
         const nbPlayers = this._tournament.nbTables * 4;
         if (this._tournament.players.length < nbPlayers)
             for (let i = this._tournament.players.length; i < nbPlayers; i++)
-                this._tournament.players.push({ name: 'Player ' + (i + 1), score: 0, rank: 0 });
+                this._tournament.players.push({ name: '', score: 0, rank: 0 });
     }
 
     get minTables(): number {

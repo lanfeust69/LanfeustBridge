@@ -3,7 +3,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { Alert, AlertService } from '../../services/alert/alert.service';
-import { UserService } from '../../services/user/user.service';
+import { USER_SERVICE, UserService } from '../../services/user/user.service';
 
 @Component({
     selector: 'lanfeust-bridge-app',
@@ -16,7 +16,7 @@ export class LanfeustBridgeApp implements OnInit {
     user = '';
 
     constructor(private _http: HttpClient, private _router: Router,
-        private _userService: UserService,
+        @Inject(USER_SERVICE) private _userService: UserService,
         private _alertService: AlertService) {}
 
     ngOnInit() {

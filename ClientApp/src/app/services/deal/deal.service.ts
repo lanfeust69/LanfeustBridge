@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import { Score } from '../../score';
 import { Deal } from '../../deal';
 
-export let DEAL_SERVICE = new InjectionToken('DealService');
+export const DEAL_SERVICE = new InjectionToken('DealService');
 
 export interface DealService {
     getDeal(tournament: number, id: number): Observable<Deal>;

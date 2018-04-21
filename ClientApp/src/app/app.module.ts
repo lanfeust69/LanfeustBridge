@@ -25,7 +25,9 @@ import { DealServiceHttp } from './services/deal/deal.service.http';
 import { MOVEMENT_SERVICE } from './services/movement/movement.service';
 import { MovementServiceHttp } from './services/movement/movement.service.http';
 // import { MovementServiceMock } from './services/movement/movement.service.mock';
-import { UserService } from './services/user/user.service';
+import { USER_SERVICE, UserService } from './services/user/user.service';
+import { UserServiceHttp } from './services/user/user.service.http';
+import { UserServiceMock } from './services/user/user.service.mock';
 import { AlertService } from './services/alert/alert.service';
 
 // import used rxjs bits
@@ -33,8 +35,11 @@ import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/observable/fromEventPattern';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/merge';
 import 'rxjs/add/operator/switchMap';
 
 @NgModule({
@@ -62,10 +67,11 @@ import 'rxjs/add/operator/switchMap';
         { provide: TOURNAMENT_SERVICE, useClass: TournamentServiceHttp },
         { provide: DEAL_SERVICE, useClass: DealServiceHttp },
         { provide: MOVEMENT_SERVICE, useClass: MovementServiceHttp },
+        { provide: USER_SERVICE, useClass: UserServiceHttp },
         // { provide: TOURNAMENT_SERVICE, useClass: TournamentServiceMock },
         // { provide: DEAL_SERVICE, useClass: DealServiceMock },
         // { provide: MOVEMENT_SERVICE, useClass: MovementServiceMock },
-        { provide: UserService, useClass: UserService },
+        // { provide: USER_SERVICE, useClass: UserServiceMock },
         { provide: AlertService, useClass: AlertService }
     ]
 })
