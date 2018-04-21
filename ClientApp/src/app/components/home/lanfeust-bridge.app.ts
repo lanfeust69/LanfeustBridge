@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, Inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
@@ -15,7 +14,7 @@ export class LanfeustBridgeApp implements OnInit {
     alerts: Object[] = [];
     user = '';
 
-    constructor(private _http: HttpClient, private _router: Router,
+    constructor(private _router: Router,
         @Inject(USER_SERVICE) private _userService: UserService,
         private _alertService: AlertService) {}
 

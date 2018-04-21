@@ -1,30 +1,32 @@
 <form (ngSubmit)="onSubmit()">
-    <div class="btn-group mr-2" ngbRadioGroup name="level">
-        <label class="btn btn-secondary"><input type="radio" [(ngModel)]="score.contract.level" (ngModelChange)="tricksFixup()" name="level" [value]="0" />Pass</label>
-        <label *ngFor="let level of [1, 2, 3, 4, 5, 6, 7]" class="btn btn-secondary"><input type="radio" [value]="level" [(ngModel)]="score.contract.level" (ngModelChange)="tricksFixup()" name="level" />{{level}}</label>
+    <div class="btn-group btn-group-toggle mr-2" ngbRadioGroup [(ngModel)]="score.contract.level" (ngModelChange)="tricksFixup()" name="level">
+        <label ngbButtonLabel class="btn-light"><input ngbButton type="radio" [value]="0" name="level" />Pass</label>
+        <label ngbButtonLabel *ngFor="let level of [1, 2, 3, 4, 5, 6, 7]" class="btn-light">
+            <input ngbButton type="radio" [value]="level" name="level" />{{level}}
+        </label>
     </div>
-    <div class="btn-group mr-2" *ngIf="score.contract.level" ngbRadioGroup name="suit">
-        <label *ngFor="let suit of _suits" class="btn btn-secondary">
-            <input type="radio" [value]="suit" [(ngModel)]="score.contract.suit" name="suit" />
+    <div class="btn-group btn-group-toggle mr-2" *ngIf="score.contract.level" ngbRadioGroup [(ngModel)]="score.contract.suit" name="suit">
+        <label ngbButtonLabel *ngFor="let suit of _suits" class="btn-light">
+            <input ngbButton type="radio" [value]="suit" name="suit" />
             <lanfeust-bridge-suit [suit]="suit"></lanfeust-bridge-suit>
         </label>
     </div>
-    <div class="btn-group mr-2" *ngIf="score.contract.level" data-toggle="buttons">
-        <label class="btn btn-secondary" [class.active]="score.contract.doubled" name="doubled">
-            <input type="checkbox" [(ngModel)]="score.contract.doubled" (ngModelChange)="doubleFixup($event)" name="doubled" />X
+    <div class="btn-group btn-group-toggle mr-2" *ngIf="score.contract.level">
+        <label ngbButtonLabel class="btn-light" [class.active]="score.contract.doubled" name="doubled">
+            <input ngbButton type="checkbox" [(ngModel)]="score.contract.doubled" (ngModelChange)="doubleFixup($event)" name="doubled" />X
         </label>
-        <label class="btn btn-secondary" [class.active]="score.contract.redoubled" name="redoubled">
-            <input type="checkbox"  [(ngModel)]="score.contract.redoubled" (ngModelChange)="redoubleFixup($event)" name="redoubled" />XX
+        <label ngbButtonLabel class="btn-light" [class.active]="score.contract.redoubled" name="redoubled">
+            <input ngbButton type="checkbox" [(ngModel)]="score.contract.redoubled" (ngModelChange)="redoubleFixup($event)" name="redoubled" />XX
         </label>
     </div>
-    <div class="btn-group mr-2" *ngIf="score.contract.level" ngbRadioGroup name="declarer">
-        <label *ngFor="let declarer of ['N', 'S', 'E', 'W']" class="btn btn-secondary">
-            <input type="radio" [value]="declarer" [(ngModel)]="score.contract.declarer" name="declarer" />{{declarer}}</label>
+    <div class="btn-group btn-group-toggle mr-2" *ngIf="score.contract.level" ngbRadioGroup [(ngModel)]="score.contract.declarer" name="declarer">
+        <label ngbButtonLabel *ngFor="let declarer of ['N', 'S', 'E', 'W']" class="btn-light">
+            <input ngbButton type="radio" [value]="declarer" name="declarer" />{{declarer}}</label>
     </div>
     <div class="btn-group mr-2" *ngIf="score.contract.level" name="result">
-        <label class="btn btn-secondary" (click)="changeTricks(-1)">-</label>
-        <label class="btn bg-info">{{tricksDisplay}}</label>
-        <label class="btn btn-secondary" (click)="changeTricks(1)">+</label>
+        <button type="button" class="btn btn-light" (click)="changeTricks(-1)">-</button>
+        <button type="button" class="btn bg-info">{{tricksDisplay}}</button>
+        <button type="button" class="btn btn-light" (click)="changeTricks(1)">+</button>
     </div>
     <div class="form-group">
         <div class="panel panel-body score-display" *ngIf="!score.contract.level">Pass</div>

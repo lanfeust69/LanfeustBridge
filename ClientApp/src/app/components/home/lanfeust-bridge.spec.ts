@@ -1,22 +1,20 @@
-import {Component} from '@angular/core';
-import {TestBed, inject} from '@angular/core/testing';
-import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import {AlertService} from '../../services/alert/alert.service';
-import {LanfeustBridgeApp} from './lanfeust-bridge.app';
+import { Component } from '@angular/core';
+import { TestBed, inject } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
-// tslint:disable-next-line:component-selector
-@Component({selector: 'router-outlet', template: ''})
-export class RouterOutletStubComponent { }
+import { AlertService } from '../../services/alert/alert.service';
+import { USER_SERVICE } from '../../services/user/user.service';
+import { UserServiceMock } from '../../services/user/user.service.mock';
 
-class RouterStub {
-    navigateByUrl(url: string) { return url; }
-}
+import { LanfeustBridgeApp } from './lanfeust-bridge.app';
 
 beforeEach(() => TestBed.configureTestingModule({
-    imports: [NgbModule.forRoot()],
-    declarations: [LanfeustBridgeApp, RouterOutletStubComponent],
+    imports: [NgbModule.forRoot(), RouterTestingModule],
+    declarations: [LanfeustBridgeApp],
     providers: [
-        AlertService // simple enough to keep it without a stub
+        AlertService, // simple enough to keep it without a stub
+        { provide: USER_SERVICE, useClass: UserServiceMock}
     ]
 }));
 

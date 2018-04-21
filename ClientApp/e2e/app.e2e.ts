@@ -19,7 +19,7 @@ function randomScore() {
         element(by.css('div[name="declarer"]>label:nth-of-type(' + declarer + ')')).click();
         const result = Math.floor((Math.random() * 5) - 2);
         if (result !== 0) {
-            const el = element(by.css('div[name="result"]>label:nth-of-type(' + (result < 0 ? 1 : 3) + ')'));
+            const el = element(by.css('div[name="result"]>button:nth-of-type(' + (result < 0 ? 1 : 3) + ')'));
             for (let i = 0; i < Math.abs(result); i++)
                 el.click();
         }

@@ -6,6 +6,7 @@ import { By } from '@angular/platform-browser';
 import { Score } from '../../score';
 import { SuitComponent } from '../suit/suit.component';
 import { ScoreFormComponent } from './score-form.component';
+import { Suit } from '../../types';
 
 describe('Component: score', () => {
     let fixture: ComponentFixture<ScoreFormComponent>;
@@ -82,7 +83,7 @@ describe('Component: score', () => {
         const display = debugElement.query(By.css('div .score-display'));
         expect(display).toBeDefined();
         expect(display.nativeElement.innerText).toMatch(/^1\s*=\s*$/);
-        expect(debugElement.query(By.css('button')).nativeElement.disabled).toBe(true);
+        expect(debugElement.query(By.css('button[type=submit]')).nativeElement.disabled).toBe(true);
     }));
 
     it('should be valid after entering simple score', fakeAsync(() => {
@@ -107,6 +108,45 @@ describe('Component: score', () => {
         const display = debugElement.query(By.css('div .score-display'));
         expect(display).toBeDefined();
         expect(display.nativeElement.innerText).toMatch(/^4\s*.\s*N\s*=\s*\+420$/);
-        expect(debugElement.query(By.css('button')).nativeElement.disabled).toBe(false);
+        expect(debugElement.query(By.css('button[type=submit]')).nativeElement.disabled).toBe(false);
+    }));
+
+    it('should properly display an existing score', fakeAsync(() => {
+        const score = new Score();
+        score.vulnerability = 'None';
+        score.contract = {
+            level: 3,
+            suit: Suit.Hearts,
+            declarer: 'S',
+            doubled: false,
+            redoubled: false
+        };
+        score.tricks = 9;
+        score.entered = true;
+        scoreForm.score = score;
+        fixture.detectChanges();
+        tick();
+        fixture.detectChanges();
+        expect(debugElement.queryAll(By.css('div[name=level]')).length).toBe(1);
+        const activeLevel = debugElement.query(By.css('div[name=level] label:nth-of-type(4)'));
+        expect(activeLevel).toBeDefined();
+    expect(activeLevel.nativeElement.innerText).toMatch(/^\s*3\s*$/);
+        expect(activeLevel.nativeElement.getAttribute('class')).toContain('active');
+        expect(debugElement.queryAll(By.css('div[name=suit]')).length).toBe(1);
+        const activeSuit = debugElement.query(By.css('div[name=suit] label:nth-of-type(3)'));
+        expect(activeSuit).toBeDefined();
+        expect(activeSuit.nativeElement.getAttribute('class')).toContain('active');
+        expect(debugElement.queryAll(By.css('input[name=doubled]')).length).toBe(1);
+        expect(debugElement.queryAll(By.css('input[name=redoubled]')).length).toBe(1);
+        expect(debugElement.queryAll(By.css('div[name=declarer]')).length).toBe(1);
+        const activeDeclarer = debugElement.query(By.css('div[name=declarer] label:nth-of-type(2)'));
+        expect(activeDeclarer).toBeDefined();
+        expect(activeDeclarer.nativeElement.innerText).toMatch(/^\s*S\s*$/);
+        expect(activeDeclarer.nativeElement.getAttribute('class')).toContain('active');
+        expect(debugElement.queryAll(By.css('div[name=result]')).length).toBe(1);
+        const display = debugElement.query(By.css('div .score-display'));
+        expect(display).toBeDefined();
+        expect(display.nativeElement.innerText).toMatch(/^3\s*.\s*S\s*=\s*\+140$/);
+        expect(debugElement.query(By.css('button[type=submit]')).nativeElement.disabled).toBe(false);
     }));
 });
