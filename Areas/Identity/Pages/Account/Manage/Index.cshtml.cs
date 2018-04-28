@@ -128,7 +128,7 @@ namespace LanfeustBridge.UI
             var callbackUrl = Url.Page(
                 "/Account/ConfirmEmail",
                 pageHandler: null,
-                values: new { user.Id, code },
+                values: new { userId = user.Id, code = code },
                 protocol: Request.Scheme);
             await _emailSender.SendEmailAsync(
                 user.Email,
