@@ -5,12 +5,24 @@ namespace LanfeustBridge.Models
 {
     public class Deal
     {
+        private static readonly string[] _players = { "N", "E", "S", "W" };
+
+        private static int[] _limits =
+        {
+            20, 50, 90, 130, 170, 220, 270, 320, 370, 430, 500, 600, 750, 900,
+            1100, 1300, 1500, 1750, 2000, 2250, 2500, 2750, 3000, 3250, 3500
+        };
+
         public int Id { get; set; }
+
         public string Dealer { get; set; }
+
         public string Vulnerability { get; set; }
+
         public Hands Hands { get; set; }
+
         public Score[] Scores { get; set; }
-        
+
         public static Deal CreateDeal(int id, int nbRounds, string dealer = null, string vulnerability = null)
         {
             vulnerability = vulnerability ?? ComputeVulnerability(id);
@@ -27,13 +39,15 @@ namespace LanfeustBridge.Models
             return deal;
         }
 
-        private static readonly string[] _players = { "N", "E", "S", "W" };
-        public static string ComputeDealer(int id) {
+        public static string ComputeDealer(int id)
+        {
             return _players[(id - 1) % 4];
         }
 
-        public static string ComputeVulnerability(int id) {
-            switch ((id - 1) % 16) {
+        public static string ComputeVulnerability(int id)
+        {
+            switch ((id - 1) % 16)
+            {
                 case 0: case 7: case 10: case 13:
                     return "None";
                 case 1: case 4: case 11: case 14:
@@ -85,19 +99,17 @@ namespace LanfeustBridge.Models
                 score.EWResult = isImp ? -score.NSResult : 100 - score.NSResult;
             }
         }
-        
-        private static int[] _limits =
-        {
-            20, 50, 90, 130, 170, 220, 270, 320, 370, 430, 500, 600, 750, 900,
-            1100, 1300, 1500, 1750, 2000, 2250, 2500, 2750, 3000, 3250, 3500
-        };
+
         private int ConvertToImps(int diff)
         {
             if (diff < 0)
                 return -ConvertToImps(-diff);
             for (int i = _limits.Length - 1; i >= 0; i--)
+            {
                 if (diff >= _limits[i])
                     return i + 1;
+            }
+
             return 0;
         }
     }

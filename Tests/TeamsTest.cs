@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 using Xunit;
 
-using LanfeustBridge.Models;
-
 namespace LanfeustBridge.Tests
 {
+    using Models;
+
     public class TeamsTest
     {
-        Teams _teams = new Teams();
+        private Teams _teams = new Teams();
 
         public static IEnumerable<object[]> TeamsPositions
         {

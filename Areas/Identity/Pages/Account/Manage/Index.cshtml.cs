@@ -8,10 +8,11 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-using LanfeustBridge.Models;
-
 namespace LanfeustBridge.UI
 {
+    using Models;
+
+    #pragma warning disable SA1649 // File name must match first type name
     public class IndexModel : PageModel
     {
         private readonly UserManager<User> _userManager;
@@ -37,20 +38,6 @@ namespace LanfeustBridge.UI
 
         [BindProperty]
         public InputModel Input { get; set; }
-
-        public class InputModel
-        {
-            [EmailAddress]
-            public string Email { get; set; }
-
-            [DataType(DataType.Text)]
-            [Display(Name = "Display name")]
-            public string DisplayName { get; set; }
-
-            [Phone]
-            [Display(Name = "Phone number")]
-            public string PhoneNumber { get; set; }
-        }
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -137,6 +124,20 @@ namespace LanfeustBridge.UI
 
             StatusMessage = "Verification email sent. Please check your email.";
             return RedirectToPage();
+        }
+
+        public class InputModel
+        {
+            [EmailAddress]
+            public string Email { get; set; }
+
+            [DataType(DataType.Text)]
+            [Display(Name = "Display name")]
+            public string DisplayName { get; set; }
+
+            [Phone]
+            [Display(Name = "Phone number")]
+            public string PhoneNumber { get; set; }
         }
     }
 }

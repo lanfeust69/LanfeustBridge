@@ -47,13 +47,6 @@ namespace LanfeustBridge.Models
             return allPositions;
         }
 
-        private void CheckValidity(int nbTables, int nbRounds)
-        {
-            var validity = Validate(nbTables, nbRounds);
-            if (!validity.IsValid)
-                throw new NotSupportedException(validity.Reason);
-        }
-
         public Deal[] CreateDeals(int nbTables, int nbRounds, int nbDealsPerRound)
         {
             CheckValidity(nbTables, nbRounds);
@@ -72,6 +65,13 @@ namespace LanfeustBridge.Models
             if (nbRounds != 33)
                 reasons.Add("Only 33 rounds are allowed for individuals");
             return new MovementValidation { IsValid = reasons.Count == 0, Reason = string.Join(" ; ", reasons) };
+        }
+
+        private void CheckValidity(int nbTables, int nbRounds)
+        {
+            var validity = Validate(nbTables, nbRounds);
+            if (!validity.IsValid)
+                throw new NotSupportedException(validity.Reason);
         }
     }
 }

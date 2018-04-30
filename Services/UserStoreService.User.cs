@@ -1,18 +1,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Threading;
+using System.Threading.Tasks;
 
 using LiteDB;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
-using LanfeustBridge.Models;
-
 namespace LanfeustBridge.Services
 {
+    using Models;
+
+    /// <summary>
+    /// Implementation of the IUserStore part of UserStoreService, along with the optional parts
+    /// </summary>
     public partial class UserStoreService : IUserStore<User>,
         IUserPasswordStore<User>, IUserEmailStore<User>,
         IUserPhoneNumberStore<User>, IUserLoginStore<User>,
@@ -24,8 +27,6 @@ namespace LanfeustBridge.Services
         private LiteCollection<User> _users;
         private LiteCollection<IdentityRole> _roles;
 
-        public IQueryable<User> Users => _users.FindAll().AsQueryable();
-
         public UserStoreService(ILogger<UserStoreService> logger, DbService dbService)
         {
             _logger = logger;
@@ -36,6 +37,8 @@ namespace LanfeustBridge.Services
             _roles = dbService.Db.GetCollection<IdentityRole>();
             _roles.EnsureIndex(u => u.NormalizedName);
         }
+
+        public IQueryable<User> Users => _users.FindAll().AsQueryable();
 
         public void Dispose()
         {

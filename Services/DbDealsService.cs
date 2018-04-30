@@ -1,34 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 
 using LiteDB;
 
 using Microsoft.Extensions.Logging;
 
-using LanfeustBridge.Models;
-
 namespace LanfeustBridge.Services
 {
+    using Models;
+
     public class DbDealsService : IDealsService
     {
-        public class DealWrapper
-        {
-            public DealWrapper()
-            { }
-
-            public DealWrapper(int tournamementId, Deal deal)
-            {
-                TournamentId = tournamementId;
-                Deal = deal;
-            }
-
-            public int TournamentId { get; set; }
-            public Deal Deal { get; set; }
-            public string Id => $"{TournamentId}/{Deal.Id}";
-        }
-
         private ILogger _logger;
         private LiteDatabase _db;
         private LiteCollection<DealWrapper> _deals;
@@ -62,6 +43,25 @@ namespace LanfeustBridge.Services
             foreach (var deal in deals)
                 _deals.Upsert(new DealWrapper(tournamentId, deal));
             _logger.LogInformation($"Deals for tournament {tournamentId} saved");
+        }
+
+        public class DealWrapper
+        {
+            public DealWrapper()
+            {
+            }
+
+            public DealWrapper(int tournamementId, Deal deal)
+            {
+                TournamentId = tournamementId;
+                Deal = deal;
+            }
+
+            public int TournamentId { get; set; }
+
+            public Deal Deal { get; set; }
+
+            public string Id => $"{TournamentId}/{Deal.Id}";
         }
     }
 }

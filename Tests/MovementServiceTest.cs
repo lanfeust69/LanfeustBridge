@@ -1,14 +1,12 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 using Xunit;
 
-using LanfeustBridge.Services;
-
 namespace LanfeustBridge.Tests
 {
+    using Services;
+
     public class MovementServiceTest
     {
         [Fact]
@@ -18,6 +16,7 @@ namespace LanfeustBridge.Tests
             Assert.Equal(4, descriptions.Count);
         }
 
+        #pragma warning disable SA1201 // Elements must appear in the correct order
         public static IEnumerable<object[]> MovementIds
         {
             get

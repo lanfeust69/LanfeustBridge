@@ -11,8 +11,11 @@ namespace LanfeustBridge.Models
         }
 
         public string[] Spades { get; set; }
+
         public string[] Hearts { get; set; }
+
         public string[] Diamonds { get; set; }
+
         public string[] Clubs { get; set; }
     }
 }

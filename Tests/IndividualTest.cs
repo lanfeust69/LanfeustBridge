@@ -2,13 +2,13 @@ using System.Collections.Generic;
 
 using Xunit;
 
-using LanfeustBridge.Models;
-
 namespace LanfeustBridge.Tests
 {
+    using Models;
+
     public class IndividualTest
     {
-        Individual _individual = new Individual();
+        private Individual _individual = new Individual();
 
         public static IEnumerable<object[]> IndividualPositions
         {

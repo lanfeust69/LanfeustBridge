@@ -6,10 +6,10 @@ using LiteDB;
 
 using Microsoft.Extensions.Logging;
 
-using LanfeustBridge.Models;
-
 namespace LanfeustBridge.Services
 {
+    using Models;
+
     public class DbTournamentsService : ITournamentService
     {
         private ILogger _logger;

@@ -1,14 +1,12 @@
 using System;
 using System.IO;
 
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,15 +14,15 @@ using Microsoft.Extensions.Logging;
 
 using Serilog;
 
-using LanfeustBridge.Hubs;
-using LanfeustBridge.Models;
-using LanfeustBridge.Services;
-
 namespace LanfeustBridge
 {
+    using Hubs;
+    using Models;
+    using Services;
+
     public class Startup
     {
-        ILogger<Startup> _logger;
+        private ILogger<Startup> _logger;
 
         public Startup(ILogger<Startup> logger, IConfiguration configuration, IHostingEnvironment env)
         {
@@ -47,9 +45,9 @@ namespace LanfeustBridge
                 .AddSingleton<DirectoryService>()
                 .AddSingleton<DbService>()
                 .AddSingleton<IDealsService, DbDealsService>()
-                //.AddSingleton<IDealsService, SimpleDealsService>()
+                // .AddSingleton<IDealsService, SimpleDealsService>()
                 .AddSingleton<ITournamentService, DbTournamentsService>()
-                //.AddSingleton<ITournamentService, SimpleTournamentsService>()
+                // .AddSingleton<ITournamentService, SimpleTournamentsService>()
                 .AddSingleton(MovementService.Service);
 
             services.AddSingleton<IUserStore<User>, UserStoreService>();
@@ -60,7 +58,6 @@ namespace LanfeustBridge
                 .AddDefaultUI()
                 .AddDefaultTokenProviders();
 
-            // if (env.IsDevelopment())
             if (IsDevelopment)
             {
                 services.Configure<IdentityOptions>(options =>
@@ -162,7 +159,6 @@ namespace LanfeustBridge
                 {
                     // To learn more about options for serving an Angular SPA from ASP.NET Core,
                     // see https://go.microsoft.com/fwlink/?linkid=864501
-
                     spa.Options.SourcePath = "ClientApp";
 
                     if (IsDevelopment)

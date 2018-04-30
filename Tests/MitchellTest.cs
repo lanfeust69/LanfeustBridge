@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 using Xunit;
 
-using LanfeustBridge.Models;
-
 namespace LanfeustBridge.Tests
 {
+    using Models;
+
     public class MitchellTest
     {
-        Mitchell _mitchell = new Mitchell();
+        private Mitchell _mitchell = new Mitchell();
 
         public static IEnumerable<object[]> MitchellPositions3
         {
@@ -54,6 +54,7 @@ namespace LanfeustBridge.Tests
             Assert.ThrowsAny<Exception>(() => _mitchell.GetPositions(4, 4, 1));
         }
 
+        #pragma warning disable SA1201 // Elements must appear in the correct order
         public static IEnumerable<object[]> MitchellPositions4
         {
             get

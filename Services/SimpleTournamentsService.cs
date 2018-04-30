@@ -7,23 +7,23 @@ using Microsoft.Extensions.Logging;
 
 using Newtonsoft.Json;
 
-using LanfeustBridge.Models;
-
 namespace LanfeustBridge.Services
 {
+    using Models;
+
     public class SimpleTournamentsService : ITournamentService
     {
         private int _nextId = 1;
-        ILogger _logger;
-        IDealsService _dealsService;
-        string _dataFile;
+        private ILogger _logger;
+        private IDealsService _dealsService;
+        private string _dataFile;
 
         private Lazy<Dictionary<int, Tournament>> _tournaments;
 
-        private Dictionary<int, Tournament> Tournaments { get { return _tournaments.Value; } }
-
-        public SimpleTournamentsService(ILogger<ITournamentService> logger,
-            DirectoryService directoryService, IDealsService dealsService)
+        public SimpleTournamentsService(
+            ILogger<ITournamentService> logger,
+            DirectoryService directoryService,
+            IDealsService dealsService)
         {
             _logger = logger;
             _dealsService = dealsService;
@@ -31,24 +31,7 @@ namespace LanfeustBridge.Services
             _tournaments = new Lazy<Dictionary<int, Tournament>>(InitializeTournaments);
         }
 
-        private Dictionary<int, Tournament> InitializeTournaments()
-        {
-            Dictionary<int, Tournament> result;
-            if (File.Exists(_dataFile))
-                result = JsonConvert.DeserializeObject<Dictionary<int, Tournament>>(File.ReadAllText(_dataFile));
-            else
-                result = new Dictionary<int, Tournament>();
-
-            if (result.Count > 0)
-                _nextId = result.Keys.Max() + 1;
-            _logger.LogInformation($"InitializeTournaments() done, {result.Count} tournaments in db, _nextId is {_nextId}");
-            return result;
-        }
-
-        private int GetNextId()
-        {
-            return _nextId++;
-        }
+        private Dictionary<int, Tournament> Tournaments => _tournaments.Value;
 
         public IEnumerable<(int, string)> GetNames()
         {
@@ -85,6 +68,25 @@ namespace LanfeustBridge.Services
             if (removed)
                 SaveToFile();
             return removed;
+        }
+
+        private Dictionary<int, Tournament> InitializeTournaments()
+        {
+            Dictionary<int, Tournament> result;
+            if (File.Exists(_dataFile))
+                result = JsonConvert.DeserializeObject<Dictionary<int, Tournament>>(File.ReadAllText(_dataFile));
+            else
+                result = new Dictionary<int, Tournament>();
+
+            if (result.Count > 0)
+                _nextId = result.Keys.Max() + 1;
+            _logger.LogInformation($"InitializeTournaments() done, {result.Count} tournaments in db, _nextId is {_nextId}");
+            return result;
+        }
+
+        private int GetNextId()
+        {
+            return _nextId++;
         }
 
         private void SaveToFile()

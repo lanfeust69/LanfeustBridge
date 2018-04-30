@@ -1,18 +1,16 @@
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Threading;
-
-using LiteDB;
+using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
 
 namespace LanfeustBridge.Services
 {
+    /// <summary>
+    /// Implementation of the IRoleStore part of UserStoreService
+    /// </summary>
     public partial class UserStoreService : IRoleStore<IdentityRole>
     {
-
         public Task<IdentityResult> CreateAsync(IdentityRole role, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();

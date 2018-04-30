@@ -5,9 +5,6 @@ namespace LanfeustBridge.Services
 {
     public class DirectoryService
     {
-        public string LogDirectory { get; private set; }
-        public string DataDirectory { get; private set; }
-
         public DirectoryService()
         {
             string currentDir = Directory.GetCurrentDirectory();
@@ -27,5 +24,9 @@ namespace LanfeustBridge.Services
                     Directory.CreateDirectory(DataDirectory);
             }
         }
+
+        public string LogDirectory { get; private set; }
+
+        public string DataDirectory { get; private set; }
     }
 }

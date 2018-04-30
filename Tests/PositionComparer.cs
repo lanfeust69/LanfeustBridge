@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using LanfeustBridge.Models;
-
 namespace LanfeustBridge.Tests
 {
+    using Models;
+
     internal class PositionComparer : IEqualityComparer<Position>
     {
         public bool Equals(Position x, Position y)

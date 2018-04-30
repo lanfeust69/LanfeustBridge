@@ -45,11 +45,14 @@ namespace LanfeustBridge.Models
             return allPositions;
         }
 
-        private void CheckValidity(int nbTables, int nbRounds)
+        public MovementValidation Validate(int nbTables, int nbRounds)
         {
-            var validity = Validate(nbTables, nbRounds);
-            if (!validity.IsValid)
-                throw new NotSupportedException(validity.Reason);
+            var reasons = new List<string>();
+            if (nbTables != 2)
+                reasons.Add("Only two tables allowed for team matches");
+            if (nbRounds % 2 != 0)
+                reasons.Add("Only an even number of rounds are allowed for team matches");
+            return new MovementValidation { IsValid = reasons.Count == 0, Reason = string.Join(" ; ", reasons) };
         }
 
         public Deal[] CreateDeals(int nbTables, int nbRounds, int nbDealsPerRound)
@@ -62,14 +65,11 @@ namespace LanfeustBridge.Models
             return deals;
         }
 
-        public MovementValidation Validate(int nbTables, int nbRounds)
+        private void CheckValidity(int nbTables, int nbRounds)
         {
-            var reasons = new List<string>();
-            if (nbTables != 2)
-                reasons.Add("Only two tables allowed for team matches");
-            if (nbRounds % 2 != 0)
-                reasons.Add("Only an even number of rounds are allowed for team matches");
-            return new MovementValidation { IsValid = reasons.Count == 0, Reason = string.Join(" ; ", reasons) };
+            var validity = Validate(nbTables, nbRounds);
+            if (!validity.IsValid)
+                throw new NotSupportedException(validity.Reason);
         }
     }
 }

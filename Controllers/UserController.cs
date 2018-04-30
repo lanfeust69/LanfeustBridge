@@ -1,19 +1,14 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
-using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-using LanfeustBridge.Models;
-using LanfeustBridge.Services;
-
 namespace LanfeustBridge.Controllers
 {
+    using Models;
+
     [Route("api/[controller]")]
     [Authorize]
     public class UserController : Controller

@@ -45,13 +45,6 @@ namespace LanfeustBridge.Models
             return allPositions;
         }
 
-        private void CheckValidity(int nbTables, int nbRounds)
-        {
-            var validity = Validate(nbTables, nbRounds);
-            if (!validity.IsValid)
-                throw new NotSupportedException(validity.Reason);
-        }
-
         public Deal[] CreateDeals(int nbTables, int nbRounds, int nbDealsPerRound)
         {
             CheckValidity(nbTables, nbRounds);
@@ -62,7 +55,6 @@ namespace LanfeustBridge.Models
                 // specify dealer and vulnerability : we keep playing deals 1 to (3 * nbDealsPerRound)
                 var deal = Deal.CreateDeal(i + 1, nbRounds, Deal.ComputeDealer(i % (3 * nbDealsPerRound) + 1), Deal.ComputeVulnerability(i % (3 * nbDealsPerRound) + 1));
                 deals[i] = deal;
-                
             }
             return deals;
         }
@@ -75,6 +67,13 @@ namespace LanfeustBridge.Models
             if (nbRounds != 15)
                 reasons.Add("Only 15 rounds are allowed for triplicates");
             return new MovementValidation { IsValid = reasons.Count == 0, Reason = string.Join(" ; ", reasons) };
+        }
+
+        private void CheckValidity(int nbTables, int nbRounds)
+        {
+            var validity = Validate(nbTables, nbRounds);
+            if (!validity.IsValid)
+                throw new NotSupportedException(validity.Reason);
         }
     }
 }

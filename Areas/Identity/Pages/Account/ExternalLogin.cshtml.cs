@@ -4,39 +4,18 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 
-using LanfeustBridge.Models;
-
 namespace LanfeustBridge.UI
 {
+    using Models;
+
+    #pragma warning disable SA1649 // File name must match first type name
     public class ExternalLoginModel : PageModel
     {
-        [BindProperty]
-        public InputModel Input { get; set; }
-
-        public string LoginProvider { get; set; }
-
-        public string ReturnUrl { get; set; }
-
-        [TempData]
-        public string ErrorMessage { get; set; }
-
-        public class InputModel
-        {
-            [Required]
-            [EmailAddress]
-            public string Email { get; set; }
-
-            [Display(Name = "Name as displayed on the site")]
-            public string DisplayName { get; set; }
-        }
-
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
         private readonly IUserStore<User> _userStore;
@@ -55,6 +34,16 @@ namespace LanfeustBridge.UI
             _emailStore = GetEmailStore();
             _logger = logger;
         }
+
+        [BindProperty]
+        public InputModel Input { get; set; }
+
+        public string LoginProvider { get; set; }
+
+        public string ReturnUrl { get; set; }
+
+        [TempData]
+        public string ErrorMessage { get; set; }
 
         public IActionResult OnGet()
         {
@@ -178,6 +167,16 @@ namespace LanfeustBridge.UI
                 throw new NotSupportedException("The default UI requires a user store with email support.");
             }
             return (IUserEmailStore<User>)_userStore;
+        }
+
+        public class InputModel
+        {
+            [Required]
+            [EmailAddress]
+            public string Email { get; set; }
+
+            [Display(Name = "Name as displayed on the site")]
+            public string DisplayName { get; set; }
         }
     }
 }

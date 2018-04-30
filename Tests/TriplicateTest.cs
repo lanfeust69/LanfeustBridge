@@ -2,13 +2,13 @@ using System.Collections.Generic;
 
 using Xunit;
 
-using LanfeustBridge.Models;
-
 namespace LanfeustBridge.Tests
 {
+    using Models;
+
     public class TriplicateTest
     {
-        Triplicate _triplicate = new Triplicate();
+        private Triplicate _triplicate = new Triplicate();
 
         public static IEnumerable<object[]> TriplicatePositions
         {

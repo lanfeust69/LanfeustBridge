@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
-using LanfeustBridge.Models;
-using LanfeustBridge.Services;
-using LanfeustBridge.Hubs;
-
 namespace LanfeustBridge.Controllers
 {
+    using Hubs;
+    using Models;
+    using Services;
+
     [Route("api/tournament/{tournamentId}/deal")]
     [Authorize]
     public class DealController : Controller
@@ -17,8 +17,11 @@ namespace LanfeustBridge.Controllers
         private readonly IDealsService _dealsService;
         private readonly ITournamentService _tournamentService;
         private readonly IHubContext<TournamentHub, ITournamentNotifier> _tournamentHubContext;
-        
-        public DealController(ILogger<DealController> logger, IDealsService dealsService, ITournamentService tournamentService,
+
+        public DealController(
+            ILogger<DealController> logger,
+            IDealsService dealsService,
+            ITournamentService tournamentService,
             IHubContext<TournamentHub, ITournamentNotifier> tournamentHubContext)
         {
             _logger = logger;
@@ -38,7 +41,7 @@ namespace LanfeustBridge.Controllers
         }
 
         // GET api/tournament/1/deal
-        [HttpGet()]
+        [HttpGet]
         public IActionResult Get(int tournamentId)
         {
             var deals = _dealsService.GetDeals(tournamentId);

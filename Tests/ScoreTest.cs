@@ -2,10 +2,10 @@
 
 using Xunit;
 
-using LanfeustBridge.Models;
-
 namespace LanfeustBridge.Tests
 {
+    using Models;
+
     public class ScoreTest
     {
         public static IEnumerable<object[]> ContractScores
@@ -90,6 +90,7 @@ namespace LanfeustBridge.Tests
             Assert.True(score.Validate());
         }
 
+        #pragma warning disable SA1201 // Elements must appear in the correct order
         public static IEnumerable<object[]> DealScores
         {
             get

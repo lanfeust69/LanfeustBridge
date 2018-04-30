@@ -46,13 +46,6 @@ namespace LanfeustBridge.Models
             return allPositions;
         }
 
-        private void CheckValidity(int nbTables, int nbRounds)
-        {
-            var validity = Validate(nbTables, nbRounds);
-            if (!validity.IsValid)
-                throw new NotSupportedException(validity.Reason);
-        }
-
         public Deal[] CreateDeals(int nbTables, int nbRounds, int nbDealsPerRound)
         {
             CheckValidity(nbTables, nbRounds);
@@ -71,6 +64,13 @@ namespace LanfeustBridge.Models
             if (nbRounds > nbTables - (nbTables + 1) % 2)
                 reasons.Add($"At most {nbTables - (nbTables + 1) % 2} rounds possible for a {nbTables} Mitchell");
             return new MovementValidation { IsValid = reasons.Count == 0, Reason = string.Join(" ; ", reasons) };
+        }
+
+        private void CheckValidity(int nbTables, int nbRounds)
+        {
+            var validity = Validate(nbTables, nbRounds);
+            if (!validity.IsValid)
+                throw new NotSupportedException(validity.Reason);
         }
     }
 }

@@ -5,12 +5,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 
-using LanfeustBridge.Models;
-using LanfeustBridge.Services;
-using LanfeustBridge.Hubs;
-
 namespace LanfeustBridge.Controllers
 {
+    using Hubs;
+    using Models;
+    using Services;
+
     [Route("api/[controller]")]
     [Authorize]
     public class TournamentController : Controller
@@ -20,7 +20,10 @@ namespace LanfeustBridge.Controllers
         private readonly IDealsService _dealsService;
         private readonly IHubContext<TournamentHub, ITournamentNotifier> _tournamentHubContext;
 
-        public TournamentController(ILogger<TournamentController> logger, ITournamentService tournamentService, IDealsService dealsService,
+        public TournamentController(
+            ILogger<TournamentController> logger,
+            ITournamentService tournamentService,
+            IDealsService dealsService,
             IHubContext<TournamentHub, ITournamentNotifier> tournamentHubContext)
         {
             _logger = logger;

@@ -6,18 +6,16 @@ using Microsoft.Extensions.Logging;
 
 using Newtonsoft.Json;
 
-using LanfeustBridge.Models;
-
 namespace LanfeustBridge.Services
 {
+    using Models;
+
     public class SimpleDealsService : IDealsService
     {
-        ILogger _logger;
-        string _dataFile;
+        private ILogger _logger;
+        private string _dataFile;
 
         private Lazy<Dictionary<int, Deal[]>> _deals;
-
-        private Dictionary<int, Deal[]> Deals { get { return _deals.Value; } }
 
         public SimpleDealsService(ILogger<IDealsService> logger, DirectoryService directoryService)
         {
@@ -26,17 +24,7 @@ namespace LanfeustBridge.Services
             _deals = new Lazy<Dictionary<int, Deal[]>>(InitializeDeals);
         }
 
-        private Dictionary<int, Deal[]> InitializeDeals()
-        {
-            Dictionary<int, Deal[]> result;
-            if (File.Exists(_dataFile))
-                result = JsonConvert.DeserializeObject<Dictionary<int, Deal[]>>(File.ReadAllText(_dataFile));
-            else
-                result = new Dictionary<int, Deal[]>();
-
-            _logger.LogInformation($"InitializeDeals() done, deals from {result.Count} tournaments in db");
-            return result;
-        }
+        private Dictionary<int, Deal[]> Deals => _deals.Value;
 
         public Deal GetDeal(int tournamentId, int dealId)
         {
@@ -68,6 +56,18 @@ namespace LanfeustBridge.Services
             Deals[tournamentId] = deals;
             SaveToFile();
             _logger.LogInformation($"Deals for tournament {tournamentId} created");
+        }
+
+        private Dictionary<int, Deal[]> InitializeDeals()
+        {
+            Dictionary<int, Deal[]> result;
+            if (File.Exists(_dataFile))
+                result = JsonConvert.DeserializeObject<Dictionary<int, Deal[]>>(File.ReadAllText(_dataFile));
+            else
+                result = new Dictionary<int, Deal[]>();
+
+            _logger.LogInformation($"InitializeDeals() done, deals from {result.Count} tournaments in db");
+            return result;
         }
 
         private void SaveToFile()

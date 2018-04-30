@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-using LanfeustBridge.Services;
-
 namespace LanfeustBridge.Controllers
 {
+    using Services;
+
     [Route("api/[controller]")]
     [Authorize]
     public class MovementController : Controller

@@ -16,18 +16,29 @@ namespace LanfeustBridge.Models
     public class Tournament
     {
         public int Id { get; set; }
+
         public string Name { get; set; }
+
         public DateTimeOffset Date { get; set; }
+
         public string Movement { get; set; }
+
         public string Scoring { get; set; }
+
         public int NbTables { get; set; }
+
         public int NbRounds { get; set; }
+
         public int NbDealsPerRound { get; set; }
+
         public int NbDeals { get; set; }
+
         public Player[] Players { get; set; }
 
         public TournamentStatus Status { get; set; }
+
         public int CurrentRound { get; set; }
+
         // indexed by round, player
         public Position[][] Positions { get; set; }
 
@@ -54,12 +65,14 @@ namespace LanfeustBridge.Models
         {
             Status = TournamentStatus.Finished;
             var players = new Dictionary<string, int>();
-            for (int i = 0; i < Players.Length; i++) {
+            for (int i = 0; i < Players.Length; i++)
+            {
                 players[Players[i].Name] = i;
                 Players[i].Score = 0;
             }
             int[] nbPlayed = new int[Players.Length];
             foreach (var deal in deals)
+            {
                 foreach (var score in deal.Scores)
                 {
                     if (!score.Entered)
@@ -73,6 +86,8 @@ namespace LanfeustBridge.Models
                         Players[player].Score += i < 2 ? score.NSResult : score.EWResult;
                     }
                 }
+            }
+
             if (Scoring == "Matchpoint")
             {
                 for (int i = 0; i < Players.Length; i++)

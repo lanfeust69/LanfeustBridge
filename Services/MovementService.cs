@@ -3,20 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-using LanfeustBridge.Models;
-
 namespace LanfeustBridge.Services
 {
+    using Models;
+
     public class MovementService
     {
         private static Lazy<MovementService> _service = new Lazy<MovementService>(() => new MovementService());
 
-        public static MovementService Service { get { return _service.Value; } }
-
         private Lazy<Dictionary<string, IMovement>> _mouvementInstances =
             new Lazy<Dictionary<string, IMovement>>(FindAllMovements);
 
-        private Dictionary<string, IMovement> MouvementInstances { get { return _mouvementInstances.Value; } }
+        public static MovementService Service => _service.Value;
+
+        private Dictionary<string, IMovement> MouvementInstances => _mouvementInstances.Value;
 
         public IEnumerable<MovementDescription> GetAllMovements()
         {
