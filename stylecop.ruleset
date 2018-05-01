@@ -5,6 +5,7 @@
     <Rule Id="SX1101" Action="Error" />
     <Rule Id="SA1309" Action="None" />
     <Rule Id="SX1309" Action="Error" />
+    <Rule Id="SA1310" Action="None" />
     <Rule Id="SA1407" Action="None" />
     <Rule Id="SA1413" Action="None" />
     <Rule Id="SA1503" Action="None" />
@@ -12,6 +13,8 @@
     <Rule Id="SA1515" Action="None" />
     <Rule Id="SA1600" Action="None" />
     <Rule Id="SA1602" Action="None" />
+    <Rule Id="SA1611" Action="None" />
+    <Rule Id="SA1615" Action="None" />
     <Rule Id="SA1623" Action="None" />
     <Rule Id="SA1633" Action="None" />
   </Rules>

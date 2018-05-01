@@ -23,5 +23,11 @@ namespace LanfeustBridge.Models
         public int MinRounds { get; set; } = 1;
 
         public int MaxRounds { get; set; } = -1;
+
+        /// <summary>
+        /// Used for movements with a fixed number of players.
+        /// If not -1 (the default), takes precedence over number of tables.
+        /// </summary>
+        public int NbPlayers { get; set; } = -1;
     }
 }

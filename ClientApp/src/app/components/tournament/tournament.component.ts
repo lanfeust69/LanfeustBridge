@@ -23,7 +23,8 @@ export class TournamentComponent implements OnInit {
     _created = false;
     _edit = false;
     _tournament: Tournament;
-    _knownMovements: Map<string, MovementDescription> = new Map<string, MovementDescription>();
+    _nbPlayers = -1;
+    _knownMovements: { [index: string]: MovementDescription } = {};
     _sortedMovementIds: string[] = [];
     _knownScorings: string[] = [];
     _knownNames: string[] = [];
@@ -53,8 +54,14 @@ export class TournamentComponent implements OnInit {
     ngOnInit() {
         this._movementService.getMovements().subscribe(movements => {
             movements.forEach(d => { this._knownMovements[d.id] = d; this._sortedMovementIds.push(d.id); });
-            if (this._tournament && !this._tournament.movement && movements.length > 0) {
-                this.movementId = movements[0].id;
+            if (this._tournament) {
+                if (!this._tournament.movement && movements.length > 0)
+                    this.movementId = movements[0].id;
+                else if (this._tournament.movement in this._knownMovements) {
+                    // unlikely, but possible case where we received the list of known movements after the tournament info
+                    this.movementId = this._tournament.movement;
+                    this._nbPlayers = this._knownMovements[this._tournament.movement].nbPlayers;
+                }
             }
         });
         this._tournamentService.getScorings().subscribe(scorings => {
@@ -95,6 +102,8 @@ export class TournamentComponent implements OnInit {
                     this._created = true;
                     this._edit = false;
                     this.movementId = tournament.movement;
+                    if (tournament.movement in this._knownMovements)
+                        this._nbPlayers = this._knownMovements[tournament.movement].nbPlayers;
                     if (tournament.status === Status.Running)
                         this.processRunning(tournament.id);
                 }
@@ -119,6 +128,9 @@ export class TournamentComponent implements OnInit {
 
     onSubmit() {
         // isValid if the button could be clicked (and checked on server side)
+        // we (maybe) truncate the players field at that point : no need to send "overbooked" ones,
+        // and won't be useful except on failure to create, when we have other problems !
+        this._tournament.players = this.players;
         if (this._created) {
            this._tournamentService.update(this._tournament)
                 .subscribe(tournament => {
@@ -314,20 +326,25 @@ export class TournamentComponent implements OnInit {
         this._currentDeal = +value;
     }
 
-    get setup() {
+    get setup(): boolean {
         return this._tournament.status === Status.Setup;
     }
 
-    get running() {
+    get running(): boolean {
         return this._tournament.status === Status.Running;
     }
 
-    get finished() {
+    get finished(): boolean {
         return this._tournament.status === Status.Finished;
     }
 
+    get nbPlayers(): number {
+        return this._nbPlayers;
+    }
+
     get players(): { name: string, score: number, rank: number }[] {
-        const nbPlayers = this._tournament.nbTables * 4;
+        const nbPlayers = this._nbPlayers === -1 ?
+            this._tournament.nbTables * 4 : this._nbPlayers;
         if (this._tournament.players.length < nbPlayers)
             for (let i = this._tournament.players.length; i < nbPlayers; i++)
                 this._tournament.players.push({name: '', score: 0, rank: 0});
@@ -394,8 +411,19 @@ export class TournamentComponent implements OnInit {
     set movementId(value) {
         if (!this._tournament || this._tournament.movement === value)
             return;
+        if (!(value in this._knownMovements)) {
+            // normal case is when list of movements hasn't arrived yet,
+            // where we will be called again when it happens
+            if (this._sortedMovementIds.length > 0)
+                this._alertService.newAlert.next({
+                    msg: `Unknown movement id ${value}, should be one of ${this._sortedMovementIds.join(', ')}`,
+                    type: 'warning', dismissible: true
+                });
+            return;
+        }
         this._tournament.movement = value;
-        const movement: MovementDescription = this._knownMovements[value];
+        const movement = this._knownMovements[value];
+        this._nbPlayers = movement.nbPlayers;
         this.nbTables = movement.minTables;
         this._tournament.nbRounds = movement.minRounds;
     }

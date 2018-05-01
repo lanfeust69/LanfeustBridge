@@ -6,9 +6,9 @@ namespace LanfeustBridge.Tests
 {
     using Models;
 
-    public class IndividualTest
+    public class Individual12Test
     {
-        private Individual _individual = new Individual();
+        private Individual12 _individual = new Individual12();
 
         public static IEnumerable<object[]> IndividualPositions
         {
