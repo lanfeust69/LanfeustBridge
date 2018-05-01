@@ -124,10 +124,7 @@ namespace LanfeustBridge.Controllers
             if (tournament.Status != TournamentStatus.Running)
                 return BadRequest($"Cannot get current round of tournament in status {tournament.Status}");
 
-            bool finished = tournament.Positions[tournament.CurrentRound]
-                .SelectMany(p => p.Deals)
-                .Distinct()
-                .All(d => _dealsService.GetDeal(id, d).Scores[tournament.CurrentRound].Entered);
+            bool finished = tournament.AreAllScoresEntered(_dealsService.GetDeals(id));
 
             return Ok(new { Round = tournament.CurrentRound, Finished = finished });
         }

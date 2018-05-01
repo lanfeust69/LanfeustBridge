@@ -103,10 +103,11 @@ namespace LanfeustBridge.Models
         {
             if (Status != TournamentStatus.Running)
                 return false;
-            foreach (var deal in deals)
+
+            foreach (var dealId in Positions[CurrentRound].SelectMany(p => p.Deals).Distinct())
             {
-                // TODO : handle movements where deals are not played on every round
-                if (!deal.Scores[CurrentRound].Entered)
+                // dealId is 1-based for display
+                if (!deals[dealId - 1].Scores[CurrentRound].Entered)
                     return false;
             }
             return true;
