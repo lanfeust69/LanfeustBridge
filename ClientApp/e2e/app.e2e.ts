@@ -41,7 +41,7 @@ describe('front-end App', function() {
         browser.wait(ExpectedConditions.urlContains('/Identity/Account/Register'), 12000);
     });
 
-    it('should run a small tournament', () => {
+    it('should run a mitchell tournament', () => {
         browser.waitForAngularEnabled(false);
         browser.get('/');
         browser.wait(ExpectedConditions.urlContains('/Identity/Account/Login'), 12000);
@@ -59,7 +59,7 @@ describe('front-end App', function() {
         browser.waitForAngularEnabled(true);
 
         element(by.css('button')).click();
-        element(by.css('input[name="name"]')).sendKeys('Test');
+        element(by.css('input[name="name"]')).sendKeys('Test Mitchell');
         element(by.css('input[name="tables"]')).clear();
         element(by.css('input[name="tables"]')).sendKeys('3');
         element(by.css('input[name="rounds"]')).clear();
@@ -113,5 +113,58 @@ describe('front-end App', function() {
         element(by.linkText('Previous')).click();
         // browser.pause();
         // browser.manage().logs().get('browser').then(console.log);
+    });
+
+    it('should run a 9-player individual', () => {
+        // expect to be logged-in from previous test -> to improve
+        browser.get('/');
+
+        element(by.css('button')).click();
+        element(by.css('input[name="name"]')).sendKeys('Test Individual');
+        element(by.cssContainingText('select[name="movement"]>option', 'Individual for 9 players')).click();
+        element(by.cssContainingText('select[name="scoring"]>option', 'IMP')).click();
+        element(by.css('input[name="dealsPerRound"]')).clear();
+        element(by.css('input[name="dealsPerRound"]')).sendKeys('1');
+        // fill in players
+        element(by.linkText('Players')).click();
+        for (let i = 1; i <= 9; i++)
+            element(by.css(`form div:nth-of-type(${i}) input`)).sendKeys(`Player ${i}`);
+        element(by.linkText('Infos')).click();
+
+        element(by.buttonText('Create')).click();
+        // apparently the new angular 2 HttpModule's Observable aren't waited by protractor, so :
+        browser.wait(ExpectedConditions.elementToBeClickable(element(by.buttonText('Start'))), 12000);
+        element(by.buttonText('Start')).click();
+        // polling for scores is done outside angular, so we can keep synchronization
+        // but after that, without synchronization, we should wait for the buttons...
+        element(by.linkText('Play')).click();
+
+        for (let round = 0; round < 27; round++) {
+            const north1 = Math.floor(round / 9) * 3 + (Math.floor(round / 3) + 1) % 3 + 1;
+            element(by.css(`select[name="currentPlayer"]>option:nth-of-type(${north1})`)).click();
+            randomScore();
+            const north2 = (north1 + 2) % 9 + 1;
+            element(by.css(`select[name="currentPlayer"]>option:nth-of-type(${north2})`)).click();
+            randomScore();
+
+            if (round < 26) {
+                // wait for Next Round button
+                browser.wait(ExpectedConditions.elementToBeClickable(element(by.buttonText('Next Round'))), 12000);
+                element(by.buttonText('Next Round')).click();
+                // then wait for next round to actually begin
+                const roundSummary = element(by.cssContainingText('h4', 'Round'));
+                browser.wait(ExpectedConditions.textToBePresentInElement(roundSummary, 'Round ' + (round + 2)), 12000);
+            }
+        }
+
+        browser.wait(ExpectedConditions.presenceOf(element(by.buttonText('Close'))), 12000);
+        element(by.buttonText('Close')).click();
+
+        expect(element(by.linkText('Play'))).toBeTruthy();
+        expect(element(by.linkText('Players'))).toBeTruthy();
+        element(by.linkText('Players')).click();
+        element(by.linkText('Player 1')).click();
+        element(by.linkText('4')).click();  // Player 1 skips deals 1-3
+        element(by.linkText('Previous')).click();
     });
 });
