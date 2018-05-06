@@ -438,6 +438,10 @@ export class TournamentComponent implements OnInit {
         return this.movement ? this.movement.description : '';
     }
 
+    get isIndividual() {
+        return this.movement && this.movement.id.indexOf('individual') !== -1;
+    }
+
     get nbDeals() {
         return this._tournament.nbDeals;
     }

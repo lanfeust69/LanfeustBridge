@@ -9,12 +9,14 @@ import { ScoreComponent } from '../score/score.component';
 
 @Component({
     selector: 'lanfeust-bridge-score-sheet',
-    template: `<lanfeust-bridge-scores [forPlayers]="true" [scores]="_scores" [tournamentId]="_tournamentId"></lanfeust-bridge-scores>`,
+    template: `<lanfeust-bridge-scores [forPlayers]="true" [scores]="_scores" [tournamentId]="_tournamentId" [individual]="_individual">
+    </lanfeust-bridge-scores>`,
 })
 export class ScoreSheetComponent implements OnInit {
     _scores: Score[] = [];
     _tournamentId: number;
     _player: string;
+    _individual = false;
 
     constructor(
         private _router: Router,
@@ -22,6 +24,7 @@ export class ScoreSheetComponent implements OnInit {
         @Inject(DEAL_SERVICE) private _dealService: DealService) {}
 
     ngOnInit() {
+        this._route.queryParams.subscribe(q => this._individual = 'individual' in q);
         this._route.params.switchMap((params: Params) => {
             this._tournamentId = +params['tournamentId'];
             this._player = params['player'];

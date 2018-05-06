@@ -105,7 +105,7 @@
                         <tbody>
                             <tr *ngFor="let player of sortedPlayers">
                                 <td>{{player.rank}}</td>
-                                <td><a [routerLink]="['scoresheet', player.name]">{{player.name}}</a></td>
+                                <td><a [routerLink]="['scoresheet', player.name]"  [queryParams]="isIndividual ? {individual: true} : {}">{{player.name}}</a></td>
                                 <td>{{player.score.toFixed(2)}}</td>
                             </tr>
                         </tbody>
@@ -129,7 +129,7 @@
         <ngb-tab title="Deals" *ngIf="finished && nbDeals > 0">
             <ng-template ngbTabContent>
                 <div class="list-group">
-                    <a [routerLink]="['deal', deal.id]" class="list-group-item" *ngFor="let deal of deals">Deal {{deal.id}}</a>
+                    <a [routerLink]="['deal', deal.id]" [queryParams]="isIndividual ? {individual: true} : {}" class="list-group-item" *ngFor="let deal of deals">Deal {{deal.id}}</a>
                 </div>
             </ng-template>
         </ngb-tab>

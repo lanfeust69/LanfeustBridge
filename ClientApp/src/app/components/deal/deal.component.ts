@@ -19,6 +19,7 @@ export class DealComponent implements AfterViewInit, OnInit {
     deal: Deal;
     @ViewChild('table') tableCanvas;
     viewInitialized = false;
+    individual = false;
 
     constructor(
         private _router: Router,
@@ -26,6 +27,7 @@ export class DealComponent implements AfterViewInit, OnInit {
         @Inject(DEAL_SERVICE) private _dealService: DealService) {}
 
     ngOnInit() {
+        this._route.queryParams.subscribe(q => this.individual = 'individual' in q);
         this._route.params.switchMap((params: Params) => {
             this.tournamentId = +params['tournamentId'];
             this.id = +params['dealId'];
