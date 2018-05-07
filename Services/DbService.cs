@@ -9,7 +9,7 @@ namespace LanfeustBridge.Services
 {
     public class DbService
     {
-        public DbService(ILogger<DbDealsService> logger, DirectoryService directoryService, IHostingEnvironment hostingEnvironment)
+        public DbService(ILogger<DbService> logger, DirectoryService directoryService, IHostingEnvironment hostingEnvironment)
         {
             if (hostingEnvironment.IsDevelopment())
             {

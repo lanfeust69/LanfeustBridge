@@ -21,6 +21,16 @@ namespace LanfeustBridge.Services
             _logger = logger;
             _dealsService = dealsService;
             _tournaments = dbService.Db.GetCollection<Tournament>();
+            var toUpdate = _tournaments.FindAll().ToList();
+            foreach (var tournament in toUpdate)
+            {
+                var movementId = tournament.Movement == "Individual" ? "individual12" : tournament.Movement.ToLower();
+                if (movementId == tournament.Movement)
+                    continue;
+                tournament.Movement = movementId;
+                _tournaments.Update(tournament.Id, tournament);
+                _logger.LogInformation($"Tournament '{tournament.Name}' (Id {tournament.Id}) updated to {movementId}");
+            }
         }
 
         public IEnumerable<(int, string)> GetNames()
