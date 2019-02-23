@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, Input, Inject, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router, Routes, Params } from '@angular/router';
+import { switchMap } from 'rxjs/operators';
 
 import { Deal } from '../../deal';
 import { DealService, DEAL_SERVICE } from '../../services/deal/deal.service';
@@ -28,12 +29,12 @@ export class DealComponent implements AfterViewInit, OnInit {
 
     ngOnInit() {
         this._route.queryParams.subscribe(q => this.individual = 'individual' in q);
-        this._route.params.switchMap((params: Params) => {
+        this._route.params.pipe(switchMap((params: Params) => {
             this.tournamentId = +params['tournamentId'];
             this.id = +params['dealId'];
             console.log('tournamentId is ' + this.tournamentId + ', dealId is ' + this.id);
             return this._dealService.getDeal(this.tournamentId, this.id);
-        }).subscribe((deal: Deal) => {
+        })).subscribe((deal: Deal) => {
             console.log('deal service returned', deal);
             this.deal = deal;
             if (this.viewInitialized)

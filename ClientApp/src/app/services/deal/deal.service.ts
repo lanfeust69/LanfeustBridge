@@ -1,5 +1,5 @@
 import { InjectionToken } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import { Score } from '../../score';
 import { Deal } from '../../deal';

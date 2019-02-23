@@ -1,5 +1,6 @@
 import { Component, Input, Inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, Routes, Params } from '@angular/router';
+import { switchMap } from 'rxjs/operators';
 
 import { Score } from '../../score';
 import { Deal } from '../../deal';
@@ -25,12 +26,12 @@ export class ScoreSheetComponent implements OnInit {
 
     ngOnInit() {
         this._route.queryParams.subscribe(q => this._individual = 'individual' in q);
-        this._route.params.switchMap((params: Params) => {
+        this._route.params.pipe(switchMap((params: Params) => {
             this._tournamentId = +params['tournamentId'];
             this._player = params['player'];
             console.log('tournamentId is ' + this._tournamentId + ', player is ' + this._player);
             return this._dealService.getDeals(this._tournamentId);
-        }).subscribe((deals: Deal[]) => {
+        })).subscribe((deals: Deal[]) => {
             this._scores = deals.reduce<Score[]>((acc, deal) => acc.concat(deal.scores), [])
                 .filter(s => s.entered &&
                     (s.players.north === this._player || s.players.south === this._player ||

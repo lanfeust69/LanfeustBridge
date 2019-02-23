@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 import { User, UserService } from './user.service';
 
@@ -19,16 +20,16 @@ export class UserServiceHttp implements UserService {
 
     isLoggedIn(): Observable<boolean> {
         if (this._currentUser)
-            return Observable.of(true);
-        return this._http.get<User>(`${this._baseUrl}/current`)
-            .map(user => {
+            return of(true);
+        return this._http.get<User>(`${this._baseUrl}/current`).pipe(
+            map(user => {
                 this._currentUser = user.name;
                 return true;
-            })
-            .catch(error => {
+            }),
+            catchError(error => {
                 console.log('probably not authenticated', error);
-                return Observable.of(false);
-            });
+                return of(false);
+            }));
     }
 
     getAllUsers(): Observable<User[]> {

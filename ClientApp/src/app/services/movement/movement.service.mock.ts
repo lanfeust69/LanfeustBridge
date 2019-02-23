@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable, of } from 'rxjs';
 
 import { MovementDescription } from '../../movement';
 import { MovementService } from './movement.service';
@@ -7,7 +7,7 @@ import { MovementService } from './movement.service';
 @Injectable()
 export class MovementServiceMock implements MovementService {
     getMovements(): Observable<MovementDescription[]> {
-        return Observable.of([
+        return of([
             {
                 id: 'mitchell',
                 name: 'Mitchell',

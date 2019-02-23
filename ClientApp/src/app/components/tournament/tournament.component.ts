@@ -1,8 +1,8 @@
 import { Component, Input, Inject, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
-import { HttpConnection, HubConnection } from '@aspnet/signalr';
 import { NgbTabset } from '@ng-bootstrap/ng-bootstrap';
-import { Observable, Subject, Subscriber, Subscription } from 'rxjs/';
+import { Observable, of, Subject, Subscriber, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, map, merge, switchMap } from 'rxjs/operators';
 
 import { AlertService } from '../../services/alert/alert.service';
 import { Tournament, Position, Status } from '../../tournament';
@@ -74,8 +74,8 @@ export class TournamentComponent implements OnInit {
         this._userService.getAllUsers()
             .subscribe(users => this._allUsers = users.map(u => u.name));
 
-        this._route.url
-            .switchMap((urlSegments: UrlSegment[]) => {
+        this._route.url.pipe(
+            switchMap((urlSegments: UrlSegment[]) => {
                 if (urlSegments[0].path === 'new-tournament') {
                     const tournament = new Tournament;
                     tournament.nbTables = 1;
@@ -83,11 +83,11 @@ export class TournamentComponent implements OnInit {
                     tournament.nbDealsPerRound = 2;
                     for (let i = 0; i < 4; i++)
                         tournament.players.push({name: '', score: 0, rank: 0});
-                    return Observable.of(tournament);
+                    return of(tournament);
                 }
                 const id = +urlSegments[1].path;
                 return this._tournamentService.get(id);
-            })
+            }))
             .subscribe((tournament: Tournament) => {
                 this._tournament = tournament;
                 if (tournament.id === 0) {
@@ -289,13 +289,15 @@ export class TournamentComponent implements OnInit {
     getSearch(player: number): (text: Observable<string>) => Observable<string[]> {
         // not directly as a method because not bound to this when called from ngTypeahead
         return (text: Observable<string>) =>
-            text.debounceTime(200).distinctUntilChanged()
-                .merge(this.playerTypeahead.filter(e => e.player === player).map(e => e.text))
-                .map(s => {
+            text.pipe(
+                debounceTime(200),
+                distinctUntilChanged(),
+                merge(this.playerTypeahead.pipe(filter(e => e.player === player), map(e => e.text))),
+                map(s => {
                     const eligibleUsers = this._allUsers.filter(u => this.players.map(p => p.name).indexOf(u) === -1);
                     return s === '' ? eligibleUsers :
                         eligibleUsers.filter(u => u.toLocaleLowerCase().indexOf(s.toLocaleLowerCase()) !== -1);
-                });
+                }));
     }
 
     get rounds(): number[] {

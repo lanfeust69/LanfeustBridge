@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable, of } from 'rxjs';
+import { delay } from 'rxjs/operators';
 
 import { Deal } from '../../deal';
 import { Score } from '../../score';
@@ -14,13 +15,13 @@ export class DealServiceMock implements DealService {
             this._deals[tournament] = [];
         if (!this._deals[tournament][id - 1])
             this._deals[tournament][id - 1] = this.createRandomDeal(tournament, id);
-        return Observable.of(this._deals[tournament][id - 1]).delay(400); // 0.4 seconds
+        return of(this._deals[tournament][id - 1]).pipe(delay(400)); // 0.4 seconds
     }
 
     getDeals(tournament: number): Observable<Deal[]> {
         if (!this._deals[tournament])
-            return Observable.of([]);
-        return Observable.of(this._deals[tournament]);
+            return of([]);
+        return of(this._deals[tournament]);
     }
 
     getScore(tournament: number, id: number, round: number): Observable<Score> {
@@ -29,9 +30,9 @@ export class DealServiceMock implements DealService {
             score.dealId = id;
             score.round = round;
             score.vulnerability = Deal.computeVulnerability(id);
-            return Observable.of(score);
+            return of(score);
         }
-        return Observable.of(this._deals[tournament][id - 1].scores[round]);
+        return of(this._deals[tournament][id - 1].scores[round]);
     }
 
     postScore(tournament: number, score: Score): Observable<Score> {
@@ -43,7 +44,7 @@ export class DealServiceMock implements DealService {
         console.log('score of deal ' + score.dealId + ' for round ' + score.round + ' received');
         this._deals[tournament][score.dealId - 1].scores[score.round] = score;
         // TODO : update nsResult and ewResult
-        return Observable.of(score);
+        return of(score);
     }
 
     createRandomDeal(tournament: number, id: number): Deal {

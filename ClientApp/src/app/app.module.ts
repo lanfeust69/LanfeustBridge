@@ -30,18 +30,6 @@ import { UserServiceHttp } from './services/user/user.service.http';
 import { UserServiceMock } from './services/user/user.service.mock';
 import { AlertService } from './services/alert/alert.service';
 
-// import used rxjs bits
-import 'rxjs/add/observable/fromEvent';
-import 'rxjs/add/observable/fromEventPattern';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/distinctUntilChanged';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/merge';
-import 'rxjs/add/operator/switchMap';
-
 @NgModule({
     bootstrap: [ LanfeustBridgeApp ],
     declarations: [

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable, of } from 'rxjs';
 
 import { User, UserService } from './user.service';
 
@@ -8,11 +8,11 @@ export class UserServiceMock implements UserService {
     currentUser = 'John';
 
     isLoggedIn(): Observable<boolean> {
-        return Observable.of(true);
+        return of(true);
     }
 
     getAllUsers(): Observable<User[]> {
-        return Observable.of([
+        return of([
             { name: 'Alice', email: 'alice@lanfeustbridge.com', role: '' },
             { name: 'Bob', email: 'bob@lanfeustbridge.com', role: '' },
             { name: 'Carol', email: 'carol@lanfeustbridge.com', role: '' },

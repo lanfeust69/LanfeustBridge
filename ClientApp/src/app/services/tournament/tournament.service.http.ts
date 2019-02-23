@@ -1,8 +1,9 @@
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable, NgZone, PLATFORM_ID } from '@angular/core';
-import { HttpConnection, HubConnection } from '@aspnet/signalr';
-import { Observable } from 'rxjs/Observable';
+import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
+import { Observable, fromEvent, fromEventPattern } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 
 import { Tournament } from '../../tournament';
 import { TournamentService } from './tournament.service';
@@ -28,11 +29,10 @@ export class TournamentServiceHttp implements TournamentService {
     }
 
     initSignalR() {
-        const cnx = new HttpConnection(this._hubUrl);
-        this.hubConnection = new HubConnection(cnx);
-        this.newTournamentObservable = this.wrapObservable(Observable.fromEvent(this.hubConnection, 'NewTournament').map((v, i) => void 0));
-        this.tournamentStartedObservable = this.wrapObservable(Observable.fromEvent(this.hubConnection, 'TournamentStarted'));
-        this.tournamentFinishedObservable = this.wrapObservable(Observable.fromEvent(this.hubConnection, 'TournamentFinished'));
+        this.hubConnection = new HubConnectionBuilder().withUrl(this._hubUrl).build();
+        this.newTournamentObservable = this.wrapObservable(fromEvent(this.hubConnection, 'NewTournament').pipe(map((v, i) => void 0)));
+        this.tournamentStartedObservable = this.wrapObservable(fromEvent(this.hubConnection, 'TournamentStarted'));
+        this.tournamentFinishedObservable = this.wrapObservable(fromEvent(this.hubConnection, 'TournamentFinished'));
         // not so nice for e2e tests :
         // run outside angular so that protractor won't timeout waiting for tasks managed by signalR
         this._ngZone.runOutsideAngular(() =>
@@ -82,21 +82,21 @@ export class TournamentServiceHttp implements TournamentService {
     }
 
     getNextRoundObservable(id: number): Observable<number> {
-        return this.wrapObservable(Observable.fromEventPattern(
+        return this.wrapObservable(fromEventPattern(
             handler => this.hubConnection.on('NextRound', handler as (...args: any[]) => void),
             handler => this.hubConnection.off('NextRound', handler as (...args: any[]) => void),
-            (tournamentId, round) => ({tournamentId, round}))
-            .filter(({tournamentId, round}) => tournamentId === id)
-            .map(({tournamentId, round}) => round));
+            (tournamentId, round) => ({tournamentId, round})).pipe(
+                filter(({tournamentId, round}) => tournamentId === id),
+                map(({tournamentId, round}) => round)));
     }
 
     getRoundFinishedObservable(id: number): Observable<number> {
-        return this.wrapObservable(Observable.fromEventPattern(
+        return this.wrapObservable(fromEventPattern(
             handler => this.hubConnection.on('RoundFinished', handler as (...args: any[]) => void),
             handler => this.hubConnection.off('RoundFinished', handler as (...args: any[]) => void),
-            (tournamentId, round) => ({tournamentId, round}))
-            .filter(({tournamentId, round}) => tournamentId === id)
-            .map(({tournamentId, round}) => round));
+            (tournamentId, round) => ({tournamentId, round})).pipe(
+                filter(({tournamentId, round}) => tournamentId === id),
+                map(({tournamentId, round}) => round)));
     }
 
     // we wrap observables created from signalR callbacks so that the subscribers run in angular zone
