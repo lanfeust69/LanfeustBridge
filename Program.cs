@@ -19,7 +19,8 @@ namespace LanfeustBridge
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Information()
                 .Enrich.FromLogContext()
-                .WriteTo.Console()
+                // add milliseconds to console output
+                .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss.fff} {Level:u3}] {Message:lj}{NewLine}{Exception}")
                 .WriteTo.File(path: logFile, rollingInterval: RollingInterval.Day)
                 .CreateLogger();
 
