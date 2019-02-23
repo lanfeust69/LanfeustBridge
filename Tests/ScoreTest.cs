@@ -4,7 +4,7 @@ using Xunit;
 
 namespace LanfeustBridge.Tests
 {
-    using Models;
+    using LanfeustBridge.Models;
 
     public class ScoreTest
     {
@@ -80,7 +80,7 @@ namespace LanfeustBridge.Tests
         }
 
         [Theory]
-        [MemberData("ContractScores")]
+        [MemberData(nameof(ContractScores))]
         public void ScoresAreCorrectlyComputed(string vulnerability, Contract contract, int tricks, int expected)
         {
             var score = new Score { Vulnerability = vulnerability, Contract = contract, Tricks = tricks };
@@ -109,7 +109,7 @@ namespace LanfeustBridge.Tests
         }
 
         [Theory]
-        [MemberData("DealScores")]
+        [MemberData(nameof(DealScores))]
         public void ScoringIsCorrect(bool isImp, int[] scores, (double, double)[] expected)
         {
             Assert.Equal(scores.Length, expected.Length);

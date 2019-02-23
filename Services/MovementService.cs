@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace LanfeustBridge.Services
 {
-    using Models;
+    using LanfeustBridge.Models;
 
     public class MovementService
     {

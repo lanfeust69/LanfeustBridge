@@ -5,7 +5,7 @@ namespace LanfeustBridge.Models
     public class MovementDescription
     {
         /// <summary>
-        /// The relative order in which we want to sort different movements for display
+        /// The relative order in which we want to sort different movements for display.
         /// </summary>
         [JsonIgnore]
         public int Order { get; set; } = 100;

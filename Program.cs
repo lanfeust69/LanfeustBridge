@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Hosting;
 
 using Serilog;
 
-using LanfeustBridge.Services;
-
 namespace LanfeustBridge
 {
+    using LanfeustBridge.Services;
+
     public class Program
     {
         public static int Main(string[] args)

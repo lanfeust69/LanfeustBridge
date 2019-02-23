@@ -5,7 +5,7 @@ using Xunit;
 
 namespace LanfeustBridge.Tests
 {
-    using Services;
+    using LanfeustBridge.Services;
 
     public class MovementServiceTest
     {
@@ -26,7 +26,7 @@ namespace LanfeustBridge.Tests
         }
 
         [Theory]
-        [MemberData("MovementIds")]
+        [MemberData(nameof(MovementIds))]
         public void MovementCanBeRetrievedById(string movementId)
         {
             var movement = MovementService.Service.GetMovementDescription(movementId);
@@ -34,7 +34,7 @@ namespace LanfeustBridge.Tests
         }
 
         [Theory]
-        [MemberData("MovementIds")]
+        [MemberData(nameof(MovementIds))]
         public void MovementsCanValidate(string movementId)
         {
             var valid = MovementService.Service.Validate(movementId, 2, 2);

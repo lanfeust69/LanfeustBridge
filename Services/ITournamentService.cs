@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace LanfeustBridge.Services
 {
-    using Models;
+    using LanfeustBridge.Models;
 
     public interface ITournamentService
     {

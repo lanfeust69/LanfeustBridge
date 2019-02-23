@@ -4,7 +4,7 @@ using Xunit;
 
 namespace LanfeustBridge.Tests
 {
-    using Models;
+    using LanfeustBridge.Models;
 
     public class TriplicateTest
     {
@@ -44,7 +44,7 @@ namespace LanfeustBridge.Tests
         }
 
         [Theory]
-        [MemberData("TriplicatePositions")]
+        [MemberData(nameof(TriplicatePositions))]
         public void PositionsAreCorrect(int round, int player, Position expected)
         {
             var positions = _triplicate.GetPositions(3, 15, 1);

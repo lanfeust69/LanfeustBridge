@@ -4,7 +4,7 @@ using Xunit;
 
 namespace LanfeustBridge.Tests
 {
-    using Models;
+    using LanfeustBridge.Models;
 
     public class Individual12Test
     {
@@ -36,7 +36,7 @@ namespace LanfeustBridge.Tests
         }
 
         [Theory]
-        [MemberData("IndividualPositions")]
+        [MemberData(nameof(IndividualPositions))]
         public void PositionsAreCorrect(int round, int player, Position expected)
         {
             var positions = _individual.GetPositions(3, 33, 1);

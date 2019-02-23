@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Identity;
 namespace LanfeustBridge.Services
 {
     /// <summary>
-    /// Implementation of the IRoleStore part of UserStoreService
+    /// Implementation of the IRoleStore part of UserStoreService.
     /// </summary>
     public partial class UserStoreService : IRoleStore<IdentityRole>
     {

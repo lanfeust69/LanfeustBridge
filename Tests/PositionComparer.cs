@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace LanfeustBridge.Tests
 {
-    using Models;
+    using LanfeustBridge.Models;
 
     internal class PositionComparer : IEqualityComparer<Position>
     {

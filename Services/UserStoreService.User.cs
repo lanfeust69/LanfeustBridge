@@ -11,10 +11,10 @@ using Microsoft.Extensions.Logging;
 
 namespace LanfeustBridge.Services
 {
-    using Models;
+    using LanfeustBridge.Models;
 
     /// <summary>
-    /// Implementation of the IUserStore part of UserStoreService, along with the optional parts
+    /// Implementation of the IUserStore part of UserStoreService, along with the optional parts.
     /// </summary>
     public partial class UserStoreService : IUserStore<User>,
         IUserPasswordStore<User>, IUserEmailStore<User>,

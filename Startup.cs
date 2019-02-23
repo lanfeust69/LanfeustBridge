@@ -14,9 +14,9 @@ using Microsoft.Extensions.Logging;
 
 namespace LanfeustBridge
 {
-    using Hubs;
-    using Models;
-    using Services;
+    using LanfeustBridge.Hubs;
+    using LanfeustBridge.Models;
+    using LanfeustBridge.Services;
 
     public class Startup
     {

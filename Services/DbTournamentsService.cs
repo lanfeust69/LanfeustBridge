@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace LanfeustBridge.Services
 {
-    using Models;
+    using LanfeustBridge.Models;
 
     public class DbTournamentsService : ITournamentService
     {

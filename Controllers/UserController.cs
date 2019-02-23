@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LanfeustBridge.Controllers
 {
-    using Models;
+    using LanfeustBridge.Models;
 
     [Route("api/[controller]")]
     [Authorize]

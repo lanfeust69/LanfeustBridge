@@ -1,6 +1,6 @@
 namespace LanfeustBridge.Services
 {
-    using Models;
+    using LanfeustBridge.Models;
 
     public interface IDealsService
     {

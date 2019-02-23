@@ -5,7 +5,7 @@ using Xunit;
 
 namespace LanfeustBridge.Tests
 {
-    using Models;
+    using LanfeustBridge.Models;
 
     public class MitchellTest
     {
@@ -40,7 +40,7 @@ namespace LanfeustBridge.Tests
         }
 
         [Theory]
-        [MemberData("MitchellPositions3")]
+        [MemberData(nameof(MitchellPositions3))]
         public void PositionsAreCorrectFor3Tables(int round, int player, Position expected)
         {
             var positions = _mitchell.GetPositions(3, 3, 1);
@@ -78,7 +78,7 @@ namespace LanfeustBridge.Tests
         }
 
         [Theory]
-        [MemberData("MitchellPositions4")]
+        [MemberData(nameof(MitchellPositions4))]
         public void PositionsAreCorrectFor4Tables(int round, int player, Position expected)
         {
             var positions = _mitchell.GetPositions(4, 3, 1);

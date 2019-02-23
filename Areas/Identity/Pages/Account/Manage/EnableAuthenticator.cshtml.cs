@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace LanfeustBridge.UI
 {
-    using Models;
+    using LanfeustBridge.Models;
 
 #pragma warning disable SA1649 // File name must match first type name
     public class EnableAuthenticatorModel : PageModel

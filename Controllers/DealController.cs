@@ -5,9 +5,9 @@ using Microsoft.Extensions.Logging;
 
 namespace LanfeustBridge.Controllers
 {
-    using Hubs;
-    using Models;
-    using Services;
+    using LanfeustBridge.Hubs;
+    using LanfeustBridge.Models;
+    using LanfeustBridge.Services;
 
     [Route("api/tournament/{tournamentId}/deal")]
     [Authorize]

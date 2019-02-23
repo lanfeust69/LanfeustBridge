@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 namespace LanfeustBridge.Services
 {
-    using Models;
+    using LanfeustBridge.Models;
 
     public class SimpleTournamentsService : ITournamentService
     {
