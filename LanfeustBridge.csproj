@@ -1,32 +1,31 @@
 ﻿<Project ToolsVersion="15.0" Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
     <UserSecretsId>21351da5-d940-46d8-ad66-351ae03a3ec4</UserSecretsId>
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
     <IsPackable>false</IsPackable>
     <SpaRoot>ClientApp\</SpaRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
     <CodeAnalysisRuleSet>stylecop.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>bin\Release\netcoreapp2.1\LanfeustBridge.xml</DocumentationFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- We want to check documentation, not *require* it : ignore the corresponding warnings -->
     <NoWarn>1701;1702;1591</NoWarn>
+    <!-- The vstest part of xunit automatically generates an entrypoint, conflicting with our own -->
+    <GenerateProgramFile>false</GenerateProgramFile>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>bin\Debug\netcoreapp2.1\LanfeustBridge.xml</DocumentationFile>
-    <NoWarn>1701;1702;1591</NoWarn>
-  </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="LiteDB" Version="4.1.2" />
-    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.0-preview2-final" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="2.1.0-preview2-final" />
-    <PackageReference Include="Microsoft.TestPlatform.TestHost" Version="15.3.0" />
-    <PackageReference Include="SendGrid" Version="9.9.0" />
-    <PackageReference Include="Serilog.Extensions.Logging" Version="1.4.0" />
-    <PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.0" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta006" />
-    <PackageReference Include="xunit" Version="2.2.0" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
+    <PackageReference Include="LiteDB" Version="4.1.4" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.TestPlatform.TestHost" Version="15.9.0" />
+    <PackageReference Include="SendGrid" Version="9.10.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="2.1.1" />
+    <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
+    <PackageReference Include="Serilog.Sinks.File" Version="4.0.0" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.1-rc.108" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
   </ItemGroup>
 
   <ItemGroup>

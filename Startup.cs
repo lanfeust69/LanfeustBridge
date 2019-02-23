@@ -12,8 +12,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-using Serilog;
-
 namespace LanfeustBridge
 {
     using Hubs;
@@ -110,17 +108,8 @@ namespace LanfeustBridge
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app)
         {
-            // console and debug logging already set in CreateDefaultBuilder,
-            // but we need the DirectoryService for serilog
-            var logFilePattern = Path.Combine(app.ApplicationServices.GetService<DirectoryService>().LogDirectory, "LanfeustBridge-{Date}.log");
-            var log = new LoggerConfiguration()
-                .MinimumLevel.Information()
-                .WriteTo.RollingFile(pathFormat: logFilePattern)
-                .CreateLogger();
-            loggerFactory.AddSerilog(log);
-
             if (IsDevelopment)
             {
                 app.UseDeveloperExceptionPage();

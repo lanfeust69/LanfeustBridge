@@ -1,15 +1,17 @@
+using System.Threading.Tasks;
+
 namespace LanfeustBridge.Hubs
 {
     public interface ITournamentNotifier
     {
-        void NewTournament();
+        Task NewTournament();
 
-        void TournamentStarted(int tournamentId);
+        Task TournamentStarted(int tournamentId);
 
-        void TournamentFinished(int tournamentId);
+        Task TournamentFinished(int tournamentId);
 
-        void RoundFinished(int tournamentId, int round);
+        Task RoundFinished(int tournamentId, int round);
 
-        void NextRound(int tournamentId, int round);
+        Task NextRound(int tournamentId, int round);
     }
 }
