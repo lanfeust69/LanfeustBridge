@@ -90,11 +90,18 @@ namespace LanfeustBridge
                 });
             }
 
-            services.AddAuthentication().AddGoogle(googleOptions =>
+            if (string.IsNullOrEmpty(Configuration["Authentication:Google:ClientId"]))
             {
-                googleOptions.ClientId = Configuration["Authentication:Google:ClientId"];
-                googleOptions.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
-            });
+                _logger.LogInformation("Skipping Google authentication as client-id is not configured");
+            }
+            else
+            {
+                services.AddAuthentication().AddGoogle(googleOptions =>
+                {
+                    googleOptions.ClientId = Configuration["Authentication:Google:ClientId"];
+                    googleOptions.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
+                });
+            }
 
             // no global "RequireAuthenticatedUser", as it interferes with (external) login mechanism
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
