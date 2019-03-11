@@ -10,10 +10,13 @@
     "build": "ng build",
     "build:ssr": "npm run build -- --app=ssr --output-hashing=media",
     "test": "ng test",
+    "test-ci": "ng test --code-coverage --no-watch --browsers ChromeHeadless",
     "lint": "ng lint",
     "e2e:backend": "cd .. && dotnet run --launch-profile BackendForE2E",
     "e2e:run": "ng e2e",
-    "e2e": "run-p --race e2e:*"
+    "e2e:run-headless": "ng e2e --protractor-config protractor-headless.conf.js",
+    "e2e": "run-p --race e2e:backend e2e:run",
+    "e2e-ci": "run-p --race e2e:backend e2e:run-headless"
   },
   "dependencies": {
     "@angular/animations": "7.2.8",
@@ -46,6 +49,7 @@
     "@types/node": "^10.12.26",
     "codelyzer": "^4.5.0",
     "jasmine-core": "^3.3.0",
+    "jasmine-reporters": "^2.3.2",
     "jasmine-spec-reporter": "^4.2.1",
     "karma": "^4.0.1",
     "karma-chrome-launcher": "^2.2.0",
@@ -53,6 +57,7 @@
     "karma-coverage-istanbul-reporter": "^2.0.5",
     "karma-jasmine": "^2.0.1",
     "karma-jasmine-html-reporter": "^1.4.0",
+    "karma-junit-reporter": "^1.2.0",
     "npm-run-all": "^4.1.5",
     "protractor": "^5.4.2",
     "ts-node": "^8.0.3",

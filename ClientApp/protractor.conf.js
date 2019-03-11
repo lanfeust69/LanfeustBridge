@@ -1,5 +1,6 @@
 /*global jasmine */
 var SpecReporter = require('jasmine-spec-reporter').SpecReporter;
+var JUnitXmlReporter = require('jasmine-reporters').JUnitXmlReporter;
 
 exports.config = {
   allScriptsTimeout: 11000,
@@ -23,5 +24,6 @@ exports.config = {
       project: 'e2e/tsconfig.e2e.json'
     });
     jasmine.getEnv().addReporter(new SpecReporter());
+    jasmine.getEnv().addReporter(new JUnitXmlReporter({ savePath: 'junit/' }));
   }
 };
