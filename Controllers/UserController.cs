@@ -38,7 +38,7 @@ namespace LanfeustBridge.Controllers
                 return Unauthorized();
             }
 
-            return Ok(new { user.Email, Name = user.DisplayName });
+            return Ok(new { user.Email, Name = user.DisplayName, user.Roles });
         }
 
         [HttpGet]

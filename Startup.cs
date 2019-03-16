@@ -1,6 +1,10 @@
 using System;
 using System.IO;
+using System.Net;
+using System.Threading.Tasks;
 
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -49,10 +53,10 @@ namespace LanfeustBridge
                 .AddSingleton(MovementService.Service);
 
             services.AddSingleton<IUserStore<User>, UserStoreService>();
-            services.AddSingleton<IRoleStore<IdentityRole>, UserStoreService>();
+            services.AddSingleton<IRoleStore<Role>, UserStoreService>();
             if (!IsDevelopment)
                 services.AddSingleton<IEmailSender, SendMail>();
-            services.AddIdentity<User, IdentityRole>(options => options.Stores.MaxLengthForKeys = 128)
+            services.AddIdentity<User, Role>(options => options.Stores.MaxLengthForKeys = 128)
                 .AddDefaultUI()
                 .AddDefaultTokenProviders();
 
@@ -87,6 +91,9 @@ namespace LanfeustBridge
                     options.LoginPath = "/Identity/Account/Login";
                     options.AccessDeniedPath = "/Identity/Account/AccessDenied";
                     options.SlidingExpiration = true;
+                    // keep a "real" 401/403 for api calls (https://stackoverflow.com/questions/42030137/suppress-redirect-on-api-urls-in-asp-net-core)
+                    options.Events.OnRedirectToAccessDenied = ReplaceRedirector(HttpStatusCode.Forbidden, options.Events.OnRedirectToAccessDenied);
+                    options.Events.OnRedirectToLogin = ReplaceRedirector(HttpStatusCode.Unauthorized, options.Events.OnRedirectToLogin);
                 });
             }
 
@@ -115,7 +122,7 @@ namespace LanfeustBridge
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app, RoleManager<Role> roleManager)
         {
             if (IsDevelopment)
             {
@@ -163,6 +170,27 @@ namespace LanfeustBridge
                     }
                 });
             }
+
+            EnsureAdminRoleCreated(roleManager).GetAwaiter().GetResult();
+        }
+
+        private static async Task EnsureAdminRoleCreated(RoleManager<Role> roleManager)
+        {
+            if (!await roleManager.RoleExistsAsync("Admin"))
+                await roleManager.CreateAsync(new Role("Admin"));
+        }
+
+        private static Func<RedirectContext<CookieAuthenticationOptions>, Task> ReplaceRedirector(HttpStatusCode statusCode, Func<RedirectContext<CookieAuthenticationOptions>, Task> existingRedirector)
+        {
+            return context =>
+            {
+                if (context.Request.Path.StartsWithSegments("/api"))
+                {
+                    context.Response.StatusCode = (int)statusCode;
+                    return Task.CompletedTask;
+                }
+                return existingRedirector(context);
+            };
         }
     }
 }

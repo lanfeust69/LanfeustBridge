@@ -66,6 +66,12 @@ namespace LanfeustBridge.UI
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+                    var admins = await _userManager.GetUsersInRoleAsync("Admin");
+                    if (admins.Count == 0)
+                    {
+                        await _userManager.AddToRoleAsync(user, "Admin");
+                        _logger.LogInformation("User {Name} has been given Admin role as there was none.", user.DisplayName);
+                    }
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

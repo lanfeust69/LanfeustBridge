@@ -16,5 +16,7 @@ namespace LanfeustBridge.Models
         public string AuthenticatorKey { get; set; }
 
         public List<string> RecoveryCodes { get; set; } = new List<string>();
+
+        public List<string> Roles { get; set; } = new List<string>();
     }
 }

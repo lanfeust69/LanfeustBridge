@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -6,12 +7,14 @@ using Microsoft.AspNetCore.Identity;
 
 namespace LanfeustBridge.Services
 {
+    using LanfeustBridge.Models;
+
     /// <summary>
-    /// Implementation of the IRoleStore part of UserStoreService.
+    /// Implementation of the IRoleStore and IUserRoleStore parts of UserStoreService.
     /// </summary>
-    public partial class UserStoreService : IRoleStore<IdentityRole>
+    public partial class UserStoreService : IRoleStore<Role>, IUserRoleStore<User>
     {
-        public Task<IdentityResult> CreateAsync(IdentityRole role, CancellationToken cancellationToken)
+        public Task<IdentityResult> CreateAsync(Role role, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             if (role == null)
@@ -21,7 +24,7 @@ namespace LanfeustBridge.Services
             return Task.FromResult(IdentityResult.Success);
         }
 
-        public Task<IdentityResult> UpdateAsync(IdentityRole role, CancellationToken cancellationToken)
+        public Task<IdentityResult> UpdateAsync(Role role, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             if (role == null)
@@ -31,7 +34,7 @@ namespace LanfeustBridge.Services
             return Task.FromResult(IdentityResult.Success);
         }
 
-        public Task<IdentityResult> DeleteAsync(IdentityRole role, CancellationToken cancellationToken)
+        public Task<IdentityResult> DeleteAsync(Role role, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             if (role == null)
@@ -41,7 +44,7 @@ namespace LanfeustBridge.Services
             return Task.FromResult(IdentityResult.Success);
         }
 
-        Task<IdentityRole> IRoleStore<IdentityRole>.FindByIdAsync(string roleId, CancellationToken cancellationToken)
+        Task<Role> IRoleStore<Role>.FindByIdAsync(string roleId, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             if (roleId == null)
@@ -51,7 +54,7 @@ namespace LanfeustBridge.Services
             return Task.FromResult(role);
         }
 
-        Task<IdentityRole> IRoleStore<IdentityRole>.FindByNameAsync(string normalizedRoleName, CancellationToken cancellationToken)
+        Task<Role> IRoleStore<Role>.FindByNameAsync(string normalizedRoleName, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             if (normalizedRoleName == null)
@@ -61,7 +64,7 @@ namespace LanfeustBridge.Services
             return Task.FromResult(role);
         }
 
-        public Task<string> GetRoleIdAsync(IdentityRole role, CancellationToken cancellationToken)
+        public Task<string> GetRoleIdAsync(Role role, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             if (role == null)
@@ -70,7 +73,7 @@ namespace LanfeustBridge.Services
             return Task.FromResult(role.Id);
         }
 
-        public Task<string> GetRoleNameAsync(IdentityRole role, CancellationToken cancellationToken)
+        public Task<string> GetRoleNameAsync(Role role, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             if (role == null)
@@ -79,7 +82,7 @@ namespace LanfeustBridge.Services
             return Task.FromResult(role.Name);
         }
 
-        public Task SetRoleNameAsync(IdentityRole role, string roleName, CancellationToken cancellationToken)
+        public Task SetRoleNameAsync(Role role, string roleName, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             if (role == null)
@@ -88,10 +91,10 @@ namespace LanfeustBridge.Services
                 throw new ArgumentNullException(nameof(roleName));
 
             role.Name = roleName;
-            return Task.FromResult<object>(null);
+            return Task.CompletedTask;
         }
 
-        public Task<string> GetNormalizedRoleNameAsync(IdentityRole role, CancellationToken cancellationToken)
+        public Task<string> GetNormalizedRoleNameAsync(Role role, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             if (role == null)
@@ -100,7 +103,7 @@ namespace LanfeustBridge.Services
             return Task.FromResult(role.NormalizedName);
         }
 
-        public Task SetNormalizedRoleNameAsync(IdentityRole role, string normalizedName, CancellationToken cancellationToken)
+        public Task SetNormalizedRoleNameAsync(Role role, string normalizedName, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             if (role == null)
@@ -110,6 +113,58 @@ namespace LanfeustBridge.Services
 
             role.NormalizedName = normalizedName;
             return Task.FromResult<object>(null);
+        }
+
+        public async Task AddToRoleAsync(User user, string normalizedRoleName, CancellationToken cancellationToken)
+        {
+            var role = await ((IRoleStore<Role>)this).FindByNameAsync(normalizedRoleName, cancellationToken);
+            var userName = user.NormalizedUserName;
+            if (!role.UsersInRole.Contains(userName))
+            {
+                role.UsersInRole.Add(userName);
+                _roles.Update(role);
+            }
+            if (!user.Roles.Contains(role.Name))
+            {
+                user.Roles.Add(role.Name);
+                _users.Update(user);
+            }
+        }
+
+        public async Task RemoveFromRoleAsync(User user, string normalizedRoleName, CancellationToken cancellationToken)
+        {
+            var role = await ((IRoleStore<Role>)this).FindByNameAsync(normalizedRoleName, cancellationToken);
+            var userName = user.NormalizedUserName;
+            if (role.UsersInRole.Contains(userName))
+            {
+                role.UsersInRole.Remove(userName);
+                _roles.Update(role);
+            }
+            if (user.Roles.Contains(role.Name))
+            {
+                user.Roles.Remove(role.Name);
+                _users.Update(user);
+            }
+        }
+
+        public Task<IList<string>> GetRolesAsync(User user, CancellationToken cancellationToken)
+        {
+            return Task.FromResult<IList<string>>(new List<string>(user.Roles));
+        }
+
+        public Task<bool> IsInRoleAsync(User user, string role, CancellationToken cancellationToken)
+        {
+            return Task.FromResult(user.Roles.Contains(role));
+        }
+
+        public async Task<IList<User>> GetUsersInRoleAsync(string roleName, CancellationToken cancellationToken)
+        {
+            var result = new List<User>();
+            var role = await ((IRoleStore<Role>)this).FindByNameAsync(roleName, cancellationToken);
+            foreach (var user in role.UsersInRole)
+                result.Add(await FindByNameAsync(user, cancellationToken));
+
+            return result;
         }
     }
 }

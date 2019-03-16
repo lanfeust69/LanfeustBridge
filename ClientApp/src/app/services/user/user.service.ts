@@ -6,11 +6,12 @@ export const USER_SERVICE = new InjectionToken('UserService');
 export class User {
     name = '';
     email = '';
-    role = '';
+    roles = [];
 }
 
 export interface UserService {
     currentUser: string;
+    isCurrentUserAdmin: boolean;
 
     isLoggedIn(): Observable<boolean>;
 

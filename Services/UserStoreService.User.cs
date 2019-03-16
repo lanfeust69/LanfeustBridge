@@ -25,7 +25,7 @@ namespace LanfeustBridge.Services
     {
         private ILogger _logger;
         private LiteCollection<User> _users;
-        private LiteCollection<IdentityRole> _roles;
+        private LiteCollection<Role> _roles;
 
         public UserStoreService(ILogger<UserStoreService> logger, DbService dbService)
         {
@@ -34,7 +34,7 @@ namespace LanfeustBridge.Services
             _users.EnsureIndex(u => u.NormalizedUserName);
             _users.EnsureIndex(u => u.NormalizedEmail);
             _users.EnsureIndex(u => u.ExternalLogins, "$.ExternalLogins[*]");
-            _roles = dbService.Db.GetCollection<IdentityRole>();
+            _roles = dbService.Db.GetCollection<Role>();
             _roles.EnsureIndex(u => u.NormalizedName);
         }
 

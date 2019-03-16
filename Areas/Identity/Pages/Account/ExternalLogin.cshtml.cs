@@ -130,6 +130,12 @@ namespace LanfeustBridge.UI
                     result = await _userManager.AddLoginAsync(user, info);
                     if (result.Succeeded)
                     {
+                        var admins = await _userManager.GetUsersInRoleAsync("Admin");
+                        if (admins.Count == 0)
+                        {
+                            await _userManager.AddToRoleAsync(user, "Admin");
+                            _logger.LogInformation("User {Name} has been given Admin role as there was none.", user.DisplayName);
+                        }
                         await _signInManager.SignInAsync(user, isPersistent: false);
                         _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
                         return LocalRedirect(returnUrl);
