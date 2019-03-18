@@ -51,6 +51,7 @@ namespace LanfeustBridge.Controllers
 
         // POST api/tournament
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult Post([FromBody]Tournament tournament)
         {
             tournament = _tournamentService.SaveTournament(tournament);
@@ -60,6 +61,7 @@ namespace LanfeustBridge.Controllers
 
         // PUT api/tournament/3
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Put(int id, [FromBody]Tournament tournament)
         {
             if (id != tournament.Id)
@@ -70,6 +72,7 @@ namespace LanfeustBridge.Controllers
 
         // DELETE api/tournament/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public bool Delete(int id)
         {
             return _tournamentService.DeleteTournament(id);
@@ -84,6 +87,7 @@ namespace LanfeustBridge.Controllers
 
         // POST api/tournament/3/start
         [HttpPost("{id}/start")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Start(int id)
         {
             var tournament = _tournamentService.GetTournament(id);
@@ -100,6 +104,7 @@ namespace LanfeustBridge.Controllers
 
         // POST api/tournament/3/close
         [HttpPost("{id}/close")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Close(int id)
         {
             var tournament = _tournamentService.GetTournament(id);

@@ -20,6 +20,7 @@ import { UserService, USER_SERVICE } from '../../services/user/user.service';
 export class TournamentComponent implements OnInit {
     @Input() id: number;
 
+    _isAdmin = false;
     _created = false;
     _edit = false;
     _tournament: Tournament;
@@ -52,6 +53,7 @@ export class TournamentComponent implements OnInit {
         @Inject(MOVEMENT_SERVICE) private _movementService: MovementService) { }
 
     ngOnInit() {
+        this._isAdmin = this._userService.isCurrentUserAdmin;
         this._movementService.getMovements().subscribe(movements => {
             movements.forEach(d => { this._knownMovements[d.id] = d; this._sortedMovementIds.push(d.id); });
             if (this._tournament) {
@@ -96,7 +98,7 @@ export class TournamentComponent implements OnInit {
                     if (this._knownScorings.length > 0)
                         this._tournament.scoring = this._knownScorings[0];
                     this._created = false;
-                    this._edit = true;
+                    this._edit = this._isAdmin;
                 } else {
                     console.log('tournament service returned', tournament);
                     this._created = true;

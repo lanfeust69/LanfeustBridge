@@ -88,13 +88,13 @@
         </ngb-tab>
         <ngb-tab title="Players" id="tab-players" *ngIf="_tournament.players">
             <ng-template ngbTabContent>
-                <div *ngIf="!finished && !_edit" class="list-group">
+                <div *ngIf="!finished && !_edit" class="list-group mb-2">
                     <a [routerLink]="['/tournament', _tournament.id]" class="list-group-item"
                         *ngFor="let player of players; let i = index">Player {{i + 1}} : {{player.name}}</a>
                     <!--<a [routerLink]="['/user', player?.name]" class="list-group-item" *ngFor="let player of _tournament.players">{{player?.name}}</a>-->
                 </div>
                 <div *ngIf="finished">
-                    <table class="table-striped table-bordered table-hover col-12">
+                    <table class="table-striped table-bordered table-hover col-12 mb-2">
                         <thead>
                             <tr>
                                 <th style="width: 20%">#</th>
@@ -128,7 +128,7 @@
         </ngb-tab>
         <ngb-tab title="Deals" *ngIf="finished && nbDeals > 0">
             <ng-template ngbTabContent>
-                <div class="list-group">
+                <div class="list-group mb-2">
                     <a [routerLink]="['deal', deal.id]" [queryParams]="isIndividual ? {individual: true} : {}" class="list-group-item" *ngFor="let deal of deals">Deal {{deal.id}}</a>
                 </div>
             </ng-template>
@@ -137,10 +137,10 @@
     <div [hidden]="!_edit || isValid" class="alert alert-danger">
         {{_invalidReason}}
     </div>
-    <div class="form-group">
-        <button *ngIf="(setup && _created && !_edit) || (finished && !_edit)" class="btn btn-primary" (click)="_edit = !_edit; _currentRound = 0; initializeScore()">Edit</button>
-        <button *ngIf="setup && _created && !_edit" class="btn btn-primary" (click)="start()">Start</button>
+    <div class="form-group btn-toolbar">
+        <button *ngIf="(setup && _created && !_edit && _isAdmin) || (finished && !_edit && _isAdmin)" class="btn btn-primary mr-2" (click)="_edit = !_edit; _currentRound = 0; initializeScore()">Edit</button>
+        <button *ngIf="setup && _created && !_edit && _isAdmin" class="btn btn-primary mr-2" (click)="start()">Start</button>
         <!--<button *ngIf="running" class="btn btn-primary" (click)="play()">Play</button>-->
-        <button *ngIf="(running && _roundFinished && _currentRound == _tournament.nbRounds - 1) || (finished && _edit)" class="btn btn-primary" (click)="close()">Close</button>
+        <button *ngIf="(running && _roundFinished && _currentRound == _tournament.nbRounds - 1 && _isAdmin) || (finished && _edit)" class="btn btn-primary mr-2" (click)="close()">Close</button>
     </div>
 </div>
