@@ -60,9 +60,9 @@ namespace LanfeustBridge
                 .AddDefaultUI()
                 .AddDefaultTokenProviders();
 
-            if (IsDevelopment)
+            services.Configure<IdentityOptions>(options =>
             {
-                services.Configure<IdentityOptions>(options =>
+                if (IsDevelopment)
                 {
                     // Password settings
                     options.Password.RequireDigit = false;
@@ -75,27 +75,26 @@ namespace LanfeustBridge
                     // Lockout settings
                     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1);
                     options.Lockout.MaxFailedAccessAttempts = 10;
-                    options.Lockout.AllowedForNewUsers = true;
+                }
 
-                    // User settings
-                    // needs the store to implement IUserEmailStore
-                    options.User.RequireUniqueEmail = true;
-                });
+                // User settings
+                // needs the store to implement IUserEmailStore
+                options.User.RequireUniqueEmail = true;
+            });
 
-                services.ConfigureApplicationCookie(options =>
-                {
-                    // Cookie settings
-                    options.Cookie.HttpOnly = true;
-                    options.Cookie.SecurePolicy = CookieSecurePolicy.None;
-                    options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
-                    options.LoginPath = "/Identity/Account/Login";
-                    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
-                    options.SlidingExpiration = true;
-                    // keep a "real" 401/403 for api calls (https://stackoverflow.com/questions/42030137/suppress-redirect-on-api-urls-in-asp-net-core)
-                    options.Events.OnRedirectToAccessDenied = ReplaceRedirector(HttpStatusCode.Forbidden, options.Events.OnRedirectToAccessDenied);
-                    options.Events.OnRedirectToLogin = ReplaceRedirector(HttpStatusCode.Unauthorized, options.Events.OnRedirectToLogin);
-                });
-            }
+            services.ConfigureApplicationCookie(options =>
+            {
+                // Cookie settings
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SecurePolicy = IsDevelopment ? CookieSecurePolicy.None : CookieSecurePolicy.Always;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+                options.LoginPath = "/Identity/Account/Login";
+                options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+                options.SlidingExpiration = true;
+                // keep a "real" 401/403 for api calls (https://stackoverflow.com/questions/42030137/suppress-redirect-on-api-urls-in-asp-net-core)
+                options.Events.OnRedirectToAccessDenied = ReplaceRedirector(HttpStatusCode.Forbidden, options.Events.OnRedirectToAccessDenied);
+                options.Events.OnRedirectToLogin = ReplaceRedirector(HttpStatusCode.Unauthorized, options.Events.OnRedirectToLogin);
+            });
 
             if (string.IsNullOrEmpty(Configuration["Authentication:Google:ClientId"]))
             {
