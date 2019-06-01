@@ -13,7 +13,7 @@ namespace LanfeustBridge.Tests
         public void AllImplementedMovementsAreReturned()
         {
             var descriptions = MovementService.Service.GetAllMovements().ToList();
-            Assert.Equal(6, descriptions.Count);
+            Assert.Equal(7, descriptions.Count);
         }
 
         #pragma warning disable SA1201 // Elements must appear in the correct order
