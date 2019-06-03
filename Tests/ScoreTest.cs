@@ -118,7 +118,7 @@ namespace LanfeustBridge.Tests
                 deal.Scores[i].Entered = true;
                 deal.Scores[i].BridgeScore = scores[i];
             }
-            deal.ComputeResults(isImp ? "IMP" : "Matchpoint");
+            deal.ComputeResults(isImp ? ScoringMethod.IMP : ScoringMethod.Matchpoint);
             Assert.Equal(expected.Length, deal.Scores.Length);
             for (int i = 0; i < scores.Length; i++)
             {

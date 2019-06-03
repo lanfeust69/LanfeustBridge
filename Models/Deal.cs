@@ -64,10 +64,12 @@ namespace LanfeustBridge.Models
         {
             switch (scoring)
             {
-                case "Matchpoint":
+                case ScoringMethod.Matchpoint:
                     ComputePoints(isImp: false);
                     break;
-                case "IMP":
+                case ScoringMethod.IMP:
+                case ScoringMethod.Mixed:
+                case ScoringMethod.MixedTiedAt10:
                     ComputePoints(isImp: true);
                     break;
                 default:

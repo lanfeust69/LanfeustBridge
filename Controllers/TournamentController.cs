@@ -82,7 +82,7 @@ namespace LanfeustBridge.Controllers
         [HttpGet("scoring")]
         public IActionResult GetScorings()
         {
-            return Ok(new[] { "Matchpoint", "IMP" });
+            return Ok(new[] { ScoringMethod.Matchpoint, ScoringMethod.IMP, ScoringMethod.Mixed, ScoringMethod.MixedTiedAt10 });
         }
 
         // POST api/tournament/3/start
