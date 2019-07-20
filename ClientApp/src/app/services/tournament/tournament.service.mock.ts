@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { delay, map, merge, reduce } from 'rxjs/operators';
+import { merge, Observable, of, throwError } from 'rxjs';
+import { delay, map, reduce } from 'rxjs/operators';
 
 import { Tournament, Position, Status } from '../../tournament';
 import { Score } from '../../score';
@@ -24,7 +24,7 @@ export class TournamentServiceMock implements TournamentService {
 
     get(id: number): Observable<Tournament> {
         if (id <= 0 || id > this._tournaments.length || !this._tournaments[id - 1])
-            return Observable.throw('No tournament with id \'' + id + '\' found');
+            return throwError('No tournament with id \'' + id + '\' found');
         const tournament = this._tournaments[id - 1];
         return of(tournament).pipe(delay(2000)); // 2 seconds
     }
@@ -63,7 +63,7 @@ export class TournamentServiceMock implements TournamentService {
     update(tournament: Tournament): Observable<Tournament> {
         const id = tournament.id;
         if (id <= 0 || id > this._tournaments.length || !this._tournaments[id - 1])
-            return Observable.throw('No tournament with id \'' + id + '\' found');
+            return throwError('No tournament with id \'' + id + '\' found');
         this._tournaments[id - 1] = tournament;
         return of(tournament);
     }
@@ -82,7 +82,7 @@ export class TournamentServiceMock implements TournamentService {
 
     start(id: number): Observable<Tournament> {
         if (id <= 0 || id > this._tournaments.length || !this._tournaments[id - 1])
-            return Observable.throw('No tournament with id "' + id + '" found');
+            return throwError('No tournament with id "' + id + '" found');
         const tournament = this._tournaments[id - 1];
         tournament.status = Status.Running;
         tournament.currentRound = 0;
@@ -91,7 +91,7 @@ export class TournamentServiceMock implements TournamentService {
 
     close(id: number): Observable<Tournament> {
         if (id <= 0 || id > this._tournaments.length || !this._tournaments[id - 1])
-            return Observable.throw('No tournament with id "' + id + '" found');
+            return throwError('No tournament with id "' + id + '" found');
         const tournament = this._tournaments[id - 1];
         tournament.status = Status.Finished;
         return of(tournament);
@@ -99,7 +99,7 @@ export class TournamentServiceMock implements TournamentService {
 
     currentRound(id: number): Observable<{round: number, finished: boolean}> {
         if (id <= 0 || id > this._tournaments.length || !this._tournaments[id - 1])
-            return Observable.throw('No tournament with id "' + id + '" found');
+            return throwError('No tournament with id "' + id + '" found');
         const tournament = this._tournaments[id - 1];
         // finished, waiting for close
         if (tournament.currentRound === tournament.nbRounds)
@@ -108,7 +108,7 @@ export class TournamentServiceMock implements TournamentService {
         let scores: Observable<Score>;
         for (let dealId = 1; dealId <= tournament.nbDealsPerRound * tournament.nbTables; dealId++) {
             const score = this._dealService.getScore(id, dealId, tournament.currentRound);
-            scores = scores ? scores.pipe(merge(score)) : score;
+            scores = scores ? merge(scores, score) : score;
         }
         return scores.pipe(
             reduce((allEntered: boolean, score: Score, _) => allEntered && score.entered, true),
@@ -117,7 +117,7 @@ export class TournamentServiceMock implements TournamentService {
 
     nextRound(id: number) {
         if (id <= 0 || id > this._tournaments.length || !this._tournaments[id - 1])
-            return Observable.throw('No tournament with id "' + id + '" found');
+            return throwError('No tournament with id "' + id + '" found');
         const tournament = this._tournaments[id - 1];
         if (tournament.currentRound < tournament.nbRounds)
             tournament.currentRound++;

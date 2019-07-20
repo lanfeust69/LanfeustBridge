@@ -1,8 +1,8 @@
 import { Component, Input, Inject, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
 import { NgbTabset } from '@ng-bootstrap/ng-bootstrap';
-import { Observable, of, Subject, Subscriber, Subscription } from 'rxjs';
-import { debounceTime, distinctUntilChanged, filter, map, merge, switchMap } from 'rxjs/operators';
+import { merge, Observable, of, Subject, Subscriber, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
 
 import { AlertService } from '../../services/alert/alert.service';
 import { Tournament, Position, Status } from '../../tournament';
@@ -40,7 +40,7 @@ export class TournamentComponent implements OnInit {
     _currentScore: Score = new Score;
     _scoreDisplayed = false;
 
-    @ViewChild(NgbTabset) tabs: NgbTabset;
+    @ViewChild(NgbTabset, { static: false }) tabs: NgbTabset;
     playerTypeahead = new Subject<{ player: number, text: string }>();
 
     constructor(
@@ -291,15 +291,16 @@ export class TournamentComponent implements OnInit {
     getSearch(player: number): (text: Observable<string>) => Observable<string[]> {
         // not directly as a method because not bound to this when called from ngTypeahead
         return (text: Observable<string>) =>
-            text.pipe(
-                debounceTime(200),
-                distinctUntilChanged(),
-                merge(this.playerTypeahead.pipe(filter(e => e.player === player), map(e => e.text))),
+            merge(
+                text.pipe(debounceTime(200), distinctUntilChanged()),
+                this.playerTypeahead.pipe(filter(e => e.player === player), map(e => e.text))
+            ).pipe(
                 map(s => {
                     const eligibleUsers = this._allUsers.filter(u => this.players.map(p => p.name).indexOf(u) === -1);
                     return s === '' ? eligibleUsers :
                         eligibleUsers.filter(u => u.toLocaleLowerCase().indexOf(s.toLocaleLowerCase()) !== -1);
-                }));
+                })
+            );
     }
 
     get rounds(): number[] {

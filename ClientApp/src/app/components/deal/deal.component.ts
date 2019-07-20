@@ -18,7 +18,7 @@ export class DealComponent implements AfterViewInit, OnInit {
     @Input() tournamentId: number;
     @Input() id: number;
     deal: Deal;
-    @ViewChild('table') tableCanvas;
+    @ViewChild('table', { static: true }) tableCanvas;
     viewInitialized = false;
     individual = false;
 

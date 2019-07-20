@@ -10,7 +10,7 @@ import { UserServiceMock } from '../../services/user/user.service.mock';
 import { LanfeustBridgeApp } from './lanfeust-bridge.app';
 
 beforeEach(() => TestBed.configureTestingModule({
-    imports: [NgbModule.forRoot(), RouterTestingModule],
+    imports: [NgbModule, RouterTestingModule],
     declarations: [LanfeustBridgeApp],
     providers: [
         AlertService, // simple enough to keep it without a stub

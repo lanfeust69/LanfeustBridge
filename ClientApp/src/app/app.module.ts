@@ -38,7 +38,7 @@ import { AlertService } from './services/alert/alert.service';
     ],
     imports: [
         BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
-        NgbModule.forRoot(),
+        NgbModule,
         FormsModule,
         HttpClientModule,
         RouterModule.forRoot([

@@ -82,26 +82,32 @@ export class TournamentServiceHttp implements TournamentService {
     }
 
     getNextRoundObservable(id: number): Observable<number> {
-        return this.wrapObservable(fromEventPattern(
-            handler => this.hubConnection.on('NextRound', handler as (...args: any[]) => void),
-            handler => this.hubConnection.off('NextRound', handler as (...args: any[]) => void),
-            (tournamentId, round) => ({tournamentId, round})).pipe(
-                filter(({tournamentId, round}) => tournamentId === id),
-                map(({tournamentId, round}) => round)));
+        return this.wrapObservable(
+            fromEventPattern(
+                handler => this.hubConnection.on('NextRound', handler as (...args: any[]) => void),
+                handler => this.hubConnection.off('NextRound', handler as (...args: any[]) => void)
+            ).pipe(
+                filter(([tournamentId, _]) => tournamentId === id),
+                map(([_, round]) => round)
+            )
+        );
     }
 
     getRoundFinishedObservable(id: number): Observable<number> {
-        return this.wrapObservable(fromEventPattern(
-            handler => this.hubConnection.on('RoundFinished', handler as (...args: any[]) => void),
-            handler => this.hubConnection.off('RoundFinished', handler as (...args: any[]) => void),
-            (tournamentId, round) => ({tournamentId, round})).pipe(
-                filter(({tournamentId, round}) => tournamentId === id),
-                map(({tournamentId, round}) => round)));
+        return this.wrapObservable(
+            fromEventPattern(
+                handler => this.hubConnection.on('RoundFinished', handler as (...args: any[]) => void),
+                handler => this.hubConnection.off('RoundFinished', handler as (...args: any[]) => void)
+            ).pipe(
+                filter(([tournamentId, _]) => tournamentId === id),
+                map(([_, round]) => round)
+            )
+        );
     }
 
     // we wrap observables created from signalR callbacks so that the subscribers run in angular zone
     private wrapObservable<T>(observable: Observable<T>): Observable<T> {
-        const wrapped = Observable.create(subscriber => {
+        const wrapped = new Observable<T>(subscriber => {
             const innerSub = observable.subscribe(
                 t => this._ngZone.run(() => subscriber.next(t)),
                 err => this._ngZone.run(() => subscriber.error(err)),
