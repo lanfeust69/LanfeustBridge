@@ -3,13 +3,14 @@
 using LiteDB;
 
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace LanfeustBridge.Services
 {
     public class DbService
     {
-        public DbService(ILogger<DbService> logger, DirectoryService directoryService, IHostingEnvironment hostingEnvironment)
+        public DbService(ILogger<DbService> logger, DirectoryService directoryService, IWebHostEnvironment hostingEnvironment)
         {
             if (hostingEnvironment.IsDevelopment())
             {

@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace LanfeustBridge.Models
 {
@@ -18,13 +18,13 @@ namespace LanfeustBridge.Models
 
         public int Tricks { get; set; }
 
-        [JsonProperty(PropertyName = "score")]
+        [JsonPropertyName("score")]
         public int BridgeScore { get; set; }
 
-        [JsonProperty(PropertyName = "nsResult")]
+        [JsonPropertyName("nsResult")]
         public double NSResult { get; set; }
 
-        [JsonProperty(PropertyName = "ewResult")]
+        [JsonPropertyName("ewResult")]
         public double EWResult { get; set; }
 
         public int ComputeBridgeScore()

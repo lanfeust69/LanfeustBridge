@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace LanfeustBridge
@@ -26,7 +27,7 @@ namespace LanfeustBridge
     {
         private ILogger<Startup> _logger;
 
-        public Startup(ILogger<Startup> logger, IConfiguration configuration, IHostingEnvironment env)
+        public Startup(ILogger<Startup> logger, IConfiguration configuration, IWebHostEnvironment env)
         {
             _logger = logger;
             Configuration = configuration;
@@ -110,7 +111,6 @@ namespace LanfeustBridge
             }
 
             // no global "RequireAuthenticatedUser", as it interferes with (external) login mechanism
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddSignalR();
 
             // In production, the Angular files will be served from this directory
@@ -145,14 +145,16 @@ namespace LanfeustBridge
                 app.UseSpaStaticFiles();
             }
 
+            app.UseRouting();
             app.UseAuthentication();
-
-            app.UseSignalR(routes => routes.MapHub<TournamentHub>("/hub/tournament"));
-            app.UseMvc(routes =>
+            app.UseAuthorization();
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
+                endpoints.MapHub<TournamentHub>("/hub/tournament");
+                endpoints.MapControllerRoute(
                     name: "default",
-                    template: "{controller}/{action=Index}/{id?}");
+                    pattern: "{controller}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
             });
 
             if (!IsBackendOnly)

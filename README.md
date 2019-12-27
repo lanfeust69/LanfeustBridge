@@ -7,12 +7,12 @@ however it may eventually come to something useful, who knows ?
 
 ## Requirements
 
-- [.Net Core 2.1](https://www.microsoft.com/net/core)
+- [.Net Core 3.1](https://www.microsoft.com/net/core)
 - [nodejs](https://nodejs.org)
 
 ## Running from the command line
 
-```
+```bash
 # Running the server
 dotnet run
 
