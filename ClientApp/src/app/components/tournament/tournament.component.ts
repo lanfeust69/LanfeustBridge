@@ -1,7 +1,7 @@
 import { Component, Input, Inject, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
 import { NgbTabset } from '@ng-bootstrap/ng-bootstrap';
-import { merge, Observable, of, Subject, Subscriber, Subscription } from 'rxjs';
+import { merge, Observable, of, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
 
 import { AlertService } from '../../services/alert/alert.service';
@@ -40,7 +40,7 @@ export class TournamentComponent implements OnInit {
     _currentScore: Score = new Score;
     _scoreDisplayed = false;
 
-    @ViewChild(NgbTabset, { static: false }) tabs: NgbTabset;
+    @ViewChild(NgbTabset) tabs: NgbTabset;
     playerTypeahead = new Subject<{ player: number, text: string }>();
 
     constructor(
