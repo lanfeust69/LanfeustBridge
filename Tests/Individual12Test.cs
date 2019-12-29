@@ -8,7 +8,7 @@ namespace LanfeustBridge.Tests
 
     public class Individual12Test
     {
-        private Individual12 _individual = new Individual12();
+        private readonly Individual12 _individual = new Individual12();
 
         public static IEnumerable<object[]> IndividualPositions
         {

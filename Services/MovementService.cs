@@ -9,12 +9,12 @@ namespace LanfeustBridge.Services
 
     public class MovementService
     {
-        private static Lazy<MovementService> _service = new Lazy<MovementService>(() => new MovementService());
+        private static readonly Lazy<MovementService> s_service = new Lazy<MovementService>(() => new MovementService());
 
-        private Lazy<Dictionary<string, IMovement>> _mouvementInstances =
+        private readonly Lazy<Dictionary<string, IMovement>> _mouvementInstances =
             new Lazy<Dictionary<string, IMovement>>(FindAllMovements);
 
-        public static MovementService Service => _service.Value;
+        public static MovementService Service => s_service.Value;
 
         private Dictionary<string, IMovement> MouvementInstances => _mouvementInstances.Value;
 
@@ -25,7 +25,7 @@ namespace LanfeustBridge.Services
 
         public IMovement GetMovement(string id)
         {
-            MouvementInstances.TryGetValue(id, out IMovement movement);
+            MouvementInstances.TryGetValue(id, out var movement);
             return movement;
         }
 

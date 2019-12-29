@@ -12,7 +12,6 @@ namespace LanfeustBridge.UI
 {
     using LanfeustBridge.Models;
 
-    #pragma warning disable SA1649 // File name must match first type name
     public class IndexModel : PageModel
     {
         private readonly UserManager<User> _userManager;
@@ -115,7 +114,7 @@ namespace LanfeustBridge.UI
             var callbackUrl = Url.Page(
                 "/Account/ConfirmEmail",
                 pageHandler: null,
-                values: new { userId = user.Id, code = code },
+                values: new { userId = user.Id, code },
                 protocol: Request.Scheme);
             await _emailSender.SendEmailAsync(
                 user.Email,

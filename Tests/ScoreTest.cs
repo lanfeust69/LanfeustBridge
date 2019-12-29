@@ -90,7 +90,6 @@ namespace LanfeustBridge.Tests
             Assert.True(score.Validate());
         }
 
-        #pragma warning disable SA1201 // Elements must appear in the correct order
         public static IEnumerable<object[]> DealScores
         {
             get

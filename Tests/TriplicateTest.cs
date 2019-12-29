@@ -8,7 +8,7 @@ namespace LanfeustBridge.Tests
 
     public class TriplicateTest
     {
-        private Triplicate _triplicate = new Triplicate();
+        private readonly Triplicate _triplicate = new Triplicate();
 
         public static IEnumerable<object[]> TriplicatePositions
         {

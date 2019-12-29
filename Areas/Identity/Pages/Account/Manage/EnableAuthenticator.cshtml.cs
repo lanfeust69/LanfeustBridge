@@ -13,7 +13,6 @@ namespace LanfeustBridge.UI
 {
     using LanfeustBridge.Models;
 
-#pragma warning disable SA1649 // File name must match first type name
     public class EnableAuthenticatorModel : PageModel
     {
         private const string AuthenticatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";

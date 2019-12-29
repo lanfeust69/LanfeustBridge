@@ -12,10 +12,10 @@ namespace LanfeustBridge.Services
 
     public class SimpleDealsService : IDealsService
     {
-        private ILogger _logger;
-        private string _dataFile;
+        private readonly ILogger _logger;
+        private readonly string _dataFile;
 
-        private Lazy<Dictionary<int, Deal[]>> _deals;
+        private readonly Lazy<Dictionary<int, Deal[]>> _deals;
 
         public SimpleDealsService(ILogger<IDealsService> logger, DirectoryService directoryService)
         {

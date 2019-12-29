@@ -25,7 +25,7 @@ namespace LanfeustBridge
 
     public class Startup
     {
-        private ILogger<Startup> _logger;
+        private readonly ILogger<Startup> _logger;
 
         public Startup(ILogger<Startup> logger, IConfiguration configuration, IWebHostEnvironment env)
         {

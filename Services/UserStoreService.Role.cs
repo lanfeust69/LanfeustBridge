@@ -87,10 +87,7 @@ namespace LanfeustBridge.Services
             cancellationToken.ThrowIfCancellationRequested();
             if (role == null)
                 throw new ArgumentNullException(nameof(role));
-            if (roleName == null)
-                throw new ArgumentNullException(nameof(roleName));
-
-            role.Name = roleName;
+            role.Name = roleName ?? throw new ArgumentNullException(nameof(roleName));
             return Task.CompletedTask;
         }
 
@@ -108,10 +105,7 @@ namespace LanfeustBridge.Services
             cancellationToken.ThrowIfCancellationRequested();
             if (role == null)
                 throw new ArgumentNullException(nameof(role));
-            if (normalizedName == null)
-                throw new ArgumentNullException(nameof(normalizedName));
-
-            role.NormalizedName = normalizedName;
+            role.NormalizedName = normalizedName ?? throw new ArgumentNullException(nameof(normalizedName));
             return Task.FromResult<object>(null);
         }
 

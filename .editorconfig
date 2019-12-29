@@ -39,6 +39,7 @@ indent_size = 2
 [*.{cs,vb}]
 # Sort using and Import directives with System.* appearing first
 dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = true
 # Avoid "this." and "Me." if not necessary
 dotnet_style_qualification_for_field = false:refactoring
 dotnet_style_qualification_for_property = false:refactoring
@@ -156,7 +157,7 @@ csharp_indent_switch_labels = true
 csharp_indent_labels = flush_left
 
 # Prefer "var" everywhere
-csharp_style_var_for_built_in_types = true:suggestion
+csharp_style_var_for_built_in_types = true:silent
 csharp_style_var_when_type_is_apparent = true:suggestion
 csharp_style_var_elsewhere = true:suggestion
 
@@ -202,6 +203,6 @@ csharp_space_between_parentheses = false
 csharp_space_between_square_brackets = false
 
 # Blocks are allowed
-csharp_prefer_braces = true:silent
+csharp_prefer_braces = when_multiline:suggestion
 csharp_preserve_single_line_blocks = true
 csharp_preserve_single_line_statements = true

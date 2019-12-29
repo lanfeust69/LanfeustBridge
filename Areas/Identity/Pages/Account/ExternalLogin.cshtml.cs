@@ -13,7 +13,6 @@ namespace LanfeustBridge.UI
 {
     using LanfeustBridge.Models;
 
-    #pragma warning disable SA1649 // File name must match first type name
     public class ExternalLoginModel : PageModel
     {
         private readonly SignInManager<User> _signInManager;
@@ -60,7 +59,7 @@ namespace LanfeustBridge.UI
 
         public async Task<IActionResult> OnGetCallbackAsync(string returnUrl = null, string remoteError = null)
         {
-            returnUrl = returnUrl ?? Url.Content("~/");
+            returnUrl ??= Url.Content("~/");
             if (remoteError != null)
             {
                 ErrorMessage = $"Error from external provider: {remoteError}";
@@ -107,7 +106,7 @@ namespace LanfeustBridge.UI
 
         public async Task<IActionResult> OnPostConfirmationAsync(string returnUrl = null)
         {
-            returnUrl = returnUrl ?? Url.Content("~/");
+            returnUrl ??= Url.Content("~/");
             // Get the information about the user from the external login provider
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)

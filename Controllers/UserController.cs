@@ -30,7 +30,7 @@ namespace LanfeustBridge.Controllers
                 return Unauthorized();
 
             // also handle the case where the account has been deleted (but there is still a valid cookie)
-            User user = await _userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 // prevent the Identity UI from thinking the user is authenticated

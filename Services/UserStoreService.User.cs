@@ -23,9 +23,9 @@ namespace LanfeustBridge.Services
         IUserTwoFactorRecoveryCodeStore<User>,
         IQueryableUserStore<User>
     {
-        private ILogger _logger;
-        private LiteCollection<User> _users;
-        private LiteCollection<Role> _roles;
+        private readonly ILogger _logger;
+        private readonly LiteCollection<User> _users;
+        private readonly LiteCollection<Role> _roles;
 
         public UserStoreService(ILogger<UserStoreService> logger, DbService dbService)
         {
@@ -54,6 +54,7 @@ namespace LanfeustBridge.Services
                 user.DisplayName = user.UserName;
 
             _users.Insert(user);
+            _logger.LogInformation($"User {user.Email} created");
             return Task.FromResult(IdentityResult.Success);
         }
 
@@ -130,10 +131,7 @@ namespace LanfeustBridge.Services
             cancellationToken.ThrowIfCancellationRequested();
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
-            if (userName == null)
-                throw new ArgumentNullException(nameof(userName));
-
-            user.UserName = userName;
+            user.UserName = userName ?? throw new ArgumentNullException(nameof(userName));
             return Task.FromResult<object>(null);
         }
 
@@ -151,10 +149,7 @@ namespace LanfeustBridge.Services
             cancellationToken.ThrowIfCancellationRequested();
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
-            if (normalizedName == null)
-                throw new ArgumentNullException(nameof(normalizedName));
-
-            user.NormalizedUserName = normalizedName;
+            user.NormalizedUserName = normalizedName ?? throw new ArgumentNullException(nameof(normalizedName));
             return Task.FromResult<object>(null);
         }
 
@@ -181,10 +176,7 @@ namespace LanfeustBridge.Services
             cancellationToken.ThrowIfCancellationRequested();
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
-            if (passwordHash == null)
-                throw new ArgumentNullException(nameof(passwordHash));
-
-            user.PasswordHash = passwordHash;
+            user.PasswordHash = passwordHash ?? throw new ArgumentNullException(nameof(passwordHash));
             return Task.FromResult<object>(null);
         }
 
@@ -202,10 +194,7 @@ namespace LanfeustBridge.Services
             cancellationToken.ThrowIfCancellationRequested();
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
-            if (email == null)
-                throw new ArgumentNullException(nameof(email));
-
-            user.Email = email;
+            user.Email = email ?? throw new ArgumentNullException(nameof(email));
             return Task.FromResult<object>(null);
         }
 
@@ -223,10 +212,7 @@ namespace LanfeustBridge.Services
             cancellationToken.ThrowIfCancellationRequested();
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
-            if (normalizedEmail == null)
-                throw new ArgumentNullException(nameof(normalizedEmail));
-
-            user.NormalizedEmail = normalizedEmail;
+            user.NormalizedEmail = normalizedEmail ?? throw new ArgumentNullException(nameof(normalizedEmail));
             return Task.FromResult<object>(null);
         }
 
@@ -263,10 +249,7 @@ namespace LanfeustBridge.Services
             cancellationToken.ThrowIfCancellationRequested();
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
-            if (phoneNumber == null)
-                throw new ArgumentNullException(nameof(phoneNumber));
-
-            user.PhoneNumber = phoneNumber;
+            user.PhoneNumber = phoneNumber ?? throw new ArgumentNullException(nameof(phoneNumber));
             return Task.FromResult<object>(null);
         }
 
@@ -377,10 +360,7 @@ namespace LanfeustBridge.Services
             cancellationToken.ThrowIfCancellationRequested();
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
-            if (key == null)
-                throw new ArgumentNullException(nameof(key));
-
-            user.AuthenticatorKey = key;
+            user.AuthenticatorKey = key ?? throw new ArgumentNullException(nameof(key));
             return Task.FromResult<object>(null);
         }
 

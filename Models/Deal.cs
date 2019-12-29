@@ -5,9 +5,9 @@ namespace LanfeustBridge.Models
 {
     public class Deal
     {
-        private static readonly string[] _players = { "N", "E", "S", "W" };
+        private static readonly string[] s_players = { "N", "E", "S", "W" };
 
-        private static int[] _limits =
+        private static readonly int[] s_limits =
         {
             20, 50, 90, 130, 170, 220, 270, 320, 370, 430, 500, 600, 750, 900,
             1100, 1300, 1500, 1750, 2000, 2250, 2500, 2750, 3000, 3250, 3500
@@ -25,7 +25,7 @@ namespace LanfeustBridge.Models
 
         public static Deal CreateDeal(int id, int nbRounds, string dealer = null, string vulnerability = null)
         {
-            vulnerability = vulnerability ?? ComputeVulnerability(id);
+            vulnerability ??= ComputeVulnerability(id);
             var deal = new Deal
                 {
                     Id = id,
@@ -41,7 +41,7 @@ namespace LanfeustBridge.Models
 
         public static string ComputeDealer(int id)
         {
-            return _players[(id - 1) % 4];
+            return s_players[(id - 1) % 4];
         }
 
         public static string ComputeVulnerability(int id)
@@ -104,9 +104,9 @@ namespace LanfeustBridge.Models
         {
             if (diff < 0)
                 return -ConvertToImps(-diff);
-            for (int i = _limits.Length - 1; i >= 0; i--)
+            for (int i = s_limits.Length - 1; i >= 0; i--)
             {
-                if (diff >= _limits[i])
+                if (diff >= s_limits[i])
                     return i + 1;
             }
 

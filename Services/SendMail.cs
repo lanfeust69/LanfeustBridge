@@ -12,8 +12,8 @@ namespace LanfeustBridge.Services
 {
     public class SendMail : IEmailSender
     {
-        private ILogger _logger;
-        private string _sendGridKey;
+        private readonly ILogger _logger;
+        private readonly string _sendGridKey;
 
         public SendMail(IConfiguration configuration, ILogger<SendMail> logger)
         {

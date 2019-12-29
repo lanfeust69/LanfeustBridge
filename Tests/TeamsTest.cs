@@ -9,7 +9,7 @@ namespace LanfeustBridge.Tests
 
     public class TeamsTest
     {
-        private Teams _teams = new Teams();
+        private readonly Teams _teams = new Teams();
 
         public static IEnumerable<object[]> TeamsPositions
         {

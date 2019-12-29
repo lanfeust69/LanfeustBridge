@@ -10,14 +10,12 @@ namespace LanfeustBridge.Services
 
     public class DbDealsService : IDealsService
     {
-        private ILogger _logger;
-        private LiteDatabase _db;
-        private LiteCollection<DealWrapper> _deals;
+        private readonly ILogger _logger;
+        private readonly LiteCollection<DealWrapper> _deals;
 
         public DbDealsService(ILogger<DbDealsService> logger, DbService dbService)
         {
             _logger = logger;
-            _db = dbService.Db;
             _deals = dbService.Db.GetCollection<DealWrapper>();
             _deals.EnsureIndex(d => d.TournamentId);
         }

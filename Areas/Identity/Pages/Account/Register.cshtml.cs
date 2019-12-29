@@ -15,7 +15,6 @@ namespace LanfeustBridge.UI
 {
     using LanfeustBridge.Models;
 
-    #pragma warning disable SA1649 // File name must match first type name
     [AllowAnonymous]
     public class RegisterModel : PageModel
     {
@@ -53,7 +52,7 @@ namespace LanfeustBridge.UI
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            returnUrl = returnUrl ?? Url.Content("~/");
+            returnUrl ??= Url.Content("~/");
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
@@ -78,7 +77,7 @@ namespace LanfeustBridge.UI
                     var callbackUrl = Url.Page(
                         "/Account/ConfirmEmail",
                         pageHandler: null,
-                        values: new { userId = userId, code = code },
+                        values: new { userId, code },
                         protocol: Request.Scheme);
 
                     await _emailSender.SendEmailAsync(

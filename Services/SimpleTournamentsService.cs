@@ -14,11 +14,11 @@ namespace LanfeustBridge.Services
     public class SimpleTournamentsService : ITournamentService
     {
         private int _nextId = 1;
-        private ILogger _logger;
-        private IDealsService _dealsService;
-        private string _dataFile;
+        private readonly ILogger _logger;
+        private readonly IDealsService _dealsService;
+        private readonly string _dataFile;
 
-        private Lazy<Dictionary<int, Tournament>> _tournaments;
+        private readonly Lazy<Dictionary<int, Tournament>> _tournaments;
 
         public SimpleTournamentsService(
             ILogger<ITournamentService> logger,

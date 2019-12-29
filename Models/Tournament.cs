@@ -49,13 +49,13 @@ namespace LanfeustBridge.Models
 
         internal void GeneratePositions()
         {
-            IMovement movement = GetMovement();
+            var movement = GetMovement();
             Positions = movement.GetPositions(NbTables, NbRounds, NbDealsPerRound);
         }
 
         internal Deal[] CreateDeals()
         {
-            IMovement movement = GetMovement();
+            var movement = GetMovement();
             var deals = movement.CreateDeals(NbTables, NbRounds, NbDealsPerRound);
             NbDeals = deals.Length;
             return deals;
