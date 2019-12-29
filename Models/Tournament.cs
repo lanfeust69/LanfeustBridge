@@ -13,17 +13,18 @@ namespace LanfeustBridge.Models
         Finished
     }
 
+    // built on the front-end side, assume non-nullable fields are OK
     public class Tournament
     {
         public int Id { get; set; }
 
-        public string Name { get; set; }
+        public string Name { get; set; } = default!;
 
         public DateTimeOffset Date { get; set; }
 
-        public string Movement { get; set; }
+        public string Movement { get; set; } = default!;
 
-        public string Scoring { get; set; }
+        public string Scoring { get; set; } = default!;
 
         public int NbTables { get; set; }
 
@@ -33,19 +34,17 @@ namespace LanfeustBridge.Models
 
         public int NbDeals { get; set; }
 
-        public Player[] Players { get; set; }
+        public Player[] Players { get; set; } = default!;
 
         public TournamentStatus Status { get; set; }
 
         public int CurrentRound { get; set; }
 
         // indexed by round, player
-        public Position[][] Positions { get; set; }
+        public Position[][]? Positions { get; set; }
 
-        public IMovement GetMovement()
-        {
-            return MovementService.Service.GetMovement(Movement);
-        }
+        public IMovement GetMovement() =>
+            MovementService.Service.GetMovement(Movement) ?? throw new InvalidOperationException($"Unknown movement {Movement}");
 
         internal void GeneratePositions()
         {
@@ -99,9 +98,9 @@ namespace LanfeustBridge.Models
                 Players[rank].Rank = currentRank++;
         }
 
-        internal bool AreAllScoresEntered(Deal[] deals)
+        internal bool AreAllScoresEntered(Deal[]? deals)
         {
-            if (Status != TournamentStatus.Running)
+            if (Status != TournamentStatus.Running || deals == null || Positions == null)
                 return false;
 
             foreach (var dealId in Positions[CurrentRound].SelectMany(p => p.Deals).Distinct())

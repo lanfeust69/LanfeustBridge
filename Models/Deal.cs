@@ -15,15 +15,15 @@ namespace LanfeustBridge.Models
 
         public int Id { get; set; }
 
-        public string Dealer { get; set; }
+        public string Dealer { get; set; } = default!;
 
-        public string Vulnerability { get; set; }
+        public string Vulnerability { get; set; } = default!;
 
-        public Hands Hands { get; set; }
+        public Hands Hands { get; set; } = default!;
 
-        public Score[] Scores { get; set; }
+        public Score[] Scores { get; set; } = default!;
 
-        public static Deal CreateDeal(int id, int nbRounds, string dealer = null, string vulnerability = null)
+        public static Deal CreateDeal(int id, int nbRounds, string? dealer = null, string? vulnerability = null)
         {
             vulnerability ??= ComputeVulnerability(id);
             var deal = new Deal

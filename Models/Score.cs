@@ -6,15 +6,15 @@ namespace LanfeustBridge.Models
     {
         public int DealId { get; set; }
 
-        public string Vulnerability { get; set; }
+        public string Vulnerability { get; set; } = default!;
 
         public int Round { get; set; }
 
         public bool Entered { get; set; }
 
-        public Players Players { get; set; }
+        public Players Players { get; set; } = default!;
 
-        public Contract Contract { get; set; }
+        public Contract Contract { get; set; } = default!;
 
         public int Tricks { get; set; }
 

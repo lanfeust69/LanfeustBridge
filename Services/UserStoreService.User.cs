@@ -132,7 +132,7 @@ namespace LanfeustBridge.Services
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
             user.UserName = userName ?? throw new ArgumentNullException(nameof(userName));
-            return Task.FromResult<object>(null);
+            return Task.CompletedTask;
         }
 
         public Task<string> GetNormalizedUserNameAsync(User user, CancellationToken cancellationToken)
@@ -150,7 +150,7 @@ namespace LanfeustBridge.Services
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
             user.NormalizedUserName = normalizedName ?? throw new ArgumentNullException(nameof(normalizedName));
-            return Task.FromResult<object>(null);
+            return Task.CompletedTask;
         }
 
         public Task<string> GetPasswordHashAsync(User user, CancellationToken cancellationToken)
@@ -177,7 +177,7 @@ namespace LanfeustBridge.Services
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
             user.PasswordHash = passwordHash ?? throw new ArgumentNullException(nameof(passwordHash));
-            return Task.FromResult<object>(null);
+            return Task.CompletedTask;
         }
 
         public Task<string> GetEmailAsync(User user, CancellationToken cancellationToken)
@@ -195,7 +195,7 @@ namespace LanfeustBridge.Services
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
             user.Email = email ?? throw new ArgumentNullException(nameof(email));
-            return Task.FromResult<object>(null);
+            return Task.CompletedTask;
         }
 
         public Task<string> GetNormalizedEmailAsync(User user, CancellationToken cancellationToken)
@@ -213,7 +213,7 @@ namespace LanfeustBridge.Services
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
             user.NormalizedEmail = normalizedEmail ?? throw new ArgumentNullException(nameof(normalizedEmail));
-            return Task.FromResult<object>(null);
+            return Task.CompletedTask;
         }
 
         public Task<bool> GetEmailConfirmedAsync(User user, CancellationToken cancellationToken)
@@ -232,7 +232,7 @@ namespace LanfeustBridge.Services
                 throw new ArgumentNullException(nameof(user));
 
             user.EmailConfirmed = confirmed;
-            return Task.FromResult<object>(null);
+            return Task.CompletedTask;
         }
 
         public Task<string> GetPhoneNumberAsync(User user, CancellationToken cancellationToken)
@@ -250,7 +250,7 @@ namespace LanfeustBridge.Services
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
             user.PhoneNumber = phoneNumber ?? throw new ArgumentNullException(nameof(phoneNumber));
-            return Task.FromResult<object>(null);
+            return Task.CompletedTask;
         }
 
         public Task<bool> GetPhoneNumberConfirmedAsync(User user, CancellationToken cancellationToken)
@@ -269,7 +269,7 @@ namespace LanfeustBridge.Services
                 throw new ArgumentNullException(nameof(user));
 
             user.PhoneNumberConfirmed = confirmed;
-            return Task.FromResult<object>(null);
+            return Task.CompletedTask;
         }
 
         public Task AddLoginAsync(User user, UserLoginInfo login, CancellationToken cancellationToken)
@@ -283,7 +283,7 @@ namespace LanfeustBridge.Services
             var loginString = $"{login.LoginProvider}|{login.ProviderKey}";
             if (!user.ExternalLogins.Contains(loginString))
                 user.ExternalLogins.Add(loginString);
-            return Task.FromResult<object>(null);
+            return Task.CompletedTask;
         }
 
         public Task RemoveLoginAsync(User user, string loginProvider, string providerKey, CancellationToken cancellationToken)
@@ -297,7 +297,7 @@ namespace LanfeustBridge.Services
                 throw new ArgumentNullException(nameof(providerKey));
 
             user.ExternalLogins.Remove($"{loginProvider}|{providerKey}");
-            return Task.FromResult<object>(null);
+            return Task.CompletedTask;
         }
 
         public Task<IList<UserLoginInfo>> GetLoginsAsync(User user, CancellationToken cancellationToken)
@@ -343,10 +343,10 @@ namespace LanfeustBridge.Services
                 throw new ArgumentNullException(nameof(user));
 
             user.IsTwoFactorEnabled = enabled;
-            return Task.FromResult<object>(null);
+            return Task.CompletedTask;
         }
 
-        public Task<string> GetAuthenticatorKeyAsync(User user, CancellationToken cancellationToken)
+        public Task<string?> GetAuthenticatorKeyAsync(User user, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             if (user == null)
@@ -361,7 +361,7 @@ namespace LanfeustBridge.Services
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
             user.AuthenticatorKey = key ?? throw new ArgumentNullException(nameof(key));
-            return Task.FromResult<object>(null);
+            return Task.CompletedTask;
         }
 
         public Task ReplaceCodesAsync(User user, IEnumerable<string> recoveryCodes, CancellationToken cancellationToken)
@@ -374,7 +374,7 @@ namespace LanfeustBridge.Services
 
             user.RecoveryCodes.Clear();
             user.RecoveryCodes.AddRange(recoveryCodes);
-            return Task.FromResult<object>(null);
+            return Task.CompletedTask;
         }
 
         public Task<bool> RedeemCodeAsync(User user, string code, CancellationToken cancellationToken)

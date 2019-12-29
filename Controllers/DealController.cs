@@ -1,3 +1,5 @@
+using System;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -69,7 +71,7 @@ namespace LanfeustBridge.Controllers
             if (deal == null || round < 0 || round >= deal.Scores.Length)
                 return NotFound();
             deal.Scores[round] = score;
-            var tournament = _tournamentService.GetTournament(tournamentId);
+            var tournament = _tournamentService.GetTournament(tournamentId) ?? throw new Exception($"Tournament {tournamentId} not found");
             deal.ComputeResults(tournament.Scoring);
             _dealsService.SaveDeal(tournamentId, deal);
             if (tournament.AreAllScoresEntered(_dealsService.GetDeals(tournamentId)))

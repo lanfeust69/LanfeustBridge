@@ -11,6 +11,7 @@
     <NoWarn>1701;1702;1591</NoWarn>
     <!-- The vstest part of xunit automatically generates an entrypoint, conflicting with our own -->
     <GenerateProgramFile>false</GenerateProgramFile>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

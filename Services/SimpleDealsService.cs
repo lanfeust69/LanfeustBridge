@@ -26,7 +26,7 @@ namespace LanfeustBridge.Services
 
         private Dictionary<int, Deal[]> Deals => _deals.Value;
 
-        public Deal GetDeal(int tournamentId, int dealId)
+        public Deal? GetDeal(int tournamentId, int dealId)
         {
             Deals.TryGetValue(tournamentId, out var deals);
             if (deals == null || dealId > deals.Length)
@@ -34,13 +34,13 @@ namespace LanfeustBridge.Services
             return deals[dealId - 1];
         }
 
-        public Deal[] GetDeals(int tournamentId)
+        public Deal[]? GetDeals(int tournamentId)
         {
             Deals.TryGetValue(tournamentId, out var deals);
             return deals;
         }
 
-        public Deal SaveDeal(int tournamentId, Deal deal)
+        public Deal? SaveDeal(int tournamentId, Deal deal)
         {
             Deals.TryGetValue(tournamentId, out var deals);
             if (deals == null || deal.Id > deals.Length)

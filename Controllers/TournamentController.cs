@@ -113,7 +113,7 @@ namespace LanfeustBridge.Controllers
             if (tournament.Status == TournamentStatus.Setup)
                 return BadRequest($"Cannot close tournament in status {tournament.Status}");
 
-            tournament.Close(_dealsService.GetDeals(id));
+            tournament.Close(_dealsService.GetDeals(id)!);
             tournament = _tournamentService.SaveTournament(tournament);
             _tournamentHubContext.Clients.All.TournamentFinished(id);
             return Ok(tournament);

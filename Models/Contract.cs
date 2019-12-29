@@ -2,7 +2,7 @@ namespace LanfeustBridge.Models
 {
     public class Contract
     {
-        public string Declarer { get; set; }
+        public string Declarer { get; set; } = default!;
 
         public int Level { get; set; }
 

@@ -106,7 +106,7 @@ namespace LanfeustBridge.Services
             if (role == null)
                 throw new ArgumentNullException(nameof(role));
             role.NormalizedName = normalizedName ?? throw new ArgumentNullException(nameof(normalizedName));
-            return Task.FromResult<object>(null);
+            return Task.CompletedTask;
         }
 
         public async Task AddToRoleAsync(User user, string normalizedRoleName, CancellationToken cancellationToken)

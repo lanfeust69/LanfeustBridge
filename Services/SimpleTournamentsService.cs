@@ -38,7 +38,7 @@ namespace LanfeustBridge.Services
             return Tournaments.Values.Select(t => (t.Id, t.Name));
         }
 
-        public Tournament GetTournament(int id)
+        public Tournament? GetTournament(int id)
         {
             Tournaments.TryGetValue(id, out var result);
             return result; // null if not found

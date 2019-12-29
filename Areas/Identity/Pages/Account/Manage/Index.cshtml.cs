@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
+#nullable disable
+
 namespace LanfeustBridge.UI
 {
     using LanfeustBridge.Models;

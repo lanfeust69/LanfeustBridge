@@ -4,7 +4,7 @@ namespace LanfeustBridge.Models
     {
         public int Table { get; set; }
 
-        public int[] Deals { get; set; }
+        public int[] Deals { get; set; } = default!;
 
         public int West { get; set; }
 

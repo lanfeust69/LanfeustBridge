@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 
+#nullable disable
+
 namespace LanfeustBridge.UI
 {
     using LanfeustBridge.Models;

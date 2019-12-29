@@ -5,7 +5,7 @@
 @inject UserManager<User> UserManager
 
 @{
-    string returnUrl = null;
+    string returnUrl = "/";
     var query = ViewContext.HttpContext.Request.Query;
     if (query.ContainsKey("returnUrl"))
     {

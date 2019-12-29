@@ -20,17 +20,17 @@ namespace LanfeustBridge.Services
             _deals.EnsureIndex(d => d.TournamentId);
         }
 
-        public Deal GetDeal(int tournamentId, int dealId)
+        public Deal? GetDeal(int tournamentId, int dealId)
         {
             return _deals.FindById($"{tournamentId}/{dealId}")?.Deal;
         }
 
-        public Deal[] GetDeals(int tournamentId)
+        public Deal[]? GetDeals(int tournamentId)
         {
             return _deals.Find(d => d.TournamentId == tournamentId).Select(d => d.Deal).OrderBy(d => d.Id).ToArray();
         }
 
-        public Deal SaveDeal(int tournamentId, Deal deal)
+        public Deal? SaveDeal(int tournamentId, Deal deal)
         {
             _deals.Upsert(new DealWrapper(tournamentId, deal));
             return deal;
@@ -47,6 +47,7 @@ namespace LanfeustBridge.Services
         {
             public DealWrapper()
             {
+                Deal = default!;
             }
 
             public DealWrapper(int tournamementId, Deal deal)

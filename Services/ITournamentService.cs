@@ -9,7 +9,7 @@ namespace LanfeustBridge.Services
     {
         IEnumerable<(int, string)> GetNames();
 
-        Tournament GetTournament(int id);
+        Tournament? GetTournament(int id);
 
         Tournament SaveTournament(Tournament tournament);
 
