@@ -120,7 +120,7 @@ namespace LanfeustBridge.UI
             AuthenticatorUri = GenerateQrCodeUri(email, unformattedKey);
         }
 
-        private string FormatKey(string unformattedKey)
+        private static string FormatKey(string unformattedKey)
         {
             var result = new StringBuilder();
             int currentPosition = 0;
@@ -146,6 +146,7 @@ namespace LanfeustBridge.UI
                 unformattedKey);
         }
 
+#pragma warning disable CA1034
         public class InputModel
         {
             [Required]

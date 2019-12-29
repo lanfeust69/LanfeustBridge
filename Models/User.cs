@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace LanfeustBridge.Models
 {
+#pragma warning disable CA2227  // setter needed for deserialization from db
     public class User : IdentityUser
     {
         public string DisplayName { get; set; } = default!;

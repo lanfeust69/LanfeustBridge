@@ -50,7 +50,7 @@ namespace LanfeustBridge.Models
                 // bye is considered being at all places on pseudo-table 3
                 var bye = new Position
                 {
-                    Table = 3, Deals = new int[0],
+                    Table = 3, Deals = Array.Empty<int>(),
                     North = playerRound, South = playerRound, East = playerRound, West = playerRound
                 };
                 positions[playerRound] = bye;

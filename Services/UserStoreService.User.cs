@@ -16,7 +16,7 @@ namespace LanfeustBridge.Services
     /// <summary>
     /// Implementation of the IUserStore part of UserStoreService, along with the optional parts.
     /// </summary>
-    public partial class UserStoreService : IUserStore<User>,
+    public sealed partial class UserStoreService : IUserStore<User>,
         IUserPasswordStore<User>, IUserEmailStore<User>,
         IUserPhoneNumberStore<User>, IUserLoginStore<User>,
         IUserTwoFactorStore<User>, IUserAuthenticatorKeyStore<User>,

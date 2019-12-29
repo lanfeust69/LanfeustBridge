@@ -127,6 +127,7 @@ namespace LanfeustBridge.UI
             return RedirectToPage();
         }
 
+#pragma warning disable CA1034
         public class InputModel
         {
             [EmailAddress]

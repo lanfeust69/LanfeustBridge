@@ -43,7 +43,7 @@ namespace LanfeustBridge.Services
             _logger.LogInformation($"Deals for tournament {tournamentId} saved");
         }
 
-        public class DealWrapper
+        internal class DealWrapper
         {
             public DealWrapper()
             {

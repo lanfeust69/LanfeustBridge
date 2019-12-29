@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 using Xunit;
@@ -6,7 +7,9 @@ namespace LanfeustBridge.Tests
 {
     using LanfeustBridge.Models;
 
+#pragma warning disable CA1707
     public class Individual9_18Test
+#pragma warning restore CA1707
     {
         private readonly Individual9_18 _individual = new Individual9_18();
 
@@ -15,17 +18,17 @@ namespace LanfeustBridge.Tests
             get
             {
                 // first serie of 4 deals, player 0 is bye
-                yield return new object[] { 0, 0, new Position { Table = 3, Deals = new int[0], North = 0, South = 0, East = 0, West = 0 } };
+                yield return new object[] { 0, 0, new Position { Table = 3, Deals = Array.Empty<int>(), North = 0, South = 0, East = 0, West = 0 } };
                 yield return new object[] { 0, 1, new Position { Table = 1, Deals = new[] { 1, 2 }, North = 1, South = 2, East = 3, West = 6 } };
                 yield return new object[] { 0, 4, new Position { Table = 2, Deals = new[] { 3, 4 }, North = 4, South = 8, East = 5, West = 7 } };
-                yield return new object[] { 1, 0, new Position { Table = 3, Deals = new int[0], North = 0, South = 0, East = 0, West = 0 } };
+                yield return new object[] { 1, 0, new Position { Table = 3, Deals = Array.Empty<int>(), North = 0, South = 0, East = 0, West = 0 } };
                 yield return new object[] { 1, 1, new Position { Table = 1, Deals = new[] { 3, 4 }, North = 1, South = 2, East = 3, West = 6 } };
                 yield return new object[] { 1, 4, new Position { Table = 2, Deals = new[] { 1, 2 }, North = 4, South = 8, East = 5, West = 7 } };
                 // second serie of 4 deals, player 1 is bye
-                yield return new object[] { 2, 1, new Position { Table = 3, Deals = new int[0], North = 1, South = 1, East = 1, West = 1 } };
+                yield return new object[] { 2, 1, new Position { Table = 3, Deals = Array.Empty<int>(), North = 1, South = 1, East = 1, West = 1 } };
                 yield return new object[] { 2, 0, new Position { Table = 1, Deals = new[] { 5, 6 }, North = 2, South = 0, East = 4, West = 7 } };
                 yield return new object[] { 2, 3, new Position { Table = 2, Deals = new[] { 7, 8 }, North = 5, South = 6, East = 3, West = 8 } };
-                yield return new object[] { 3, 1, new Position { Table = 3, Deals = new int[0], North = 1, South = 1, East = 1, West = 1 } };
+                yield return new object[] { 3, 1, new Position { Table = 3, Deals = Array.Empty<int>(), North = 1, South = 1, East = 1, West = 1 } };
                 yield return new object[] { 3, 0, new Position { Table = 1, Deals = new[] { 7, 8 }, North = 2, South = 0, East = 4, West = 7 } };
                 yield return new object[] { 3, 3, new Position { Table = 2, Deals = new[] { 5, 6 }, North = 5, South = 6, East = 3, West = 8 } };
                 // check all positions, as movement is not straightforward

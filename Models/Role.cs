@@ -15,6 +15,7 @@ namespace LanfeustBridge.Models
         {
         }
 
+#pragma warning disable CA2227  // setter needed for deserialization from db
         public List<string> UsersInRole { get; set; } = new List<string>();
     }
 }

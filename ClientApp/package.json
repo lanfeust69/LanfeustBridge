@@ -6,7 +6,7 @@
   "repository": "github:lanfeust69/LanfeustBridge",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --no-progress",
     "build": "ng build",
     "build:ssr": "npm run build -- --app=ssr --output-hashing=media",
     "test": "ng test",

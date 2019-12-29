@@ -123,6 +123,7 @@ namespace LanfeustBridge.UI
             return (IUserEmailStore<User>)_userStore;
         }
 
+#pragma warning disable CA1034
         public class InputModel
         {
             [Required]

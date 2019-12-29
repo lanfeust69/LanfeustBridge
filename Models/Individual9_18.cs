@@ -4,7 +4,9 @@ using System.Linq;
 
 namespace LanfeustBridge.Models
 {
+#pragma warning disable CA1707
     public class Individual9_18 : IMovement
+#pragma warning restore CA1707
     {
         private const int NB_PLAYERS = 9;
 
@@ -50,7 +52,7 @@ namespace LanfeustBridge.Models
                 // bye is considered being at all places on pseudo-table 3
                 var bye = new Position
                 {
-                    Table = 3, Deals = new int[0],
+                    Table = 3, Deals = Array.Empty<int>(),
                     North = playerRound, South = playerRound, East = playerRound, West = playerRound
                 };
                 positions[playerRound] = bye;

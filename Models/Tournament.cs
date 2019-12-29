@@ -22,7 +22,9 @@ namespace LanfeustBridge.Models
 
         public DateTimeOffset Date { get; set; }
 
+#pragma warning disable CA1721
         public string Movement { get; set; } = default!;
+#pragma warning restore CA1721
 
         public string Scoring { get; set; } = default!;
 

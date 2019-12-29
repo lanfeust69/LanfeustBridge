@@ -10,7 +10,7 @@ namespace LanfeustBridge
 {
     using LanfeustBridge.Services;
 
-    public class Program
+    public static class Program
     {
         public static int Main(string[] args)
         {

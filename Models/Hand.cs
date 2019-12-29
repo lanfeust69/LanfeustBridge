@@ -1,13 +1,15 @@
+using System;
+
 namespace LanfeustBridge.Models
 {
     public class Hand
     {
         public Hand()
         {
-            Spades = new string[0];
-            Hearts = new string[0];
-            Diamonds = new string[0];
-            Clubs = new string[0];
+            Spades = Array.Empty<string>();
+            Hearts = Array.Empty<string>();
+            Diamonds = Array.Empty<string>();
+            Clubs = Array.Empty<string>();
         }
 
         public string[] Spades { get; set; }
