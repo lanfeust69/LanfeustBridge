@@ -21,6 +21,7 @@ export class DealComponent implements AfterViewInit, OnInit {
     @ViewChild('table', { static: true }) tableCanvas;
     viewInitialized = false;
     individual = false;
+    hasNext = true;
 
     constructor(
         private _router: Router,
@@ -34,9 +35,10 @@ export class DealComponent implements AfterViewInit, OnInit {
             this.id = +params['dealId'];
             console.log('tournamentId is ' + this.tournamentId + ', dealId is ' + this.id);
             return this._dealService.getDeal(this.tournamentId, this.id);
-        })).subscribe((deal: Deal) => {
+        })).subscribe(({deal, hasNext}) => {
             console.log('deal service returned', deal);
             this.deal = deal;
+            this.hasNext = hasNext;
             if (this.viewInitialized)
                 this.drawTable();
         });

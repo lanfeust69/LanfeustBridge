@@ -36,10 +36,13 @@ namespace LanfeustBridge.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(int tournamentId, int id)
         {
+            var tournament = _tournamentService.GetTournament(tournamentId);
+            if (tournament == null || id > tournament.NbDeals)
+                return NotFound();
             var deal = _dealsService.GetDeal(tournamentId, id);
             if (deal == null)
                 return NotFound();
-            return Ok(deal);
+            return Ok(new { Deal = deal, HasNext = id < tournament.NbDeals });
         }
 
         // GET api/tournament/1/deal

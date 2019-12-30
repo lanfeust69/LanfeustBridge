@@ -7,7 +7,7 @@ import { Deal } from '../../deal';
 export const DEAL_SERVICE = new InjectionToken('DealService');
 
 export interface DealService {
-    getDeal(tournament: number, id: number): Observable<Deal>;
+    getDeal(tournament: number, id: number): Observable<{deal: Deal, hasNext: boolean}>;
     getDeals(tournament: number): Observable<Deal[]>;
 
     // returns the current ns and ew score filled

@@ -15,8 +15,8 @@ export class DealServiceHttp implements DealService {
         this._baseUrl = originUrl + 'api/tournament/';
     }
 
-    getDeal(tournament: number, id: number): Observable<Deal> {
-        return this._http.get<Deal>(this._baseUrl + tournament + '/deal/' + id);
+    getDeal(tournament: number, id: number): Observable<{deal: Deal, hasNext: boolean}> {
+        return this._http.get<{deal: Deal, hasNext: boolean}>(this._baseUrl + tournament + '/deal/' + id);
     }
 
     getDeals(tournament: number): Observable<Deal[]> {

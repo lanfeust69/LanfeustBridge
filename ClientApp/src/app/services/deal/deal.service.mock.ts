@@ -10,12 +10,12 @@ import { DealService } from './deal.service';
 export class DealServiceMock implements DealService {
     private _deals: Deal[][] = [];
 
-    getDeal(tournament: number, id: number): Observable<Deal> {
+    getDeal(tournament: number, id: number): Observable<{deal: Deal, hasNext: boolean}> {
         if (!this._deals[tournament])
             this._deals[tournament] = [];
         if (!this._deals[tournament][id - 1])
             this._deals[tournament][id - 1] = this.createRandomDeal(tournament, id);
-        return of(this._deals[tournament][id - 1]).pipe(delay(400)); // 0.4 seconds
+        return of({deal: this._deals[tournament][id - 1], hasNext: true}).pipe(delay(400)); // 0.4 seconds
     }
 
     getDeals(tournament: number): Observable<Deal[]> {
