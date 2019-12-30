@@ -1,7 +1,7 @@
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable, NgZone, PLATFORM_ID } from '@angular/core';
-import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
+import { HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import { Observable, fromEvent, fromEventPattern } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 
@@ -29,7 +29,12 @@ export class TournamentServiceHttp implements TournamentService {
     }
 
     initSignalR() {
-        this.hubConnection = new HubConnectionBuilder().withUrl(this._hubUrl).build();
+        this.hubConnection = new HubConnectionBuilder()
+            .withUrl(this._hubUrl)
+            .withAutomaticReconnect()
+            .configureLogging(LogLevel.Information)
+            .build();
+        this.hubConnection.onclose(err => console.log('signalR connection closed', err));
         this.newTournamentObservable = this.wrapObservable(fromEvent(this.hubConnection, 'NewTournament').pipe(map((v, i) => void 0)));
         this.tournamentStartedObservable = this.wrapObservable(fromEvent(this.hubConnection, 'TournamentStarted'));
         this.tournamentFinishedObservable = this.wrapObservable(fromEvent(this.hubConnection, 'TournamentFinished'));
