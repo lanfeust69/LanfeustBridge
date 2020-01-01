@@ -60,7 +60,7 @@
                         <option *ngFor="let r of rounds" [value]="r">{{r + 1}}</option>
                     </select>
                 </div>
-                <h4>Round {{_currentRound + 1}} : Table {{_currentPosition.table}},
+                <h4>Round {{_currentRound + 1}} : Table {{_currentPosition.table + 1}},
                     N : {{_tournament.players[_currentPosition.north].name}}, S : {{_tournament.players[_currentPosition.south].name}},
                     E : {{_tournament.players[_currentPosition.east].name}}, W : {{_tournament.players[_currentPosition.west].name}}</h4>
                 <div class="form-group">
@@ -120,7 +120,7 @@
                             <input type="text" class="form-control" [(ngModel)]="p.name" [ngbTypeahead]="getSearch(i)"
                                    (focus)="playerTypeahead.next({ player: i, text: $event.target.value})"
                                    (click)="playerTypeahead.next({ player: i, text: $event.target.value})"
-                                   placeholder="Player name" id="player" name="player{{i}}">
+                                   placeholder="Player name" id="player{{i}}" name="player{{i}}">
                         </div>
                     </div>
                 </form>

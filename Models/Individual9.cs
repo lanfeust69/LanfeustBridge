@@ -13,47 +13,47 @@ namespace LanfeustBridge.Models
             Order = 4,
             Id = typeof(Individual9).Name.ToLower(),
             Name = $"Individual for {NB_PLAYERS} players",
-            Description = "Only accepts 27 rounds : 3 rounds playing with each of the 8 other players, plus a bye",
+            Description = "Only accepts 9 rounds, playing with each of the 8 other players, plus a bye",
             NbPlayers = NB_PLAYERS,
-            MinRounds = 27,
-            MaxRounds = 27
+            MinRounds = 9,
+            MaxRounds = 9
         };
 
         public Position[][] GetPositions(int nbTables, int nbRounds, int nbDealsPerRound)
         {
             CheckValidity(nbTables, nbRounds);
             // player ids : 0 = N1, 1 = S1, 2 = E1, 3 = W1, etc...
-            // each "player" round corresponds to 3 rounds where only deals move
+            // each "player" round corresponds to 2 rounds where only deals move
             var allPositions = new Position[nbRounds][];
             for (int round = 0; round < nbRounds; round++)
             {
-                var playerRound = round / 3;
                 var positions = new Position[NB_PLAYERS];
                 for (int table = 0; table < 2; table++)
                 {
-                    var position = new Position { Table = table + 1 };
-                    int firstDeal = (round - round % 3 + (round + table) % 3) * nbDealsPerRound + 1;
-                    position.Deals = Enumerable.Range(firstDeal, nbDealsPerRound).ToArray();
-                    position.North = table == 0 ? (playerRound / 3) * 3 + (playerRound + 1) % 3 :
-                        ((playerRound / 3 + 1) % 3) * 3 + (playerRound + 1) % 3;
-                    position.South = table == 0 ? (playerRound / 3) * 3 + (playerRound + 2) % 3 :
-                        ((playerRound / 3 + 2) % 3) * 3 + (playerRound + 2) % 3;
-                    position.East = table == 0 ? (playerRound + 3) % 9 :
-                        ((playerRound / 3 + 1) % 3) * 3 + (playerRound + 2) % 3;
-                    position.West = table == 0 ? (playerRound + 6) % 9 :
-                        ((playerRound / 3 + 2) % 3) * 3 + (playerRound + 1) % 3;
+                    var position = new Position { Table = table };
+                    int firstDeal = round * nbDealsPerRound + 1;
+                    int offset = table * nbDealsPerRound / 2;
+                    position.Deals = Enumerable.Range(0, nbDealsPerRound).Select(i => firstDeal + (offset + i) % nbDealsPerRound).ToArray();
+                    position.North = table == 0 ? (round / 3) * 3 + (round + 1) % 3 :
+                        ((round / 3 + 1) % 3) * 3 + (round + 1) % 3;
+                    position.South = table == 0 ? (round / 3) * 3 + (round + 2) % 3 :
+                        ((round / 3 + 2) % 3) * 3 + (round + 2) % 3;
+                    position.East = table == 0 ? (round + 3) % 9 :
+                        ((round / 3 + 1) % 3) * 3 + (round + 2) % 3;
+                    position.West = table == 0 ? (round + 6) % 9 :
+                        ((round / 3 + 2) % 3) * 3 + (round + 1) % 3;
                     positions[position.North] = position;
                     positions[position.South] = position;
                     positions[position.East] = position;
                     positions[position.West] = position;
                 }
-                // bye is considered being at all places on pseudo-table 3
+                // bye is considered being at all places on pseudo-table 2
                 var bye = new Position
                 {
-                    Table = 3, Deals = Array.Empty<int>(),
-                    North = playerRound, South = playerRound, East = playerRound, West = playerRound
+                    Table = 2, Deals = Array.Empty<int>(),
+                    North = round, South = round, East = round, West = round
                 };
-                positions[playerRound] = bye;
+                positions[round] = bye;
                 allPositions[round] = positions;
             }
             return allPositions;
@@ -65,7 +65,13 @@ namespace LanfeustBridge.Models
             int nbDeals = nbRounds * nbDealsPerRound;
             var deals = new Deal[nbDeals];
             for (int i = 0; i < nbDeals; i++)
-                deals[i] = Deal.CreateDeal(i + 1, nbRounds, Deal.ComputeDealer(i % 8 + 1), Deal.ComputeVulnerability(i % 8 + 1));
+            {
+                var deal = Deal.CreateDeal(i + 1, 2, Deal.ComputeDealer(i % 8 + 1), Deal.ComputeVulnerability(i % 8 + 1));
+                deal.Scores[0].Round = deal.Scores[1].Round = i / nbDealsPerRound;
+                deal.Scores[0].Table = 0;
+                deal.Scores[1].Table = 1;
+                deals[i] = deal;
+            }
             return deals;
         }
 
@@ -73,8 +79,8 @@ namespace LanfeustBridge.Models
         {
             var reasons = new List<string>();
             // ignore nbTables, as we have a fixed number of players, and the GUI won't display it (nor allow to change it)
-            if (nbRounds != 27)
-                reasons.Add("Only 27 rounds are allowed for 9-player individuals");
+            if (nbRounds != 9)
+                reasons.Add("Only 9 rounds are allowed for 9-player individuals");
             return new MovementValidation { IsValid = reasons.Count == 0, Reason = string.Join(" ; ", reasons) };
         }
 

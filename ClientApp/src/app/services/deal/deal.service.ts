@@ -11,6 +11,6 @@ export interface DealService {
     getDeals(tournament: number): Observable<Deal[]>;
 
     // returns the current ns and ew score filled
-    getScore(tournament: number, id: number, round: number): Observable<Score>;
+    getScore(tournament: number, id: number, round: number, table: number): Observable<Score>;
     postScore(id: number, score: Score): Observable<Score>;
 }

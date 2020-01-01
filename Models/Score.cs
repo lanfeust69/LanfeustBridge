@@ -10,6 +10,8 @@ namespace LanfeustBridge.Models
 
         public int Round { get; set; }
 
+        public int Table { get; set; }
+
         public bool Entered { get; set; }
 
         public Players Players { get; set; } = default!;

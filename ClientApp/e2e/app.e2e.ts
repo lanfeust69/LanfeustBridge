@@ -32,6 +32,8 @@ describe('front-end App', function() {
         browser.waitForAngularEnabled(false);
         browser.get('/');
         browser.wait(ExpectedConditions.urlContains('/Identity/Account/Login'), 12000);
+        // seems there are cases where the eventual click doesn't work : try to wait a bit before
+        browser.sleep(500);
         expect(element(by.id('account'))).toBeTruthy(); // the account form is present
         expect(element(by.css('form#account'))).toBeTruthy(); // the account form is present
         const registerLink = element(by.css('form#account p:nth-of-type(2) a'));
@@ -45,6 +47,8 @@ describe('front-end App', function() {
         browser.waitForAngularEnabled(false);
         browser.get('/');
         browser.wait(ExpectedConditions.urlContains('/Identity/Account/Login'), 12000);
+        // seems there are cases where the eventual click doesn't work : try to wait a bit before
+        browser.sleep(500);
         const registerLink = element(by.css('form#account p:nth-of-type(2) a'));
         registerLink.click();
         browser.wait(ExpectedConditions.urlContains('/Identity/Account/Register'), 12000);
@@ -124,7 +128,7 @@ describe('front-end App', function() {
         element(by.cssContainingText('select[name="movement"]>option', 'Individual for 9 players')).click();
         element(by.cssContainingText('select[name="scoring"]>option', 'IMP')).click();
         element(by.css('input[name="dealsPerRound"]')).clear();
-        element(by.css('input[name="dealsPerRound"]')).sendKeys('1');
+        element(by.css('input[name="dealsPerRound"]')).sendKeys('3');
         // fill in players
         element(by.linkText('Players')).click();
         for (let i = 1; i <= 9; i++)
@@ -139,15 +143,19 @@ describe('front-end App', function() {
         // but after that, without synchronization, we should wait for the buttons...
         element(by.linkText('Play')).click();
 
-        for (let round = 0; round < 27; round++) {
-            const north1 = Math.floor(round / 9) * 3 + (Math.floor(round / 3) + 1) % 3 + 1;
+        for (let round = 0; round < 9; round++) {
+            const north1 = Math.floor(round / 3) * 3 + (round + 1) % 3 + 1;
             element(by.css(`select[name="currentPlayer"]>option:nth-of-type(${north1})`)).click();
+            randomScore();
+            randomScore();
             randomScore();
             const north2 = (north1 + 2) % 9 + 1;
             element(by.css(`select[name="currentPlayer"]>option:nth-of-type(${north2})`)).click();
             randomScore();
+            randomScore();
+            randomScore();
 
-            if (round < 26) {
+            if (round < 8) {
                 // wait for Next Round button
                 browser.wait(ExpectedConditions.elementToBeClickable(element(by.buttonText('Next Round'))), 12000);
                 element(by.buttonText('Next Round')).click();

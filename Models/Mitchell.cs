@@ -26,7 +26,7 @@ namespace LanfeustBridge.Models
                 var positions = new Position[nbTables * 4];
                 for (int table = 0; table < nbTables; table++)
                 {
-                    var position = new Position { Table = table + 1 };
+                    var position = new Position { Table = table };
                     int firstDeal = ((table + round) % nbTables) * nbDealsPerRound + 1;
                     position.Deals = Enumerable.Range(firstDeal, nbDealsPerRound).ToArray();
                     position.North = table * 4;
@@ -52,7 +52,15 @@ namespace LanfeustBridge.Models
             int nbDeals = nbTables * nbDealsPerRound;
             var deals = new Deal[nbDeals];
             for (int i = 0; i < nbDeals; i++)
-                deals[i] = Deal.CreateDeal(i + 1, nbRounds);
+            {
+                var deal = Deal.CreateDeal(i + 1, nbRounds);
+                for (int j = 0; j < nbRounds; j++)
+                {
+                    deal.Scores[j].Round = j;
+                    deal.Scores[j].Table = (i / nbDealsPerRound + nbTables - j) % nbTables;
+                }
+                deals[i] = deal;
+            }
             return deals;
         }
 

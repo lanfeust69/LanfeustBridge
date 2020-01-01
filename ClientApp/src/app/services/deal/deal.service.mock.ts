@@ -24,15 +24,17 @@ export class DealServiceMock implements DealService {
         return of(this._deals[tournament]);
     }
 
-    getScore(tournament: number, id: number, round: number): Observable<Score> {
-        if (!this._deals[tournament] || !this._deals[tournament][id - 1] || !this._deals[tournament][id - 1].scores[round]) {
+    getScore(tournament: number, id: number, round: number, table: number): Observable<Score> {
+        if (!this._deals[tournament] || !this._deals[tournament][id - 1] ||
+            !this._deals[tournament][id - 1].scores.find(s => s.round === round && s.table === table)) {
             const score = new Score;
             score.dealId = id;
             score.round = round;
+            score.table = table;
             score.vulnerability = Deal.computeVulnerability(id);
             return of(score);
         }
-        return of(this._deals[tournament][id - 1].scores[round]);
+        return of(this._deals[tournament][id - 1].scores.find(s => s.round === round && s.table === table));
     }
 
     postScore(tournament: number, score: Score): Observable<Score> {
@@ -41,8 +43,8 @@ export class DealServiceMock implements DealService {
         if (!this._deals[tournament][score.dealId - 1])
             this._deals[tournament][score.dealId - 1] = this.createRandomDeal(tournament, score.dealId);
         score.score = Score.computeScore(score);
-        console.log('score of deal ' + score.dealId + ' for round ' + score.round + ' received');
-        this._deals[tournament][score.dealId - 1].scores[score.round] = score;
+        console.log('score of deal ' + score.dealId + ' for round ' + score.round + 'and table ' + score.table + ' received');
+        this._deals[tournament][score.dealId - 1].scores.push(score);
         // TODO : update nsResult and ewResult
         return of(score);
     }

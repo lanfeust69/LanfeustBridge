@@ -16,7 +16,7 @@
     <tbody>
         <tr *ngFor="let score of filteredScores">
             <td *ngIf="forPlayers"><a [routerLink]="['/tournament', tournamentId, 'deal', score.dealId]" [queryParams]="individual ? {individual: true} : {}">{{score.dealId}}</a></td>
-            <td *ngIf="!forPlayers">{{score.round + 1}}</td>
+            <td *ngIf="!forPlayers">{{score.table + 1}}</td>
             <td><a [routerLink]="['/tournament', tournamentId, 'scoresheet', score.players.north]" [queryParams]="individual ? {individual: true} : {}">{{score.players.north}}</a></td>
             <td *ngIf="individual"><a [routerLink]="['/tournament', tournamentId, 'scoresheet', score.players.south]" [queryParams]="{individual: true}">{{score.players.south}}</a></td>
             <td><a [routerLink]="['/tournament', tournamentId, 'scoresheet', score.players.east]" [queryParams]="individual ? {individual: true} : {}">{{score.players.east}}</a></td>

@@ -105,11 +105,14 @@ namespace LanfeustBridge.Models
             if (Status != TournamentStatus.Running || deals == null || Positions == null)
                 return false;
 
-            foreach (var dealId in Positions[CurrentRound].SelectMany(p => p.Deals).Distinct())
+            foreach (var position in Positions[CurrentRound].GroupBy(p => p.Table).Select(g => g.First()))
             {
-                // dealId is 1-based for display
-                if (!deals[dealId - 1].Scores[CurrentRound].Entered)
-                    return false;
+                foreach (var dealId in position.Deals)
+                {
+                    // dealId is 1-based for display
+                    if (deals[dealId - 1].Scores.All(s => s.Round != CurrentRound || s.Table != position.Table || !s.Entered))
+                        return false;
+                }
             }
             return true;
         }

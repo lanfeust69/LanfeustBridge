@@ -23,7 +23,7 @@ namespace LanfeustBridge.Models
 
         public Score[] Scores { get; set; } = default!;
 
-        public static Deal CreateDeal(int id, int nbRounds, string? dealer = null, string? vulnerability = null)
+        public static Deal CreateDeal(int id, int nbScores, string? dealer = null, string? vulnerability = null)
         {
             vulnerability ??= ComputeVulnerability(id);
             var deal = new Deal
@@ -32,10 +32,10 @@ namespace LanfeustBridge.Models
                     Dealer = dealer ?? ComputeDealer(id),
                     Vulnerability = vulnerability,
                     Hands = new Hands(),
-                    Scores = new Score[nbRounds]
+                    Scores = new Score[nbScores]
                 };
-            for (int i = 0; i < nbRounds; i++)
-                deal.Scores[i] = new Score { DealId = id, Vulnerability = vulnerability, Round = i, Contract = new Contract() };
+            for (int i = 0; i < nbScores; i++)
+                deal.Scores[i] = new Score { DealId = id, Vulnerability = vulnerability, Contract = new Contract() };
             return deal;
         }
 

@@ -11,10 +11,10 @@ namespace LanfeustBridge.Models
             Order = 1,
             Id = typeof(Teams).Name.ToLower(),
             Name = "Teams match",
-            Description = "Pairs are fixed for 2 rounds, where deals are switched, then pairs switch for next set of deals",
+            Description = "Pairs switch for each set of deals",
             MinTables = 2,
             MaxTables = 2,
-            MinRounds = 2
+            MinRounds = 1
         };
 
         public Position[][] GetPositions(int nbTables, int nbRounds, int nbDealsPerRound)
@@ -28,13 +28,14 @@ namespace LanfeustBridge.Models
                 var positions = new Position[nbTables * 4];
                 for (int table = 0; table < 2; table++)
                 {
-                    var position = new Position { Table = table + 1 };
-                    int firstDeal = (round - round % 2 + (round + table) % 2) * nbDealsPerRound + 1;
-                    position.Deals = Enumerable.Range(firstDeal, nbDealsPerRound).ToArray();
-                    position.North = table == 0 ? 0 : ((round / 2) % 2 == 0 ? 4 : 2);
-                    position.South = table == 0 ? 1 : ((round / 2) % 2 == 0 ? 5 : 3);
-                    position.East = table == 1 ? 6 : ((round / 2) % 2 == 0 ? 2 : 4);
-                    position.West = table == 1 ? 7 : ((round / 2) % 2 == 0 ? 3 : 5);
+                    var position = new Position { Table = table };
+                    int firstDeal = round * nbDealsPerRound + 1;
+                    int offset = table * nbDealsPerRound / 2;
+                    position.Deals = Enumerable.Range(0, nbDealsPerRound).Select(i => firstDeal + (offset + i) % nbDealsPerRound).ToArray();
+                    position.North = table == 0 ? 0 : (round % 2 == 0 ? 4 : 2);
+                    position.South = table == 0 ? 1 : (round % 2 == 0 ? 5 : 3);
+                    position.East = table == 1 ? 6 : (round % 2 == 0 ? 2 : 4);
+                    position.West = table == 1 ? 7 : (round % 2 == 0 ? 3 : 5);
                     positions[position.North] = position;
                     positions[position.South] = position;
                     positions[position.East] = position;
@@ -50,8 +51,6 @@ namespace LanfeustBridge.Models
             var reasons = new List<string>();
             if (nbTables != 2)
                 reasons.Add("Only two tables allowed for team matches");
-            if (nbRounds % 2 != 0)
-                reasons.Add("Only an even number of rounds are allowed for team matches");
             return new MovementValidation { IsValid = reasons.Count == 0, Reason = string.Join(" ; ", reasons) };
         }
 
@@ -61,7 +60,13 @@ namespace LanfeustBridge.Models
             int nbDeals = nbRounds * nbDealsPerRound;
             var deals = new Deal[nbDeals];
             for (int i = 0; i < nbDeals; i++)
-                deals[i] = Deal.CreateDeal(i + 1, nbRounds);
+            {
+                var deal = Deal.CreateDeal(i + 1, nbScores: 2);
+                deal.Scores[0].Round = deal.Scores[1].Round = i / nbDealsPerRound;
+                deal.Scores[0].Table = 0;
+                deal.Scores[1].Table = 1;
+                deals[i] = deal;
+            }
             return deals;
         }
 

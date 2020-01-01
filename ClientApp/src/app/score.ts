@@ -13,6 +13,7 @@ export class Score {
     dealId: number;
     vulnerability: string;
     round: number;
+    table: number;
     entered: boolean;
     players: {
         north: string;

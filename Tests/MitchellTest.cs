@@ -16,26 +16,26 @@ namespace LanfeustBridge.Tests
             get
             {
                 // first position
-                yield return new object[] { 0, 0, new Position { Table = 1, Deals = new[] { 1 }, North = 0, South = 1, East = 2, West = 3 } };
-                yield return new object[] { 0, 1, new Position { Table = 1, Deals = new[] { 1 }, North = 0, South = 1, East = 2, West = 3 } };
-                yield return new object[] { 0, 2, new Position { Table = 1, Deals = new[] { 1 }, North = 0, South = 1, East = 2, West = 3 } };
-                yield return new object[] { 0, 3, new Position { Table = 1, Deals = new[] { 1 }, North = 0, South = 1, East = 2, West = 3 } };
-                yield return new object[] { 0, 4, new Position { Table = 2, Deals = new[] { 2 }, North = 4, South = 5, East = 6, West = 7 } };
-                yield return new object[] { 0, 8, new Position { Table = 3, Deals = new[] { 3 }, North = 8, South = 9, East = 10, West = 11 } };
+                yield return new object[] { 0, 0, new Position { Table = 0, Deals = new[] { 1 }, North = 0, South = 1, East = 2, West = 3 } };
+                yield return new object[] { 0, 1, new Position { Table = 0, Deals = new[] { 1 }, North = 0, South = 1, East = 2, West = 3 } };
+                yield return new object[] { 0, 2, new Position { Table = 0, Deals = new[] { 1 }, North = 0, South = 1, East = 2, West = 3 } };
+                yield return new object[] { 0, 3, new Position { Table = 0, Deals = new[] { 1 }, North = 0, South = 1, East = 2, West = 3 } };
+                yield return new object[] { 0, 4, new Position { Table = 1, Deals = new[] { 2 }, North = 4, South = 5, East = 6, West = 7 } };
+                yield return new object[] { 0, 8, new Position { Table = 2, Deals = new[] { 3 }, North = 8, South = 9, East = 10, West = 11 } };
                 // second position
-                yield return new object[] { 1, 0, new Position { Table = 1, Deals = new[] { 2 }, North = 0, South = 1, East = 10, West = 11 } };
-                yield return new object[] { 1, 10, new Position { Table = 1, Deals = new[] { 2 }, North = 0, South = 1, East = 10, West = 11 } };
-                yield return new object[] { 1, 4, new Position { Table = 2, Deals = new[] { 3 }, North = 4, South = 5, East = 2, West = 3 } };
-                yield return new object[] { 1, 2, new Position { Table = 2, Deals = new[] { 3 }, North = 4, South = 5, East = 2, West = 3 } };
-                yield return new object[] { 1, 8, new Position { Table = 3, Deals = new[] { 1 }, North = 8, South = 9, East = 6, West = 7 } };
-                yield return new object[] { 1, 6, new Position { Table = 3, Deals = new[] { 1 }, North = 8, South = 9, East = 6, West = 7 } };
+                yield return new object[] { 1, 0, new Position { Table = 0, Deals = new[] { 2 }, North = 0, South = 1, East = 10, West = 11 } };
+                yield return new object[] { 1, 10, new Position { Table = 0, Deals = new[] { 2 }, North = 0, South = 1, East = 10, West = 11 } };
+                yield return new object[] { 1, 4, new Position { Table = 1, Deals = new[] { 3 }, North = 4, South = 5, East = 2, West = 3 } };
+                yield return new object[] { 1, 2, new Position { Table = 1, Deals = new[] { 3 }, North = 4, South = 5, East = 2, West = 3 } };
+                yield return new object[] { 1, 8, new Position { Table = 2, Deals = new[] { 1 }, North = 8, South = 9, East = 6, West = 7 } };
+                yield return new object[] { 1, 6, new Position { Table = 2, Deals = new[] { 1 }, North = 8, South = 9, East = 6, West = 7 } };
                 // third position
-                yield return new object[] { 2, 0, new Position { Table = 1, Deals = new[] { 3 }, North = 0, South = 1, East = 6, West = 7 } };
-                yield return new object[] { 2, 6, new Position { Table = 1, Deals = new[] { 3 }, North = 0, South = 1, East = 6, West = 7 } };
-                yield return new object[] { 2, 4, new Position { Table = 2, Deals = new[] { 1 }, North = 4, South = 5, East = 10, West = 11 } };
-                yield return new object[] { 2, 10, new Position { Table = 2, Deals = new[] { 1 }, North = 4, South = 5, East = 10, West = 11 } };
-                yield return new object[] { 2, 8, new Position { Table = 3, Deals = new[] { 2 }, North = 8, South = 9, East = 2, West = 3 } };
-                yield return new object[] { 2, 2, new Position { Table = 3, Deals = new[] { 2 }, North = 8, South = 9, East = 2, West = 3 } };
+                yield return new object[] { 2, 0, new Position { Table = 0, Deals = new[] { 3 }, North = 0, South = 1, East = 6, West = 7 } };
+                yield return new object[] { 2, 6, new Position { Table = 0, Deals = new[] { 3 }, North = 0, South = 1, East = 6, West = 7 } };
+                yield return new object[] { 2, 4, new Position { Table = 1, Deals = new[] { 1 }, North = 4, South = 5, East = 10, West = 11 } };
+                yield return new object[] { 2, 10, new Position { Table = 1, Deals = new[] { 1 }, North = 4, South = 5, East = 10, West = 11 } };
+                yield return new object[] { 2, 8, new Position { Table = 2, Deals = new[] { 2 }, North = 8, South = 9, East = 2, West = 3 } };
+                yield return new object[] { 2, 2, new Position { Table = 2, Deals = new[] { 2 }, North = 8, South = 9, East = 2, West = 3 } };
             }
         }
 
@@ -59,20 +59,20 @@ namespace LanfeustBridge.Tests
             get
             {
                 // first position
-                yield return new object[] { 0, 0, new Position { Table = 1, Deals = new[] { 1 }, North = 0, South = 1, East = 2, West = 3 } };
-                yield return new object[] { 0, 4, new Position { Table = 2, Deals = new[] { 2 }, North = 4, South = 5, East = 6, West = 7 } };
-                yield return new object[] { 0, 8, new Position { Table = 3, Deals = new[] { 3 }, North = 8, South = 9, East = 10, West = 11 } };
-                yield return new object[] { 0, 12, new Position { Table = 4, Deals = new[] { 4 }, North = 12, South = 13, East = 14, West = 15 } };
+                yield return new object[] { 0, 0, new Position { Table = 0, Deals = new[] { 1 }, North = 0, South = 1, East = 2, West = 3 } };
+                yield return new object[] { 0, 4, new Position { Table = 1, Deals = new[] { 2 }, North = 4, South = 5, East = 6, West = 7 } };
+                yield return new object[] { 0, 8, new Position { Table = 2, Deals = new[] { 3 }, North = 8, South = 9, East = 10, West = 11 } };
+                yield return new object[] { 0, 12, new Position { Table = 3, Deals = new[] { 4 }, North = 12, South = 13, East = 14, West = 15 } };
                 // second position
-                yield return new object[] { 1, 0, new Position { Table = 1, Deals = new[] { 2 }, North = 0, South = 1, East = 14, West = 15 } };
-                yield return new object[] { 1, 4, new Position { Table = 2, Deals = new[] { 3 }, North = 4, South = 5, East = 2, West = 3 } };
-                yield return new object[] { 1, 8, new Position { Table = 3, Deals = new[] { 4 }, North = 8, South = 9, East = 6, West = 7 } };
-                yield return new object[] { 1, 12, new Position { Table = 4, Deals = new[] { 1 }, North = 12, South = 13, East = 10, West = 11 } };
+                yield return new object[] { 1, 0, new Position { Table = 0, Deals = new[] { 2 }, North = 0, South = 1, East = 14, West = 15 } };
+                yield return new object[] { 1, 4, new Position { Table = 1, Deals = new[] { 3 }, North = 4, South = 5, East = 2, West = 3 } };
+                yield return new object[] { 1, 8, new Position { Table = 2, Deals = new[] { 4 }, North = 8, South = 9, East = 6, West = 7 } };
+                yield return new object[] { 1, 12, new Position { Table = 3, Deals = new[] { 1 }, North = 12, South = 13, East = 10, West = 11 } };
                 // third (and last) position : pairs skipped
-                yield return new object[] { 2, 0, new Position { Table = 1, Deals = new[] { 3 }, North = 0, South = 1, East = 6, West = 7 } };
-                yield return new object[] { 2, 4, new Position { Table = 2, Deals = new[] { 4 }, North = 4, South = 5, East = 10, West = 11 } };
-                yield return new object[] { 2, 8, new Position { Table = 3, Deals = new[] { 1 }, North = 8, South = 9, East = 14, West = 15 } };
-                yield return new object[] { 2, 12, new Position { Table = 4, Deals = new[] { 2 }, North = 12, South = 13, East = 2, West = 3 } };
+                yield return new object[] { 2, 0, new Position { Table = 0, Deals = new[] { 3 }, North = 0, South = 1, East = 6, West = 7 } };
+                yield return new object[] { 2, 4, new Position { Table = 1, Deals = new[] { 4 }, North = 4, South = 5, East = 10, West = 11 } };
+                yield return new object[] { 2, 8, new Position { Table = 2, Deals = new[] { 1 }, North = 8, South = 9, East = 14, West = 15 } };
+                yield return new object[] { 2, 12, new Position { Table = 3, Deals = new[] { 2 }, North = 12, South = 13, East = 2, West = 3 } };
             }
         }
 
@@ -100,9 +100,23 @@ namespace LanfeustBridge.Tests
         public void DealsAreCorrect(int nbTables, int nbRounds, bool expectThrows, int expectedNumberOfDeals)
         {
             if (expectThrows)
+            {
                 Assert.ThrowsAny<Exception>(() => _mitchell.CreateDeals(nbTables, nbRounds, 3));
-            else
-                Assert.Equal(expectedNumberOfDeals, _mitchell.CreateDeals(nbTables, nbRounds, 3).Length);
+                return;
+            }
+            var deals = _mitchell.CreateDeals(nbTables, nbRounds, 3);
+            Assert.Equal(expectedNumberOfDeals, deals.Length);
+            // all deals played once at each actual round
+            foreach (var deal in deals)
+            {
+                Assert.Equal(nbRounds, deal.Scores.Length);
+                for (int i = 0; i < nbRounds; i++)
+                {
+                    Assert.Equal(i, deal.Scores[i].Round);
+                    int expectedTable = ((deal.Id - 1) / 3 + nbTables - i) % nbTables;
+                    Assert.Equal(expectedTable, deal.Scores[i].Table);
+                }
+            }
         }
     }
 }

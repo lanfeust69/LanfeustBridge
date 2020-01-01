@@ -13,7 +13,7 @@ namespace LanfeustBridge.Tests
         public void AllImplementedMovementsAreReturned()
         {
             var descriptions = MovementService.Service.GetAllMovements().ToList();
-            Assert.Equal(7, descriptions.Count);
+            Assert.Equal(6, descriptions.Count);
         }
 
         public static IEnumerable<object[]> MovementIds

@@ -260,7 +260,7 @@ export class TournamentComponent implements OnInit {
             this._currentDeal = this.roundDeals[0];
         if (this.roundDeals.indexOf(this._currentDeal) === -1)
             return;
-        this._dealService.getScore(this._tournament.id, this._currentDeal, this._currentRound)
+        this._dealService.getScore(this._tournament.id, this._currentDeal, this._currentRound, this._currentPosition.table)
             .subscribe(score => {
                 score.players = {
                     north: this._tournament.players[this._currentPosition.north].name,
@@ -278,7 +278,11 @@ export class TournamentComponent implements OnInit {
         // need to subscribe so that the POST is actually sent
         this._dealService.postScore(this._tournament.id, this._currentScore)
             .subscribe(s => console.log('POST score returned', s));
-        this._currentDeal++;
+        const index = this._currentPosition.deals.indexOf(this._currentDeal) + 1;
+        if (index < this._currentPosition.deals.length)
+            this._currentDeal = this._currentPosition.deals[index];
+        else
+            this._currentDeal = -1;
         this.initializeScore(false);
     }
 
@@ -472,7 +476,7 @@ export class TournamentComponent implements OnInit {
             this._invalidReason = 'Number of deals per round must be between 1 and 100';
             return false;
         }
-        const nbPlayers = this._tournament.nbTables * 4;
+        const nbPlayers = this._nbPlayers === -1 ? this._tournament.nbTables * 4 : this._nbPlayers;
         const emptyNames = this._tournament.players.filter((p, i) => i < nbPlayers && !p.name);
         if (emptyNames.length > 0) {
             this._invalidReason = 'All players must be filled';

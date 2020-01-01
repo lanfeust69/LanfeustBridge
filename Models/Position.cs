@@ -2,6 +2,7 @@ namespace LanfeustBridge.Models
 {
     public class Position
     {
+        // 0-based
         public int Table { get; set; }
 
         public int[] Deals { get; set; } = default!;

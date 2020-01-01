@@ -23,13 +23,13 @@ export class DealServiceHttp implements DealService {
         return this._http.get<Deal[]>(this._baseUrl + tournament + '/deal');
     }
 
-    getScore(tournament: number, id: number, round: number): Observable<Score> {
-        return this._http.get<Score>(this._baseUrl + tournament + '/deal/' + id + '/score/' + round);
+    getScore(tournament: number, id: number, round: number, table: number): Observable<Score> {
+        return this._http.get<Score>(this._baseUrl + tournament + '/deal/' + id + '/score/' + round + '/' + table);
     }
 
     postScore(tournament: number, score: Score): Observable<Score> {
         // TODO : don't trust client side : compute on server
         score.score = Score.computeScore(score);
-        return this._http.post<Score>(this._baseUrl + tournament + '/deal/' + score.dealId + '/score/' + score.round, score);
+        return this._http.post<Score>(this._baseUrl + tournament + '/deal/' + score.dealId + '/score', score);
     }
 }

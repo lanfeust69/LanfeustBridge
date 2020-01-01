@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -55,32 +56,40 @@ namespace LanfeustBridge.Controllers
             return Ok(deals);
         }
 
-        // GET api/tournament/1/deal/3/score/2
-        [HttpGet("{id}/score/{round}")]
-        public IActionResult GetScore(int tournamentId, int id, int round)
+        // GET api/tournament/1/deal/3/score/2/1
+        [HttpGet("{id}/score/{round}/{table}")]
+        public IActionResult GetScore(int tournamentId, int id, int round, int table)
         {
             var deal = _dealsService.GetDeal(tournamentId, id);
-            if (deal == null || round < 0 || round >= deal.Scores.Length)
+            if (deal == null)
                 return NotFound();
-            return Ok(deal.Scores[round]);
+            var score = deal.Scores.FirstOrDefault(s => s.Round == round && s.Table == table);
+            if (score == null)
+                return NotFound();
+            return Ok(score);
         }
 
-        // POST api/tournament/1/deal/3/score/2
-        [HttpPost("{id}/score/{round}")]
-        public IActionResult PostScore(int tournamentId, int id, int round, [FromBody]Score score)
+        // POST api/tournament/1/deal/3/score
+        [HttpPost("{id}/score")]
+        public IActionResult PostScore(int tournamentId, int id, [FromBody]Score score)
         {
-            _logger.LogInformation($"Receiving score for deal {id}, round {round} : {score.Entered}, {score.Tricks}, {score.BridgeScore}");
+            _logger.LogInformation($"Receiving score for deal {id}, round {score.Round}, table {score.Table} : {score.Entered}, {score.Tricks}, {score.BridgeScore}");
             var deal = _dealsService.GetDeal(tournamentId, id);
-            if (deal == null || round < 0 || round >= deal.Scores.Length)
+            if (deal == null)
                 return NotFound();
-            deal.Scores[round] = score;
+            int idx = 0;
+            while (idx < deal.Scores.Length && (deal.Scores[idx].Round != score.Round || deal.Scores[idx].Table != score.Table))
+                idx++;
+            if (idx == deal.Scores.Length)
+                return NotFound();
+            deal.Scores[idx] = score;
             var tournament = _tournamentService.GetTournament(tournamentId) ?? throw new Exception($"Tournament {tournamentId} not found");
             deal.ComputeResults(tournament.Scoring);
             _dealsService.SaveDeal(tournamentId, deal);
             if (tournament.AreAllScoresEntered(_dealsService.GetDeals(tournamentId)))
             {
-                _logger.LogInformation($"Sending notification of round {round} finished");
-                _tournamentHubContext.Clients.All.RoundFinished(tournamentId, round);
+                _logger.LogInformation($"Sending notification of round {score.Round} finished");
+                _tournamentHubContext.Clients.All.RoundFinished(tournamentId, score.Round);
             }
 
             return Ok(score);
