@@ -19,33 +19,43 @@
                                 Name is required
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="movement">Movement</label>
-                            <select class="form-control" required [(ngModel)]="movementId" id="movement" name="movement" ngbPopover="{{movementDescription}}" triggers="mouseenter:mouseleave" popoverTitle="Description">
-                                <option *ngFor="let m of _sortedMovementIds" [value]="m">{{_knownMovements[m].name}}</option>
-                            </select>
+                        <div class="row">
+                            <div class="form-group col">
+                                <label for="movement">Movement</label>
+                                <select class="form-control" required [(ngModel)]="movementId" id="movement" name="movement" ngbPopover="{{movementDescription}}" triggers="mouseenter:mouseleave" popoverTitle="Description">
+                                    <option *ngFor="let m of _sortedMovementIds" [value]="m">{{_knownMovements[m].name}}</option>
+                                </select>
+                            </div>
+                            <div class="form-group col">
+                                <label for="scoring">Scoring</label>
+                                <select class="form-control" required [(ngModel)]="_tournament.scoring" id="scoring" name="scoring">
+                                    <option *ngFor="let s of _knownScorings" [value]="s">{{s}}</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="scoring">Scoring</label>
-                            <select class="form-control" required [(ngModel)]="_tournament.scoring" id="scoring" name="scoring">
-                                <option *ngFor="let s of _knownScorings" [value]="s">{{s}}</option>
-                            </select>
+                        <div class="row">
+                            <div *ngIf="nbPlayers !== -1" class="form-group col">
+                                <label for="tables">Number of players</label>
+                                <input type="number" disabled class="form-control" [(ngModel)]="nbPlayers" required id="players" name="players">
+                            </div>
+                            <div *ngIf="nbPlayers === -1" class="form-group col">
+                                <label for="tables">Number of tables</label>
+                                <input type="number" [disabled]="fixedNbTables" class="form-control" [(ngModel)]="nbTables" required id="tables" name="tables" min="{{minTables}}" max="{{maxTables}}">
+                            </div>
+                            <div class="form-group col">
+                                <label for="rounds">Number of rounds</label>
+                                <input type="number" [disabled]="fixedNbRounds" class="form-control" [(ngModel)]="nbRounds" required id="rounds" name="rounds" min="{{minRounds}}" max="{{maxRounds}}">
+                            </div>
                         </div>
-                        <div *ngIf="nbPlayers !== -1" class="form-group">
-                            <label for="tables">Number of players</label>
-                            <input type="number" disabled class="form-control" [(ngModel)]="nbPlayers" required id="players" name="players">
-                        </div>
-                        <div *ngIf="nbPlayers === -1" class="form-group">
-                            <label for="tables">Number of tables</label>
-                            <input type="number" [disabled]="fixedNbTables" class="form-control" [(ngModel)]="nbTables" required id="tables" name="tables" min="{{minTables}}" max="{{maxTables}}">
-                        </div>
-                        <div class="form-group">
-                            <label for="rounds">Number of rounds</label>
-                            <input type="number" [disabled]="fixedNbRounds" class="form-control" [(ngModel)]="nbRounds" required id="rounds" name="rounds" min="{{minRounds}}" max="{{maxRounds}}">
-                        </div>
-                        <div class="form-group">
-                            <label for="dealsPerRound">Number of deals per round</label>
-                            <input type="number" class="form-control" [(ngModel)]="_tournament.nbDealsPerRound" required id="dealsPerRound" name="dealsPerRound">
+                        <div class="row">
+                            <div class="form-group col">
+                                <label for="dealsPerRound">Number of deals per round</label>
+                                <input type="number" class="form-control" [(ngModel)]="_tournament.nbDealsPerRound" required id="dealsPerRound" name="dealsPerRound">
+                            </div>
+                            <div class="form-group col">
+                                <label for="boards">Number of boards in use</label>
+                                <input type="number" class="form-control" [(ngModel)]="_tournament.nbBoards" required id="boards" name="boards">
+                            </div>
                         </div>
                     </fieldset>
                     <button *ngIf="setup && _edit" class="btn btn-primary" [disabled]="!tournamentForm.form.valid || !isValid" (click)="onSubmit()">{{_created ? "Update" : "Create"}}</button>

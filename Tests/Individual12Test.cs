@@ -46,7 +46,7 @@ namespace LanfeustBridge.Tests
         [InlineData(31, 8)]
         public void DealsAreCorrect(int index, int expectedEquivalent)
         {
-            var deals = _individual.CreateDeals(3, 11, 3);
+            var deals = _individual.CreateDeals(3, 11, 3, 8);
             var deal = deals[index];
             Assert.Equal(index + 1, deal.Id);
             Assert.Equal(Deal.ComputeDealer(expectedEquivalent), deal.Dealer);
@@ -56,7 +56,7 @@ namespace LanfeustBridge.Tests
         [Fact]
         public void DealsScoresAreCorrect()
         {
-            var deals = _individual.CreateDeals(2, 11, 3);
+            var deals = _individual.CreateDeals(2, 11, 3, 8);
             Assert.Equal(33, deals.Length);
             // all deals played exactly thrice, in the same round
             for (int i = 0; i < deals.Length; i++)

@@ -83,6 +83,7 @@ export class TournamentComponent implements OnInit {
                     tournament.nbTables = 1;
                     tournament.nbRounds = 1;
                     tournament.nbDealsPerRound = 2;
+                    tournament.nbBoards = 16;
                     for (let i = 0; i < 4; i++)
                         tournament.players.push({name: '', score: 0, rank: 0});
                     return of(tournament);

@@ -29,6 +29,7 @@ export class Tournament {
     nbRounds: number;
     nbDealsPerRound: number;
     nbDeals: number;
+    nbBoards: number;
     players: Player[] = []; // names, index in array is id
 
     status: Status = Status.Setup;

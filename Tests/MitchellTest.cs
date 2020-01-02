@@ -101,10 +101,10 @@ namespace LanfeustBridge.Tests
         {
             if (expectThrows)
             {
-                Assert.ThrowsAny<Exception>(() => _mitchell.CreateDeals(nbTables, nbRounds, 3));
+                Assert.ThrowsAny<Exception>(() => _mitchell.CreateDeals(nbTables, nbRounds, 3, 16));
                 return;
             }
-            var deals = _mitchell.CreateDeals(nbTables, nbRounds, 3);
+            var deals = _mitchell.CreateDeals(nbTables, nbRounds, 3, 16);
             Assert.Equal(expectedNumberOfDeals, deals.Length);
             // all deals played once at each actual round
             foreach (var deal in deals)

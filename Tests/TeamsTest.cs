@@ -43,10 +43,10 @@ namespace LanfeustBridge.Tests
         {
             if (expectThrows)
             {
-                Assert.ThrowsAny<Exception>(() => _teams.CreateDeals(nbTables, nbRounds, 6));
+                Assert.ThrowsAny<Exception>(() => _teams.CreateDeals(nbTables, nbRounds, 6, 16));
                 return;
             }
-            var deals = _teams.CreateDeals(nbTables, nbRounds, 6);
+            var deals = _teams.CreateDeals(nbTables, nbRounds, 6, 16);
             Assert.Equal(expectedNumberOfDeals, deals.Length);
             // all deals played exactly twice
             foreach (var deal in deals)

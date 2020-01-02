@@ -97,14 +97,14 @@ namespace LanfeustBridge.Tests
         [InlineData(26, 3)]
         public void DealsAreCorrect(int index, int expectedEquivalent)
         {
-            var deals = _individual.CreateDeals(2, 9, 3);
+            var deals = _individual.CreateDeals(2, 9, 3, 8);
             var deal = deals[index];
             Assert.Equal(index + 1, deal.Id);
             Assert.Equal(Deal.ComputeDealer(expectedEquivalent), deal.Dealer);
             Assert.Equal(Deal.ComputeVulnerability(expectedEquivalent), deal.Vulnerability);
         }
 
-        [Theory(Skip = "Need additional nbBoards argument to CreateDeals")]
+        [Theory]
         [InlineData(0, 1)]
         [InlineData(3, 4)]
         [InlineData(4, 1)]
@@ -112,7 +112,7 @@ namespace LanfeustBridge.Tests
         [InlineData(35, 4)]
         public void DealsAreCorrect4Deals(int index, int expectedEquivalent)
         {
-            var deals = _individual.CreateDeals(2, 9, 4);
+            var deals = _individual.CreateDeals(2, 9, 4, 4);
             var deal = deals[index];
             Assert.Equal(index + 1, deal.Id);
             Assert.Equal(Deal.ComputeDealer(expectedEquivalent), deal.Dealer);
@@ -122,7 +122,7 @@ namespace LanfeustBridge.Tests
         [Fact]
         public void DealsScoresAreCorrect()
         {
-            var deals = _individual.CreateDeals(2, 9, 3);
+            var deals = _individual.CreateDeals(2, 9, 3, 8);
             Assert.Equal(27, deals.Length);
             // all deals played exactly twice, in the same round
             for (int i = 0; i < deals.Length; i++)
@@ -138,7 +138,7 @@ namespace LanfeustBridge.Tests
         [Fact]
         public void DealsScores4DealsAreCorrect()
         {
-            var deals = _individual.CreateDeals(2, 9, 4);
+            var deals = _individual.CreateDeals(2, 9, 4, 4);
             Assert.Equal(36, deals.Length);
             // all deals played exactly twice, in the same round
             for (int i = 0; i < deals.Length; i++)

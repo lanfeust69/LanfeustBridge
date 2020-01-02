@@ -10,7 +10,7 @@ namespace LanfeustBridge.Models
         /// </summary>
         Position[][] GetPositions(int nbTables, int nbRounds, int nbDealsPerRound);
 
-        Deal[] CreateDeals(int nbTables, int nbRounds, int nbDealsPerRound);
+        Deal[] CreateDeals(int nbTables, int nbRounds, int nbDealsPerRound, int nbBoards);
 
         MovementValidation Validate(int nbTables, int nbRounds);
     }

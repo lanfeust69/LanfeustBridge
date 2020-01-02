@@ -36,6 +36,9 @@ namespace LanfeustBridge.Models
 
         public int NbDeals { get; set; }
 
+        // Number of boards used (deals will cycle through this number)
+        public int NbBoards { get; set; } = 16;
+
         public Player[] Players { get; set; } = default!;
 
         public TournamentStatus Status { get; set; }
@@ -57,7 +60,7 @@ namespace LanfeustBridge.Models
         internal Deal[] CreateDeals()
         {
             var movement = GetMovement();
-            var deals = movement.CreateDeals(NbTables, NbRounds, NbDealsPerRound);
+            var deals = movement.CreateDeals(NbTables, NbRounds, NbDealsPerRound, NbBoards);
             NbDeals = deals.Length;
             return deals;
         }

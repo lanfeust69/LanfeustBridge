@@ -54,14 +54,17 @@ namespace LanfeustBridge.Models
             return new MovementValidation { IsValid = reasons.Count == 0, Reason = string.Join(" ; ", reasons) };
         }
 
-        public Deal[] CreateDeals(int nbTables, int nbRounds, int nbDealsPerRound)
+        public Deal[] CreateDeals(int nbTables, int nbRounds, int nbDealsPerRound, int nbBoards)
         {
             CheckValidity(nbTables, nbRounds);
+            if (nbDealsPerRound > nbBoards)
+                throw new NotSupportedException($"Need at least {nbDealsPerRound} boards");
+
             int nbDeals = nbRounds * nbDealsPerRound;
             var deals = new Deal[nbDeals];
             for (int i = 0; i < nbDeals; i++)
             {
-                var deal = Deal.CreateDeal(i + 1, nbScores: 2);
+                var deal = Deal.CreateDeal(i + 1, nbScores: 2, Deal.ComputeDealer(i % nbBoards + 1), Deal.ComputeVulnerability(i % nbBoards + 1));
                 deal.Scores[0].Round = deal.Scores[1].Round = i / nbDealsPerRound;
                 deal.Scores[0].Table = 0;
                 deal.Scores[1].Table = 1;

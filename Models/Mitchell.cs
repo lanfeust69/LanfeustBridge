@@ -46,10 +46,13 @@ namespace LanfeustBridge.Models
             return allPositions;
         }
 
-        public Deal[] CreateDeals(int nbTables, int nbRounds, int nbDealsPerRound)
+        public Deal[] CreateDeals(int nbTables, int nbRounds, int nbDealsPerRound, int nbBoards)
         {
             CheckValidity(nbTables, nbRounds);
             int nbDeals = nbTables * nbDealsPerRound;
+            if (nbDeals > nbBoards)
+                throw new NotSupportedException($"Need at least {nbDeals} boards to run a {nbTables} tables Mitchell with {nbDealsPerRound} deals per table");
+
             var deals = new Deal[nbDeals];
             for (int i = 0; i < nbDeals; i++)
             {
@@ -70,7 +73,7 @@ namespace LanfeustBridge.Models
             if (nbTables < 3)
                 reasons.Add("At least 3 tables needed for Mitchell");
             if (nbRounds > nbTables - (nbTables + 1) % 2)
-                reasons.Add($"At most {nbTables - (nbTables + 1) % 2} rounds possible for a {nbTables} Mitchell");
+                reasons.Add($"At most {nbTables - (nbTables + 1) % 2} rounds possible for a {nbTables} tables Mitchell");
             return new MovementValidation { IsValid = reasons.Count == 0, Reason = string.Join(" ; ", reasons) };
         }
 
