@@ -14,7 +14,8 @@
     "lint": "ng lint",
     "e2e:backend": "cd .. && dotnet run --launch-profile BackendForE2E",
     "e2e:run": "ng e2e",
-    "e2e:run-headless": "ng e2e --protractor-config protractor-headless.conf.js",
+    "e2e:chromedriver": "webdriver-manager update --standalone false --gecko false --versions.chrome ${CHROME_DRIVER_VERSION:-latest}",
+    "e2e:run-headless": "npm run e2e:chromedriver && ng e2e --webdriver-update=false --protractor-config protractor-headless.conf.js",
     "e2e": "run-p --race e2e:backend e2e:run",
     "e2e-ci": "run-p --race e2e:backend e2e:run-headless"
   },
