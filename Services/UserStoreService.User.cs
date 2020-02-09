@@ -24,8 +24,8 @@ namespace LanfeustBridge.Services
         IQueryableUserStore<User>
     {
         private readonly ILogger _logger;
-        private readonly LiteCollection<User> _users;
-        private readonly LiteCollection<Role> _roles;
+        private readonly ILiteCollection<User> _users;
+        private readonly ILiteCollection<Role> _roles;
 
         public UserStoreService(ILogger<UserStoreService> logger, DbService dbService)
         {
@@ -33,7 +33,7 @@ namespace LanfeustBridge.Services
             _users = dbService.Db.GetCollection<User>();
             _users.EnsureIndex(u => u.NormalizedUserName);
             _users.EnsureIndex(u => u.NormalizedEmail);
-            _users.EnsureIndex(u => u.ExternalLogins, "$.ExternalLogins[*]");
+            _users.EnsureIndex(u => u.ExternalLogins);
             _roles = dbService.Db.GetCollection<Role>();
             _roles.EnsureIndex(u => u.NormalizedName);
         }

@@ -23,9 +23,6 @@ namespace LanfeustBridge.Services
                 logger.LogInformation("Using database at {dataFile}", dataFile);
                 Db = new LiteDatabase(dataFile);
             }
-            Db.Log.Level = Logger.FULL;
-            // strip the timestamp, which is duplicated by the actual loggers
-            Db.Log.Logging += m => logger.LogInformation("[LiteDB] " + m.Substring("HH:mm:ss.ffff ".Length));
         }
 
         public LiteDatabase Db { get; }

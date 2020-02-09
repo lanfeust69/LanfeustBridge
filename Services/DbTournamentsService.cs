@@ -13,7 +13,7 @@ namespace LanfeustBridge.Services
     public class DbTournamentsService : ITournamentService
     {
         private readonly ILogger _logger;
-        private readonly LiteCollection<Tournament> _tournaments;
+        private readonly ILiteCollection<Tournament> _tournaments;
         private readonly IDealsService _dealsService;
 
         public DbTournamentsService(ILogger<DbTournamentsService> logger, IDealsService dealsService, DbService dbService)

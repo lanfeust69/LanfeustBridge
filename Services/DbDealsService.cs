@@ -11,7 +11,7 @@ namespace LanfeustBridge.Services
     public class DbDealsService : IDealsService
     {
         private readonly ILogger _logger;
-        private readonly LiteCollection<DealWrapper> _deals;
+        private readonly ILiteCollection<DealWrapper> _deals;
 
         public DbDealsService(ILogger<DbDealsService> logger, DbService dbService)
         {
