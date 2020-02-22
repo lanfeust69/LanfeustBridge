@@ -1,4 +1,7 @@
+.git/
 bin/
+cert/
+data/
 logs/
 obj/
 ClientApp/coverage/
