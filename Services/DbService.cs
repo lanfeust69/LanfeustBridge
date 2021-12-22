@@ -20,7 +20,7 @@ namespace LanfeustBridge.Services
             else
             {
                 var dataFile = Path.Combine(directoryService.DataDirectory, "lanfeust.db");
-                logger.LogInformation("Using database at {dataFile}", dataFile);
+                logger.LogInformation("Using database at {File}", dataFile);
                 Db = new LiteDatabase(dataFile);
             }
         }

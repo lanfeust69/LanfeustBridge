@@ -54,7 +54,7 @@ namespace LanfeustBridge.Services
                 user.DisplayName = user.UserName;
 
             _users.Insert(user);
-            _logger.LogInformation($"User {user.Email} created");
+            _logger.LogInformation("User {UserEmail} created", user.Email);
             return Task.FromResult(IdentityResult.Success);
         }
 

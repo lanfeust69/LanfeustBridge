@@ -146,7 +146,7 @@ namespace LanfeustBridge.Controllers
 
             tournament.CurrentRound++;
             _tournamentService.SaveTournament(tournament);
-            _logger.LogInformation($"Sending notification of round {tournament.CurrentRound} started");
+            _logger.LogInformation("Sending notification of round {CurrentRound} started", tournament.CurrentRound);
             _tournamentHubContext.Clients.All.NextRound(id, tournament.CurrentRound);
             return Ok();
         }

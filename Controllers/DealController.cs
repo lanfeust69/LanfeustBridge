@@ -73,7 +73,8 @@ namespace LanfeustBridge.Controllers
         [HttpPost("{id}/score")]
         public IActionResult PostScore(int tournamentId, int id, [FromBody]Score score)
         {
-            _logger.LogInformation($"Receiving score for deal {id}, round {score.Round}, table {score.Table} : {score.Entered}, {score.Tricks}, {score.BridgeScore}");
+            _logger.LogInformation("Receiving score for deal {Deal}, round {Round}, table {Table} : {EnteredScored}, {Tricks}, {BridgeScore}",
+                id, score.Round, score.Table, score.Entered, score.Tricks, score.BridgeScore);
             var deal = _dealsService.GetDeal(tournamentId, id);
             if (deal == null)
                 return NotFound();
@@ -83,12 +84,12 @@ namespace LanfeustBridge.Controllers
             if (idx == deal.Scores.Length)
                 return NotFound();
             deal.Scores[idx] = score;
-            var tournament = _tournamentService.GetTournament(tournamentId) ?? throw new Exception($"Tournament {tournamentId} not found");
+            var tournament = _tournamentService.GetTournament(tournamentId) ?? throw new InvalidOperationException($"Tournament {tournamentId} not found");
             deal.ComputeResults(tournament.Scoring);
             _dealsService.SaveDeal(tournamentId, deal);
             if (tournament.AreAllScoresEntered(_dealsService.GetDeals(tournamentId)))
             {
-                _logger.LogInformation($"Sending notification of round {score.Round} finished");
+                _logger.LogInformation("Sending notification of round {Round} finished", score.Round);
                 _tournamentHubContext.Clients.All.RoundFinished(tournamentId, score.Round);
             }
 

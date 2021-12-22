@@ -109,9 +109,9 @@ namespace LanfeustBridge.Services
             return Task.CompletedTask;
         }
 
-        public async Task AddToRoleAsync(User user, string normalizedRoleName, CancellationToken cancellationToken)
+        public async Task AddToRoleAsync(User user, string roleName, CancellationToken cancellationToken)
         {
-            var role = await ((IRoleStore<Role>)this).FindByNameAsync(normalizedRoleName, cancellationToken);
+            var role = await ((IRoleStore<Role>)this).FindByNameAsync(roleName, cancellationToken);
             var userName = user.NormalizedUserName;
             if (!role.UsersInRole.Contains(userName))
             {
@@ -125,9 +125,9 @@ namespace LanfeustBridge.Services
             }
         }
 
-        public async Task RemoveFromRoleAsync(User user, string normalizedRoleName, CancellationToken cancellationToken)
+        public async Task RemoveFromRoleAsync(User user, string roleName, CancellationToken cancellationToken)
         {
-            var role = await ((IRoleStore<Role>)this).FindByNameAsync(normalizedRoleName, cancellationToken);
+            var role = await ((IRoleStore<Role>)this).FindByNameAsync(roleName, cancellationToken);
             var userName = user.NormalizedUserName;
             if (role.UsersInRole.Contains(userName))
             {
@@ -146,9 +146,9 @@ namespace LanfeustBridge.Services
             return Task.FromResult<IList<string>>(new List<string>(user.Roles));
         }
 
-        public Task<bool> IsInRoleAsync(User user, string role, CancellationToken cancellationToken)
+        public Task<bool> IsInRoleAsync(User user, string roleName, CancellationToken cancellationToken)
         {
-            return Task.FromResult(user.Roles.Contains(role));
+            return Task.FromResult(user.Roles.Contains(roleName));
         }
 
         public async Task<IList<User>> GetUsersInRoleAsync(string roleName, CancellationToken cancellationToken)

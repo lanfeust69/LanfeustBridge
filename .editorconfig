@@ -209,6 +209,8 @@ csharp_preserve_single_line_statements = true
 
 # FxCop settings
 [*.{cs,vb}]
+# CA1002: Do not expose generic lists : seems safer for DTO, to look at later
+dotnet_diagnostic.CA1002.severity = suggestion
 # CA1031: Do not catch general exception types
 dotnet_diagnostic.CA1031.severity = silent
 # Uris should not be strings
@@ -229,5 +231,7 @@ dotnet_diagnostic.CA1307.severity = silent
 dotnet_diagnostic.CA1308.severity = silent
 # CA1819: Properties should not return arrays
 dotnet_diagnostic.CA1819.severity = silent
+# CA1848: Use LoggerMessage delegates : cumbersome, and should be handled by source generator
+dotnet_diagnostic.CA1848.severity = suggestion
 # CA2007: Consider calling ConfigureAwait on the awaited task
 dotnet_diagnostic.CA2007.severity = silent

@@ -40,7 +40,7 @@ namespace LanfeustBridge.Services
         {
             foreach (var deal in deals)
                 _deals.Upsert(new DealWrapper(tournamentId, deal));
-            _logger.LogInformation($"Deals for tournament {tournamentId} saved");
+            _logger.LogInformation("Deals for tournament {Tournament} saved", tournamentId);
         }
 
         internal class DealWrapper

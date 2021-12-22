@@ -49,7 +49,7 @@ namespace LanfeustBridge.Services
             if (tournament.Id == 0)
             {
                 tournament.Id = GetNextId();
-                _logger.LogInformation($"New tournament created with Id {tournament.Id}");
+                _logger.LogInformation("New tournament created with Id {TournamentId}", tournament.Id);
             }
             if (tournament.Status == TournamentStatus.Setup)
             {
@@ -80,7 +80,7 @@ namespace LanfeustBridge.Services
 
             if (result.Count > 0)
                 _nextId = result.Keys.Max() + 1;
-            _logger.LogInformation($"InitializeTournaments() done, {result.Count} tournaments in db, _nextId is {_nextId}");
+            _logger.LogInformation("InitializeTournaments() done, {TournamentsCount} tournaments in db, _nextId is {NextId}", result.Count, _nextId);
             return result;
         }
 

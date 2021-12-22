@@ -23,7 +23,7 @@ namespace LanfeustBridge.Services
 
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
-            _logger.LogInformation("Sending mail to {address} about '{subject}'", email, subject);
+            _logger.LogInformation("Sending mail to {Address} about '{Subject}'", email, subject);
 
             var message = new SendGridMessage();
             message.SetFrom("webmaster@LanfeustBridge.com", "Lanfeust Bridge");
@@ -36,9 +36,9 @@ namespace LanfeustBridge.Services
 
             var responseContent = await response.Body.ReadAsStringAsync();
             if (response.StatusCode == HttpStatusCode.Accepted)
-                _logger.LogInformation("Mail sent successfully", responseContent);
+                _logger.LogInformation("Mail sent successfully with content {Content}", responseContent);
             else
-                _logger.LogWarning("Mail not sent, {status} {reason}", response.StatusCode, responseContent);
+                _logger.LogWarning("Mail not sent, {Status} {Reason}", response.StatusCode, responseContent);
         }
     }
 }

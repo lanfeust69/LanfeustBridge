@@ -26,7 +26,7 @@ namespace LanfeustBridge.Controllers
         [HttpGet("current")]
         public async Task<IActionResult> GetCurrent()
         {
-            if (!User.Identity.IsAuthenticated)
+            if (!User.Identity?.IsAuthenticated ?? false)
                 return Unauthorized();
 
             // also handle the case where the account has been deleted (but there is still a valid cookie)

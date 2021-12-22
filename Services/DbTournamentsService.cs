@@ -29,7 +29,7 @@ namespace LanfeustBridge.Services
                     continue;
                 tournament.Movement = movementId;
                 _tournaments.Update(tournament.Id, tournament);
-                _logger.LogInformation($"Tournament '{tournament.Name}' (Id {tournament.Id}) updated to {movementId}");
+                _logger.LogInformation("Tournament '{Name}' (Id {Id}) updated to {Movement}", tournament.Name, tournament.Id, movementId);
             }
         }
 
@@ -48,14 +48,14 @@ namespace LanfeustBridge.Services
             bool newTournament = tournament.Id == 0;
             _tournaments.Upsert(tournament);
             if (newTournament)
-                _logger.LogInformation($"New tournament created with Id {tournament.Id}");
+                _logger.LogInformation("New tournament created with Id {TournamentId}", tournament.Id);
             if (tournament.Status == TournamentStatus.Setup)
             {
                 _dealsService.SetDealsForTournament(tournament.Id, tournament.CreateDeals());
                 // define positions
                 tournament.GeneratePositions();
                 _tournaments.Update(tournament);
-                _logger.LogInformation($"Deals and positions created for tournament {tournament.Id}");
+                _logger.LogInformation("Deals and positions created for tournament {TournamentId}", tournament.Id);
             }
 
             return tournament;

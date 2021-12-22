@@ -47,7 +47,7 @@ namespace LanfeustBridge.Services
                 return null;
             deals[deal.Id - 1] = deal;
             SaveToFile();
-            _logger.LogInformation($"Deal {deal.Id} of tournament {tournamentId} saved");
+            _logger.LogInformation("Deal {Deal} of tournament {Tournament} saved", deal.Id, tournamentId);
             return deal;
         }
 
@@ -55,7 +55,7 @@ namespace LanfeustBridge.Services
         {
             Deals[tournamentId] = deals;
             SaveToFile();
-            _logger.LogInformation($"Deals for tournament {tournamentId} created");
+            _logger.LogInformation("Deals for tournament {Tournament} created", tournamentId);
         }
 
         private Dictionary<int, Deal[]> InitializeDeals()
@@ -66,7 +66,7 @@ namespace LanfeustBridge.Services
             else
                 result = new Dictionary<int, Deal[]>();
 
-            _logger.LogInformation($"InitializeDeals() done, deals from {result.Count} tournaments in db");
+            _logger.LogInformation("InitializeDeals() done, deals from {Count} tournaments in db", result.Count);
             return result;
         }
 
