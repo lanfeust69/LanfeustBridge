@@ -1,51 +1,41 @@
-using System.Linq;
-using System.Threading.Tasks;
+namespace LanfeustBridge.Controllers;
 
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-
-namespace LanfeustBridge.Controllers
+[Route("api/[controller]")]
+[Authorize]
+public class UserController : Controller
 {
-    using LanfeustBridge.Models;
+    private readonly UserManager<User> _userManager;
+    private readonly SignInManager<User> _signInManager;
 
-    [Route("api/[controller]")]
-    [Authorize]
-    public class UserController : Controller
+    public UserController(UserManager<User> userManager, SignInManager<User> signInManager)
     {
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
+        _userManager = userManager;
+        _signInManager = signInManager;
+    }
 
-        public UserController(UserManager<User> userManager, SignInManager<User> signInManager)
+    [AllowAnonymous]
+    [HttpGet("current")]
+    public async Task<IActionResult> GetCurrent()
+    {
+        if (!User.Identity?.IsAuthenticated ?? false)
+            return Unauthorized();
+
+        // also handle the case where the account has been deleted (but there is still a valid cookie)
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
+            // prevent the Identity UI from thinking the user is authenticated
+            await _signInManager.SignOutAsync();
+            return Unauthorized();
         }
 
-        [AllowAnonymous]
-        [HttpGet("current")]
-        public async Task<IActionResult> GetCurrent()
-        {
-            if (!User.Identity?.IsAuthenticated ?? false)
-                return Unauthorized();
+        return Ok(new { user.Email, Name = user.DisplayName, user.Roles });
+    }
 
-            // also handle the case where the account has been deleted (but there is still a valid cookie)
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                // prevent the Identity UI from thinking the user is authenticated
-                await _signInManager.SignOutAsync();
-                return Unauthorized();
-            }
-
-            return Ok(new { user.Email, Name = user.DisplayName, user.Roles });
-        }
-
-        [HttpGet]
-        public Task<IActionResult> GetAll()
-        {
-            IActionResult result = Ok(_userManager.Users.Select(user => new { user.Email, Name = user.DisplayName }));
-            return Task.FromResult(result);
-        }
+    [HttpGet]
+    public Task<IActionResult> GetAll()
+    {
+        IActionResult result = Ok(_userManager.Users.Select(user => new { user.Email, Name = user.DisplayName }));
+        return Task.FromResult(result);
     }
 }

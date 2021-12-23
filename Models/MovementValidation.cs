@@ -1,9 +1,8 @@
-namespace LanfeustBridge.Models
-{
-    public class MovementValidation
-    {
-        public bool IsValid { get; set; }
+namespace LanfeustBridge.Models;
 
-        public string? Reason { get; set; }
-    }
+public class MovementValidation
+{
+    public bool IsValid { get; set; }
+
+    public string? Reason { get; set; }
 }

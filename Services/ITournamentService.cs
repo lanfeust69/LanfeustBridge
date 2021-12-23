@@ -1,18 +1,12 @@
-using System;
-using System.Collections.Generic;
+namespace LanfeustBridge.Services;
 
-namespace LanfeustBridge.Services
+public interface ITournamentService
 {
-    using LanfeustBridge.Models;
+    IEnumerable<(int, string)> GetNames();
 
-    public interface ITournamentService
-    {
-        IEnumerable<(int, string)> GetNames();
+    Tournament? GetTournament(int id);
 
-        Tournament? GetTournament(int id);
+    Tournament SaveTournament(Tournament tournament);
 
-        Tournament SaveTournament(Tournament tournament);
-
-        bool DeleteTournament(int id);
-    }
+    bool DeleteTournament(int id);
 }

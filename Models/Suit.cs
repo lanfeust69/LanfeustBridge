@@ -1,11 +1,10 @@
-namespace LanfeustBridge.Models
+namespace LanfeustBridge.Models;
+
+public enum Suit
 {
-    public enum Suit
-    {
-        Clubs,
-        Diamonds,
-        Hearts,
-        Spades,
-        NoTrump
-    }
+    Clubs,
+    Diamonds,
+    Hearts,
+    Spades,
+    NoTrump
 }

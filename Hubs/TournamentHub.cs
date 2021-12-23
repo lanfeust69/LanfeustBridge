@@ -1,8 +1,5 @@
-using Microsoft.AspNetCore.SignalR;
+namespace LanfeustBridge.Hubs;
 
-namespace LanfeustBridge.Hubs
+public class TournamentHub : Hub<ITournamentNotifier>
 {
-    public class TournamentHub : Hub<ITournamentNotifier>
-    {
-    }
 }
