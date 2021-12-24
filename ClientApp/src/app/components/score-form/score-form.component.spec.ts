@@ -1,6 +1,6 @@
 ﻿import { Component, DebugElement } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { async, fakeAsync, inject, tick, ComponentFixture, TestBed } from '@angular/core/testing';
+import { fakeAsync, inject, tick, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { Score } from '../../score';

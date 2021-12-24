@@ -8,7 +8,7 @@ import { USER_SERVICE, UserService } from '../../services/user/user.service';
     selector: 'lanfeust-bridge-app',
     templateUrl: './lanfeust-bridge.html'
 })
-// tslint:disable-next-line:component-class-suffix
+// eslint-disable-next-line @angular-eslint/component-class-suffix
 export class LanfeustBridgeApp implements OnInit {
     randomDeal: number = Math.floor(Math.random() * 32) + 1;
     alerts: Object[] = [];

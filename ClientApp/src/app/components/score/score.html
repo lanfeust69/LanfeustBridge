@@ -26,9 +26,9 @@
                 <span *ngIf="score.contract.doubled">X</span>
                 <span *ngIf="score.contract.redoubled">XX</span>&nbsp;{{score.contract.declarer}}
             </td>
-            <td *ngIf="score.contract.level == 0">Pass</td>
+            <td *ngIf="score.contract.level === 0">Pass</td>
             <td *ngIf="score.contract.level > 0">{{score.tricks}}</td>
-            <td *ngIf="score.contract.level == 0"></td>
+            <td *ngIf="score.contract.level === 0"></td>
             <td>{{score.score}}</td>
             <td>{{score.nsResult}}</td>
             <td>{{score.ewResult}}</td>

@@ -1,6 +1,6 @@
 import { Component, Input, Inject, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
-import { NgbTabset } from '@ng-bootstrap/ng-bootstrap';
+import { NgbNav } from '@ng-bootstrap/ng-bootstrap';
 import { merge, Observable, of, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
 
@@ -19,6 +19,8 @@ import { UserService, USER_SERVICE } from '../../services/user/user.service';
 })
 export class TournamentComponent implements OnInit {
     @Input() id: number;
+
+    _activeTab: string;
 
     _isAdmin = false;
     _created = false;
@@ -40,8 +42,7 @@ export class TournamentComponent implements OnInit {
     _currentScore: Score = new Score;
     _scoreDisplayed = false;
 
-    @ViewChild(NgbTabset) tabs: NgbTabset;
-    playerTypeahead = new Subject<{ player: number, text: string }>();
+    @ViewChild(NgbNav) tabs: NgbNav;
 
     constructor(
         private _router: Router,
@@ -250,7 +251,10 @@ export class TournamentComponent implements OnInit {
     }
 
     initializeScore(resetCurrentDeal: boolean) {
-        this.tabs.select('tab-play');
+        if (this._edit)
+            this.tabs.select('tab-info');
+        else
+            this.tabs.select('tab-play');
         this._scoreDisplayed = false;
         this._currentRound = +this._currentRound; // string if set from html
         if (this._currentRound >= this._tournament.nbRounds)
@@ -293,19 +297,16 @@ export class TournamentComponent implements OnInit {
         this._roundFinished = false;
     }
 
-    getSearch(player: number): (text: Observable<string>) => Observable<string[]> {
-        // not directly as a method because not bound to this when called from ngTypeahead
-        return (text: Observable<string>) =>
-            merge(
-                text.pipe(debounceTime(200), distinctUntilChanged()),
-                this.playerTypeahead.pipe(filter(e => e.player === player), map(e => e.text))
-            ).pipe(
-                map(s => {
-                    const eligibleUsers = this._allUsers.filter(u => this.players.map(p => p.name).indexOf(u) === -1);
-                    return s === '' ? eligibleUsers :
-                        eligibleUsers.filter(u => u.toLocaleLowerCase().indexOf(s.toLocaleLowerCase()) !== -1);
-                })
-            );
+    // issue with binding of this and factories : https://github.com/ng-bootstrap/ng-bootstrap/issues/4055
+    // -> for now forget about full list on focus, and need arrow definition
+    getSearch = (text: Observable<string>): Observable<string[]> => {
+        return text.pipe(
+            map(s => {
+                const eligibleUsers = this._allUsers.filter(u => this.players.map(p => p.name).indexOf(u) === -1);
+                return s === '' ? eligibleUsers :
+                    eligibleUsers.filter(u => u.toLocaleLowerCase().indexOf(s.toLocaleLowerCase()) !== -1);
+            })
+        );
     }
 
     get rounds(): number[] {

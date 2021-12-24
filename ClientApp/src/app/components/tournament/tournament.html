@@ -5,9 +5,10 @@
 </h3>
 <!-- <pre>{{diagnostic}}</pre> -->
 <div class="container" *ngIf="_tournament">
-    <ngb-tabset>
-        <ngb-tab title='Infos'>
-            <ng-template ngbTabContent>
+    <ul ngbNav #nav="ngbNav" [(activeId)]="_activeTab" class="nav-tabs">
+        <li [ngbNavItem]="'tab-info'">
+            <a ngbNavLink>Infos</a>
+            <ng-template ngbNavContent>
                 <form (ngSubmit)="onSubmit()" #tournamentForm="ngForm">
                     <fieldset *ngIf="true" [disabled]="!(setup && _edit)">
                         <!-- *ngIf is a workaround for a known angular2 bug -->
@@ -61,9 +62,10 @@
                     <button *ngIf="setup && _edit" class="btn btn-primary" [disabled]="!tournamentForm.form.valid || !isValid" (click)="onSubmit()">{{_created ? "Update" : "Create"}}</button>
                 </form>
             </ng-template>
-        </ngb-tab>
-        <ngb-tab title="Play" id="tab-play" *ngIf="(running && _currentRound < _tournament.nbRounds && _currentPosition) || (finished && _edit)">
-            <ng-template ngbTabContent>
+        </li>
+        <li [ngbNavItem]="'tab-play'" *ngIf="(running && _currentRound < _tournament.nbRounds && _currentPosition) || (finished && _edit)">
+            <a ngbNavLink>Play</a>
+            <ng-template ngbNavContent>
                 <div *ngIf="_edit" class="form-group">
                     <label for="round">Round</label>
                     <select class="form-control" required [(ngModel)]="_currentRound" (ngModelChange)="initializeScore(true)">
@@ -90,14 +92,16 @@
                     <button class="btn btn-primary" [disabled]="!roundFinished" (click)="nextRound()">Next Round</button>
                 </div>
             </ng-template>
-        </ngb-tab>
-        <ngb-tab title="Play" *ngIf="running && _currentRound >= _tournament.nbRounds">
-            <ng-template ngbTabContent>
+        </li>
+        <li [ngbNavItem]="'tab-play-finished'" *ngIf="running && _currentRound >= _tournament.nbRounds">
+            <a ngbNavLink>Play</a>
+            <ng-template ngbNavContent>
                 <h4>All rounds Finished</h4>
             </ng-template>
-        </ngb-tab>
-        <ngb-tab title="Players" id="tab-players" *ngIf="_tournament.players">
-            <ng-template ngbTabContent>
+        </li>
+        <li [ngbNavItem]="'tab-players'" *ngIf="_tournament.players">
+            <a ngbNavLink>Players</a>
+            <ng-template ngbNavContent>
                 <div *ngIf="!finished && !_edit" class="list-group mb-2">
                     <a [routerLink]="['/tournament', _tournament.id]" class="list-group-item"
                         *ngFor="let player of players; let i = index">Player {{i + 1}} : {{player.name}}</a>
@@ -115,7 +119,7 @@
                         <tbody>
                             <tr *ngFor="let player of sortedPlayers">
                                 <td>{{player.rank}}</td>
-                                <td><a [routerLink]="['scoresheet', player.name]"  [queryParams]="isIndividual ? {individual: true} : {}">{{player.name}}</a></td>
+                                <td><a [routerLink]="['scoresheet', player.name]" [queryParams]="isIndividual ? {individual: true} : {}">{{player.name}}</a></td>
                                 <td>{{player.score.toFixed(2)}}</td>
                             </tr>
                         </tbody>
@@ -127,23 +131,24 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text" style="width: 8em">Player {{i + 1}}</span>
                             </div>
-                            <input type="text" class="form-control" [(ngModel)]="p.name" [ngbTypeahead]="getSearch(i)"
-                                   (focus)="playerTypeahead.next({ player: i, text: $event.target.value})"
-                                   (click)="playerTypeahead.next({ player: i, text: $event.target.value})"
+                            <input type="text" class="form-control" [(ngModel)]="p.name" [ngbTypeahead]="getSearch"
                                    placeholder="Player name" id="player{{i}}" name="player{{i}}">
+                            <!-- <pre>{{p.name}}</pre> -->
                         </div>
                     </div>
                 </form>
             </ng-template>
-        </ngb-tab>
-        <ngb-tab title="Deals" *ngIf="finished && nbDeals > 0">
-            <ng-template ngbTabContent>
+        </li>
+        <li [ngbNavItem]="'tab-deals'" *ngIf="finished && nbDeals > 0">
+            <a ngbNavLink>Deals</a>
+            <ng-template ngbNavContent>
                 <div class="list-group mb-2">
                     <a [routerLink]="['deal', deal.id]" [queryParams]="isIndividual ? {individual: true} : {}" class="list-group-item" *ngFor="let deal of deals">Deal {{deal.id}}</a>
                 </div>
             </ng-template>
-        </ngb-tab>
-    </ngb-tabset>
+        </li>
+    </ul>
+    <div [ngbNavOutlet]="nav" class="mt-2"></div>
     <div [hidden]="!_edit || isValid" class="alert alert-danger">
         {{_invalidReason}}
     </div>
@@ -151,6 +156,6 @@
         <button *ngIf="(setup && _created && !_edit && _isAdmin) || (finished && !_edit && _isAdmin)" class="btn btn-primary mr-2" (click)="_edit = !_edit; _currentRound = 0; initializeScore()">Edit</button>
         <button *ngIf="setup && _created && !_edit && _isAdmin" class="btn btn-primary mr-2" (click)="start()">Start</button>
         <!--<button *ngIf="running" class="btn btn-primary" (click)="play()">Play</button>-->
-        <button *ngIf="(running && _roundFinished && _currentRound == _tournament.nbRounds - 1 && _isAdmin) || (finished && _edit)" class="btn btn-primary mr-2" (click)="close()">Close</button>
+        <button *ngIf="(running && _roundFinished && _currentRound === _tournament.nbRounds - 1 && _isAdmin) || (finished && _edit)" class="btn btn-primary mr-2" (click)="close()">Close</button>
     </div>
 </div>
