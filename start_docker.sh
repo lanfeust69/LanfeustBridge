@@ -3,7 +3,7 @@ then
     echo certificate file expected at cert/dev-cert.pfx
 fi
 
-docker build -t lanfeust-bridge .
+DOCKER_BUILDKIT=1 docker build -t lanfeust-bridge .
 
 if [ -z "$ASPNETCORE_Authentication__Google__ClientId" ]
 then
@@ -18,6 +18,6 @@ fi
 docker run -d -e ASPNETCORE_Authentication__Google__ClientId \
     -e ASPNETCORE_Authentication__Google__ClientSecret \
     -e ASPNETCORE_SendGrid__ApiKey \
-    -v ./cert:/app/cert \
+    -v $(pwd)/cert:/app/cert \
     -e ASPNETCORE_Kestrel__Certificates__Default__Path=cert/dev-cert.pfx \
     -p 5000:5000 -p 5001:5001 lanfeust-bridge

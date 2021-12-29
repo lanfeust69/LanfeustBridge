@@ -8,3 +8,4 @@ ClientApp/coverage/
 ClientApp/dist/
 ClientApp/junit/
 ClientApp/node_modules/
+ClientApp/.angular/
