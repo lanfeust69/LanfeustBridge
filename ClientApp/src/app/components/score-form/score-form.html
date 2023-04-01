@@ -1,29 +1,32 @@
 <form (ngSubmit)="onSubmit()">
-    <div class="btn-group btn-group-toggle mr-2" ngbRadioGroup [(ngModel)]="score.contract.level" (ngModelChange)="tricksFixup()" name="level">
-        <label ngbButtonLabel class="btn-light"><input ngbButton type="radio" [value]="0" name="level" />Pass</label>
-        <label ngbButtonLabel *ngFor="let level of [1, 2, 3, 4, 5, 6, 7]" class="btn-light">
-            <input ngbButton type="radio" [value]="level" name="level" />{{level}}
-        </label>
+    <div role="group" class="btn-group me-2" name="level">
+        <div *ngFor="let lvl of [0, 1, 2, 3, 4, 5, 6, 7]">
+            <input type="radio" class="btn-check" [value]="lvl" [(ngModel)]="score.contract.level" (ngModelChange)="tricksFixup()"
+                name="level" attr.id="btn-lvl-{{lvl}}" autocomplete="off" />
+            <label class="btn btn-light" attr.for="btn-lvl-{{lvl}}">{{lvl ? lvl : 'Pass'}}</label>
+        </div>
     </div>
-    <div class="btn-group btn-group-toggle mr-2" *ngIf="score.contract.level" ngbRadioGroup [(ngModel)]="score.contract.suit" name="suit">
-        <label ngbButtonLabel *ngFor="let suit of _suits" class="btn-light">
-            <input ngbButton type="radio" [value]="suit" name="suit" />
-            <lanfeust-bridge-suit [suit]="suit"></lanfeust-bridge-suit>
-        </label>
+    <div class="btn-group me-2" *ngIf="score.contract.level" name="suit">
+        <div *ngFor="let s of _suits">
+            <input type="radio" class="btn-check" [value]="s" [(ngModel)]="score.contract.suit" name="suit" attr.id="btn-suit-{{s}}" />
+            <label class="btn btn-light" attr.for="btn-suit-{{s}}">
+                <lanfeust-bridge-suit [suit]="s"></lanfeust-bridge-suit>
+            </label>
+        </div>
     </div>
-    <div class="btn-group btn-group-toggle mr-2" *ngIf="score.contract.level">
-        <label ngbButtonLabel class="btn-light" [class.active]="score.contract.doubled" name="doubled">
-            <input ngbButton type="checkbox" [(ngModel)]="score.contract.doubled" (ngModelChange)="doubleFixup($event)" name="doubled" />X
-        </label>
-        <label ngbButtonLabel class="btn-light" [class.active]="score.contract.redoubled" name="redoubled">
-            <input ngbButton type="checkbox" [(ngModel)]="score.contract.redoubled" (ngModelChange)="redoubleFixup($event)" name="redoubled" />XX
-        </label>
+    <div class="btn-group me-2" *ngIf="score.contract.level">
+        <input type="checkbox" class="btn-check" [(ngModel)]="score.contract.doubled" (ngModelChange)="doubleFixup($event)" name="doubled" id="doubled" />
+        <label class="btn btn-light" [class.active]="score.contract.doubled" for="doubled" name="doubled">X</label>
+        <input type="checkbox" class="btn-check" [(ngModel)]="score.contract.redoubled" (ngModelChange)="redoubleFixup($event)" name="redoubled" id="redoubled" />
+        <label class="btn btn-light" [class.active]="score.contract.redoubled" for="redoubled" name="redoubled">XX</label>
     </div>
-    <div class="btn-group btn-group-toggle mr-2" *ngIf="score.contract.level" ngbRadioGroup [(ngModel)]="score.contract.declarer" name="declarer">
-        <label ngbButtonLabel *ngFor="let declarer of ['N', 'S', 'E', 'W']" class="btn-light">
-            <input ngbButton type="radio" [value]="declarer" name="declarer" />{{declarer}}</label>
+    <div class="btn-group me-2" *ngIf="score.contract.level" name="declarer">
+        <div *ngFor="let declarer of ['N', 'S', 'E', 'W']">
+            <input type="radio" class="btn-check" [value]="declarer" [(ngModel)]="score.contract.declarer" name="declarer" attr.id="btn-decl-{{declarer}}" />
+            <label class="btn btn-light" attr.for="btn-decl-{{declarer}}">{{declarer}}</label>
+        </div>
     </div>
-    <div class="btn-group mr-2" *ngIf="score.contract.level" name="result">
+    <div class="btn-group me-2" *ngIf="score.contract.level" name="result">
         <button type="button" class="btn btn-light" (click)="changeTricks(-1)">-</button>
         <button type="button" class="btn bg-info">{{tricksDisplay}}</button>
         <button type="button" class="btn btn-light" (click)="changeTricks(1)">+</button>
@@ -37,6 +40,7 @@
             {{score.contract.declarer}}&nbsp;{{tricksDisplay}}&nbsp;&nbsp;&nbsp;<strong>{{computedScore}}</strong>
         </div>
     </div>
+    <pre>{{score.contract | json}}</pre>
     <div class="form-group">
         <button type="submit" class="btn btn-primary" [disabled]="!isValid">Accept</button>
     </div>

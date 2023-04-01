@@ -66,7 +66,7 @@
         <li [ngbNavItem]="'tab-play'" *ngIf="(running && _currentRound < _tournament.nbRounds && _currentPosition) || (finished && _edit)">
             <a ngbNavLink>Play</a>
             <ng-template ngbNavContent>
-                <div *ngIf="_edit" class="form-group">
+                <div *ngIf="_edit" class="form-group mt2">
                     <label for="round">Round</label>
                     <select class="form-control" required [(ngModel)]="_currentRound" (ngModelChange)="initializeScore(true)">
                         <option *ngFor="let r of rounds" [value]="r">{{r + 1}}</option>
@@ -75,19 +75,21 @@
                 <h4>Round {{_currentRound + 1}} : Table {{_currentPosition.table + 1}},
                     N : {{_tournament.players[_currentPosition.north].name}}, S : {{_tournament.players[_currentPosition.south].name}},
                     E : {{_tournament.players[_currentPosition.east].name}}, W : {{_tournament.players[_currentPosition.west].name}}</h4>
-                <div class="form-group">
+                <div class="form-group mt-2">
                     <label for="player">Player</label>
                     <select class="form-control" required [(ngModel)]="_currentPlayer" (ngModelChange)="initializeScore(true)" name="currentPlayer">
                         <option *ngFor="let p of players; let i = index" [value]="i">{{p.name}}</option>
                     </select>
                 </div>
-                <div class="form-group">
+                <div class="form-group mt-2">
                     <label for="deal">Deal</label>
                     <select class="form-control" required [(ngModel)]="currentDeal" (ngModelChange)="initializeScore(false)">
                         <option *ngFor="let d of roundDeals" [value]="d">#{{d}}</option>
                     </select>
                 </div>
-                <lanfeust-bridge-score-form *ngIf="_scoreDisplayed" [(score)]="_currentScore" (validated)="scoreValidated()"></lanfeust-bridge-score-form>
+                <div class="form-group mt-2">
+                    <lanfeust-bridge-score-form *ngIf="_scoreDisplayed" [(score)]="_currentScore" (validated)="scoreValidated()"></lanfeust-bridge-score-form>
+                </div>
                 <div *ngIf="running && _currentRound < _tournament.nbRounds - 1" class="form-group">
                     <button class="btn btn-primary" [disabled]="!roundFinished" (click)="nextRound()">Next Round</button>
                 </div>

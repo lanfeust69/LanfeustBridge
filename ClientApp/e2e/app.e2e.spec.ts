@@ -2,10 +2,10 @@ import { test, expect, Page } from '@playwright/test';
 
 async function randomScore(page: Page) {
     const level = Math.floor((Math.random() * 8) + 1);
-    await page.click('div[name="level"]>label:nth-of-type(' + level + ')');
+    await page.click('div[name="level"]>div:nth-of-type(' + level + ')>label');
     if (level > 1) {
         const suit = Math.floor((Math.random() * 5) + 1);
-        await page.click('div[name="suit"]>label:nth-of-type(' + suit + ')>lanfeust-bridge-suit>span:nth-of-type(1)>span');
+        await page.click('div[name="suit"]>div:nth-of-type(' + suit + ')>label>lanfeust-bridge-suit>span:nth-of-type(1)>span');
         if (Math.random() < 0.25) {
             if (Math.random() < 0.2) {
                 await page.click('label[name="redoubled"]');
@@ -14,7 +14,7 @@ async function randomScore(page: Page) {
             }
         }
         const declarer = Math.floor((Math.random() * 4) + 1);
-        await page.click('div[name="declarer"]>label:nth-of-type(' + declarer + ')');
+        await page.click('div[name="declarer"]>div:nth-of-type(' + declarer + ')>label');
         const result = Math.floor((Math.random() * 5) - 2);
         if (result !== 0) {
             const el = page.locator('div[name="result"]>button:nth-of-type(' + (result < 0 ? 1 : 3) + ')');

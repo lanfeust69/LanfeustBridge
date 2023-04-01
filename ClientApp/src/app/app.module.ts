@@ -42,13 +42,13 @@ import { AlertService } from './services/alert/alert.service';
         FormsModule,
         HttpClientModule,
         RouterModule.forRoot([
-    { path: '', component: TournamentListComponent },
-    { path: 'tournament/:id', component: TournamentComponent },
-    { path: 'tournament/:tournamentId/deal/:dealId', component: DealComponent },
-    { path: 'tournament/:tournamentId/scoresheet/:player', component: ScoreSheetComponent },
-    { path: 'new-tournament', component: TournamentComponent },
-    { path: '**', redirectTo: '' }
-], { relativeLinkResolution: 'legacy' })
+            { path: '', component: TournamentListComponent },
+            { path: 'tournament/:id', component: TournamentComponent },
+            { path: 'tournament/:tournamentId/deal/:dealId', component: DealComponent },
+            { path: 'tournament/:tournamentId/scoresheet/:player', component: ScoreSheetComponent },
+            { path: 'new-tournament', component: TournamentComponent },
+            { path: '**', redirectTo: '' }
+        ])
     ],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: DateInterceptor, multi: true },
