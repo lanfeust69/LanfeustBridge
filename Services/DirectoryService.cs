@@ -5,11 +5,11 @@ public class DirectoryService
     public DirectoryService()
     {
         string currentDir = Directory.GetCurrentDirectory();
-        if (currentDir.StartsWith(@"D:\home\site", StringComparison.OrdinalIgnoreCase))
+        if (currentDir.StartsWith(@"C:\home\site", StringComparison.OrdinalIgnoreCase))
         {
             // in Azure
-            LogDirectory = @"D:\home\LogFiles";
-            DataDirectory = @"D:\home\data";
+            LogDirectory = @"C:\home\LogFiles";
+            DataDirectory = @"C:\home\data";
         }
         else
         {
