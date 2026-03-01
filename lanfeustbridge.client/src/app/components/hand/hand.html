@@ -1,0 +1,28 @@
+<div>
+  <table>
+    <tr>
+      <lanfeust-bridge-suit [suit]="Suit.Spades"></lanfeust-bridge-suit>
+      @for (card of hand.spades; track card) {
+        <span> {{card}}</span>
+      }
+    </tr>
+    <tr>
+      <lanfeust-bridge-suit [suit]="Suit.Hearts"></lanfeust-bridge-suit>
+      @for (card of hand.hearts; track card) {
+        <span> {{card}}</span>
+      }
+    </tr>
+    <tr>
+      <lanfeust-bridge-suit [suit]="Suit.Diamonds"></lanfeust-bridge-suit>
+      @for (card of hand.diamonds; track card) {
+        <span> {{card}}</span>
+      }
+    </tr>
+    <tr>
+      <lanfeust-bridge-suit [suit]="Suit.Clubs"></lanfeust-bridge-suit>
+      @for (card of hand.clubs; track card) {
+        <span> {{card}}</span>
+      }
+    </tr>
+  </table>
+</div>

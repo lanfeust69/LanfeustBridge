@@ -1,0 +1,71 @@
+<table class="table-striped table-bordered table-hover col-12">
+  <thead>
+    <th style="width: 8%">#</th>
+    @if (individual) {
+      <th style="width: 12%">N</th>
+    }
+    @if (individual) {
+      <th style="width: 12%">S</th>
+    }
+    @if (individual) {
+      <th style="width: 12%">E</th>
+    }
+    @if (individual) {
+      <th style="width: 12%">W</th>
+    }
+    @if (!individual) {
+      <th style="width: 12%">NS</th>
+    }
+    @if (!individual) {
+      <th style="width: 12%">EW</th>
+    }
+    <th style="width: 16%">Contract</th>
+    <th style="width: 8%">Result</th>
+    <th style="width: 12%">Score</th>
+    <th style="width: 8%">NS</th>
+    <th style="width: 8%">EW</th>
+  </thead>
+  <tbody>
+    @for (score of filteredScores; track score) {
+      <tr>
+        @if (forPlayers) {
+          <td><a [routerLink]="['/tournament', tournamentId, 'deal', score.dealId]" [queryParams]="individual ? {individual: true} : {}">{{score.dealId}}</a></td>
+        }
+        @if (!forPlayers) {
+          <td>{{score.table + 1}}</td>
+        }
+        <td><a [routerLink]="['/tournament', tournamentId, 'scoresheet', score.players.north]" [queryParams]="individual ? {individual: true} : {}">{{score.players.north}}</a></td>
+        @if (individual) {
+          <td><a [routerLink]="['/tournament', tournamentId, 'scoresheet', score.players.south]" [queryParams]="{individual: true}">{{score.players.south}}</a></td>
+        }
+        <td><a [routerLink]="['/tournament', tournamentId, 'scoresheet', score.players.east]" [queryParams]="individual ? {individual: true} : {}">{{score.players.east}}</a></td>
+        @if (individual) {
+          <td><a [routerLink]="['/tournament', tournamentId, 'scoresheet', score.players.west]" [queryParams]="{individual: true}">{{score.players.west}}</a></td>
+        }
+        @if (score.contract.level > 0) {
+          <td>{{score.contract.level}}
+            <lanfeust-bridge-suit [suit]="score.contract.suit"></lanfeust-bridge-suit>
+            @if (score.contract.doubled) {
+              <span>X</span>
+            }
+            @if (score.contract.redoubled) {
+              <span>XX</span>
+              }&nbsp;{{score.contract.declarer}}
+            </td>
+          }
+          @if (score.contract.level === 0) {
+            <td>Pass</td>
+          }
+          @if (score.contract.level > 0) {
+            <td>{{score.tricks}}</td>
+          }
+          @if (score.contract.level === 0) {
+            <td></td>
+          }
+          <td>{{score.score}}</td>
+          <td>{{score.nsResult}}</td>
+          <td>{{score.ewResult}}</td>
+        </tr>
+      }
+    </tbody>
+  </table>

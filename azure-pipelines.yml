@@ -2,7 +2,6 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-  project: LanfeustBridge.csproj
   configuration: Debug
   
 steps:
@@ -14,21 +13,21 @@ steps:
   - task: DotNetCoreCLI@2
     displayName: Restore
     inputs:
+      workingDir: LanfeustBridge.Server
       command: restore
-      projects: '$(project)'
   
   - task: DotNetCoreCLI@2
     displayName: Build
     inputs:
-      projects: '$(project)'
+      workingDir: LanfeustBridge.Server
       arguments: '--configuration $(configuration)'
   
   - task: DotNetCoreCLI@2
     displayName: Test
     inputs:
+      workingDir: Movement.Tests
       command: test
-      projects: '$(project)'
-      arguments: '--configuration $(configuration)'
+      arguments: '--configuration $(configuration) --coverage'
   
   - task: DotNetCoreCLI@2
     displayName: 'Install DEV certificate'
@@ -40,35 +39,44 @@ steps:
   - task: Npm@1
     displayName: 'npm install'
     inputs:
-      workingDir: ClientApp
+      workingDir: lanfeustbridge.client
       verbose: false
   
   - task: Npm@1
     displayName: 'Test Front-End'
     inputs:
       command: custom
-      workingDir: ClientApp
+      workingDir: lanfeustbridge.client
       verbose: false
       customCommand: 'run test-ci'
-  
-  - task: Npm@1
-    displayName: 'End-to-End Tests'
-    inputs:
-      command: custom
-      workingDir: ClientApp
-      verbose: false
-      customCommand: 'run e2e-ci'
   
   - task: PublishTestResults@2
     displayName: 'Publish Front-End Test Results'
     inputs:
-      testResultsFiles: 'ClientApp/junit/*.xml'
+      testResultsFiles: 'lanfeustbridge.client/junit/*.xml'
       failTaskOnFailedTests: true
     condition: succeededOrFailed()
   
-  - task: PublishCodeCoverageResults@1
+  - task: PublishCodeCoverageResults@2
     displayName: 'Publish code coverage from Front-End tests'
     inputs:
       codeCoverageTool: Cobertura
-      summaryFileLocation: 'ClientApp/coverage/cobertura-coverage.xml'
-      reportDirectory: ClientApp/coverage/html
+      summaryFileLocation: 'lanfeustbridge.client/coverage/lanfeustbridge.client/cobertura-coverage.xml'
+
+  - task: Npm@1
+    displayName: 'End-to-End Tests'
+    inputs:
+      command: custom
+      workingDir: lanfeustbridge.client
+      verbose: false
+      customCommand: 'run e2e-ci'
+
+  - task: PublishTestResults@2
+    displayName: 'Publish test results'
+    inputs:
+      testResultsFormat: 'JUnit'
+      testResultsFiles: 'lanfeustbridge.client/e2e-junit-results.xml'
+      mergeTestResults: true
+      failTaskOnFailedTests: true
+      testRunTitle: 'End-To-End Tests'
+    condition: succeededOrFailed()

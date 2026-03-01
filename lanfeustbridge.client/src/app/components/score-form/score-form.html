@@ -1,0 +1,71 @@
+<form (ngSubmit)="onSubmit()">
+  <div role="group" class="btn-group me-2" name="level">
+    @for (lvl of [0, 1, 2, 3, 4, 5, 6, 7]; track lvl) {
+      <div>
+        <input type="radio" class="btn-check" [value]="lvl" [(ngModel)]="score.contract.level" (ngModelChange)="tricksFixup()"
+          name="level" attr.id="btn-lvl-{{lvl}}" autocomplete="off" />
+          <label class="btn btn-light" attr.for="btn-lvl-{{lvl}}">{{lvl ? lvl : 'Pass'}}</label>
+        </div>
+      }
+    </div>
+    @if (score.contract.level) {
+      <div class="btn-group me-2" name="suit">
+        @for (s of _suits; track s) {
+          <div>
+            <input type="radio" class="btn-check" [value]="s" [(ngModel)]="score.contract.suit" name="suit" attr.id="btn-suit-{{s}}" />
+            <label class="btn btn-light" attr.for="btn-suit-{{s}}">
+              <lanfeust-bridge-suit [suit]="s"></lanfeust-bridge-suit>
+            </label>
+          </div>
+        }
+      </div>
+    }
+    @if (score.contract.level) {
+      <div class="btn-group me-2">
+        <input type="checkbox" class="btn-check" [(ngModel)]="score.contract.doubled" (ngModelChange)="doubleFixup($event)" name="doubled" id="doubled" />
+        <label class="btn btn-light" [class.active]="score.contract.doubled" for="doubled" name="doubled">X</label>
+        <input type="checkbox" class="btn-check" [(ngModel)]="score.contract.redoubled" (ngModelChange)="redoubleFixup($event)" name="redoubled" id="redoubled" />
+        <label class="btn btn-light" [class.active]="score.contract.redoubled" for="redoubled" name="redoubled">XX</label>
+      </div>
+    }
+    @if (score.contract.level) {
+      <div class="btn-group me-2" name="declarer">
+        @for (declarer of ['N', 'S', 'E', 'W']; track declarer) {
+          <div>
+            <input type="radio" class="btn-check" [value]="declarer" [(ngModel)]="score.contract.declarer" name="declarer" attr.id="btn-decl-{{declarer}}" />
+            <label class="btn btn-light" attr.for="btn-decl-{{declarer}}">{{declarer}}</label>
+          </div>
+        }
+      </div>
+    }
+    @if (score.contract.level) {
+      <div class="btn-group me-2" name="result">
+        <button type="button" class="btn btn-light" (click)="changeTricks(-1)">-</button>
+        <button type="button" class="btn bg-info">{{tricksDisplay}}</button>
+        <button type="button" class="btn btn-light" (click)="changeTricks(1)">+</button>
+      </div>
+    }
+    <div class="form-group">
+      @if (!score.contract.level) {
+        <div class="panel panel-body score-display">Pass</div>
+      }
+      @if (score.contract.level) {
+        <div class="panel panel-body score-display">
+          {{score.contract.level}}
+          @if (score.contract.suit !== undefined) {
+            <lanfeust-bridge-suit [suit]="score.contract.suit"></lanfeust-bridge-suit>
+          }
+          @if (score.contract.doubled) {
+            <span>X&nbsp;</span>
+            }@if (score.contract.redoubled) {
+            <span>XX&nbsp;</span>
+          }
+          {{score.contract.declarer}}&nbsp;{{tricksDisplay}}&nbsp;&nbsp;&nbsp;<strong>{{computedScore}}</strong>
+        </div>
+      }
+    </div>
+    <pre>{{score.contract | json}}</pre>
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary" [disabled]="!isValid">Accept</button>
+    </div>
+  </form>

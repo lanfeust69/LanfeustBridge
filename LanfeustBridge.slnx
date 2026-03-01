@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="azure-pipelines.yml" />
+    <File Path="global.json" />
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="lanfeustbridge.client/lanfeustbridge.client.esproj">
+    <Build />
+    <Deploy />
+  </Project>
+  <Project Path="LanfeustBridge.Core/LanfeustBridge.Core.csproj" Id="61f901b8-751f-4a1a-999b-9d710104d264" />
+  <Project Path="LanfeustBridge.Server/LanfeustBridge.Server.csproj" />
+  <Project Path="Movement.Tests/Movement.Tests.csproj" Id="eee8fa2b-786f-4ea5-b44e-92dd8fb32c80" />
+</Solution>

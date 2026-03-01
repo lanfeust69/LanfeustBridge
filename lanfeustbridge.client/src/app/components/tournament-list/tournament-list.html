@@ -1,0 +1,8 @@
+<div class="list-group">
+  @for (tournamentName of _tournamentNames; track tournamentName) {
+    <a [routerLink]="['tournament', tournamentName.id]" class="list-group-item">{{tournamentName.name}}</a>
+  }
+</div>
+@if (_isAdmin) {
+  <button type="button" class='btn btn-secondary w-100' (click)="createTournament()">Create new tournament</button>
+}

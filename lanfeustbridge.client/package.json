@@ -1,0 +1,62 @@
+{
+  "name": "lanfeustbridge.client",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "run-script-os",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test",
+    "test-ci": "ng test --reporters junit --output-file junit/test-results.xml --coverage --coverage-reporters cobertura",
+    "prestart": "node aspnetcore-https",
+    "start:windows": "ng serve --ssl --ssl-cert \"%APPDATA%\\ASP.NET\\https\\%npm_package_name%.pem\" --ssl-key \"%APPDATA%\\ASP.NET\\https\\%npm_package_name%.key\" --host=127.0.0.1",
+    "start:default": "ng serve --ssl --ssl-cert \"$HOME/.aspnet/https/${npm_package_name}.pem\" --ssl-key \"$HOME/.aspnet/https/${npm_package_name}.key\" --host=127.0.0.1",
+    "e2e": "ng e2e",
+    "e2e-ci": "playwright install && PLAYWRIGHT_JUNIT_OUTPUT_NAME=e2e-junit-results.xml playwright test --reporter=junit"
+  },
+  "prettier": {
+    "printWidth": 100,
+    "singleQuote": true,
+    "overrides": [
+      {
+        "files": "*.html",
+        "options": {
+          "parser": "angular"
+        }
+      }
+    ]
+  },
+  "private": true,
+  "packageManager": "npm@11.3.0",
+  "dependencies": {
+    "@angular/common": "^21.2.4",
+    "@angular/compiler": "^21.2.4",
+    "@angular/core": "^21.2.4",
+    "@angular/forms": "^21.2.4",
+    "@angular/platform-browser": "^21.2.4",
+    "@angular/router": "^21.2.4",
+    "@microsoft/signalr": "10.0.0",
+    "@ng-bootstrap/ng-bootstrap": "20.0.0",
+    "@popperjs/core": "^2.11.8",
+    "bootstrap": "^5.3.8",
+    "jest-editor-support": "*",
+    "run-script-os": "*",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0",
+    "vitest": "^4.0.8",
+    "zone.js": "~0.16.1"
+  },
+  "devDependencies": {
+    "@angular/build": "^21.2.2",
+    "@angular/cli": "^21.2.2",
+    "@angular/compiler-cli": "^21.2.4",
+    "@angular/localize": "^21.2.4",
+    "@ng-bootstrap/ng-bootstrap": "^20.0.0",
+    "@playwright/test": "1.58.2",
+    "@vitest/coverage-v8": "^4.1.0",
+    "jsdom": "^28.1.0",
+    "playwright-ng-schematics": "^21.0.4",
+    "typescript": "~5.9.2",
+    "vitest": "^4.1.0"
+  }
+}

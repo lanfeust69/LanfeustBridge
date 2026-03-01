@@ -1,0 +1,6 @@
+@LanfeustBridge.Server_HostAddress = http://localhost:5229
+
+GET {{LanfeustBridge.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

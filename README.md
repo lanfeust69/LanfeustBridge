@@ -7,24 +7,24 @@ however it may eventually come to something useful, who knows ?
 
 ## Requirements
 
-- [.Net Core 3.1](https://www.microsoft.com/net/core)
+- [.NET 10](https://dotnet.microsoft.com)
 - [nodejs](https://nodejs.org)
 
 ## Running from the command line
 
 ```bash
 # Running the server
-dotnet run
+cd LanfeustBridge.Server && dotnet run
 
 # Running backend tests
-dotnet test
+cd MovementTests && dotnet test
 
 # Running frontend unit tests
-cd ClientApp
+cd lanfeustbridge.client
 npm test
 
 # Running frontend end-to-end tests
 # --silent is to avoid spurious npm error message in case of failure
-cd ClientApp
+cd lanfeustbridge.client
 npm run e2e --silent
 ```
