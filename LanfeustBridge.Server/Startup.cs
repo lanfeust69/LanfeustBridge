@@ -84,8 +84,8 @@ public class Startup
         {
             services.AddAuthentication().AddGoogle(googleOptions =>
             {
-                googleOptions.ClientId = Configuration["Authentication:Google:ClientId"];
-                googleOptions.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
+                googleOptions.ClientId = Configuration["Authentication:Google:ClientId"]!;
+                googleOptions.ClientSecret = Configuration["Authentication:Google:ClientSecret"]!;
             });
         }
 

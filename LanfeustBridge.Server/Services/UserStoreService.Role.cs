@@ -35,24 +35,24 @@ public partial class UserStoreService : IRoleStore<Role>, IUserRoleStore<User>
         return Task.FromResult(IdentityResult.Success);
     }
 
-    Task<Role> IRoleStore<Role>.FindByIdAsync(string roleId, CancellationToken cancellationToken)
+    Task<Role?> IRoleStore<Role>.FindByIdAsync(string roleId, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (roleId == null)
             throw new ArgumentNullException(nameof(roleId));
 
         var role = _roles.FindById(roleId);
-        return Task.FromResult(role);
+        return Task.FromResult<Role?>(role);
     }
 
-    Task<Role> IRoleStore<Role>.FindByNameAsync(string normalizedRoleName, CancellationToken cancellationToken)
+    Task<Role?> IRoleStore<Role>.FindByNameAsync(string normalizedRoleName, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (normalizedRoleName == null)
             throw new ArgumentNullException(nameof(normalizedRoleName));
 
         var role = _roles.FindOne(r => r.NormalizedName == normalizedRoleName);
-        return Task.FromResult(role);
+        return Task.FromResult<Role?>(role);
     }
 
     public Task<string> GetRoleIdAsync(Role role, CancellationToken cancellationToken)
@@ -64,7 +64,7 @@ public partial class UserStoreService : IRoleStore<Role>, IUserRoleStore<User>
         return Task.FromResult(role.Id);
     }
 
-    public Task<string> GetRoleNameAsync(Role role, CancellationToken cancellationToken)
+    public Task<string?> GetRoleNameAsync(Role role, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (role == null)
@@ -73,16 +73,16 @@ public partial class UserStoreService : IRoleStore<Role>, IUserRoleStore<User>
         return Task.FromResult(role.Name);
     }
 
-    public Task SetRoleNameAsync(Role role, string roleName, CancellationToken cancellationToken)
+    public Task SetRoleNameAsync(Role role, string? roleName, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (role == null)
             throw new ArgumentNullException(nameof(role));
-        role.Name = roleName ?? throw new ArgumentNullException(nameof(roleName));
+        role.Name = roleName;
         return Task.CompletedTask;
     }
 
-    public Task<string> GetNormalizedRoleNameAsync(Role role, CancellationToken cancellationToken)
+    public Task<string?> GetNormalizedRoleNameAsync(Role role, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (role == null)
@@ -91,12 +91,12 @@ public partial class UserStoreService : IRoleStore<Role>, IUserRoleStore<User>
         return Task.FromResult(role.NormalizedName);
     }
 
-    public Task SetNormalizedRoleNameAsync(Role role, string normalizedName, CancellationToken cancellationToken)
+    public Task SetNormalizedRoleNameAsync(Role role, string? normalizedName, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (role == null)
             throw new ArgumentNullException(nameof(role));
-        role.NormalizedName = normalizedName ?? throw new ArgumentNullException(nameof(normalizedName));
+        role.NormalizedName = normalizedName;
         return Task.CompletedTask;
     }
 
@@ -104,12 +104,12 @@ public partial class UserStoreService : IRoleStore<Role>, IUserRoleStore<User>
     {
         var role = await ((IRoleStore<Role>)this).FindByNameAsync(roleName, cancellationToken);
         var userName = user.NormalizedUserName;
-        if (!role.UsersInRole.Contains(userName))
+        if (role != null && userName != null && !role.UsersInRole.Contains(userName))
         {
             role.UsersInRole.Add(userName);
             _roles.Update(role);
         }
-        if (!user.Roles.Contains(role.Name))
+        if (role != null && role.Name != null && !user.Roles.Contains(role.Name))
         {
             user.Roles.Add(role.Name);
             _users.Update(user);
@@ -120,12 +120,12 @@ public partial class UserStoreService : IRoleStore<Role>, IUserRoleStore<User>
     {
         var role = await ((IRoleStore<Role>)this).FindByNameAsync(roleName, cancellationToken);
         var userName = user.NormalizedUserName;
-        if (role.UsersInRole.Contains(userName))
+        if (role != null && userName != null && role.UsersInRole.Contains(userName))
         {
             role.UsersInRole.Remove(userName);
             _roles.Update(role);
         }
-        if (user.Roles.Contains(role.Name))
+        if (role != null && role.Name != null && user.Roles.Contains(role.Name))
         {
             user.Roles.Remove(role.Name);
             _users.Update(user);
@@ -134,7 +134,7 @@ public partial class UserStoreService : IRoleStore<Role>, IUserRoleStore<User>
 
     public Task<IList<string>> GetRolesAsync(User user, CancellationToken cancellationToken)
     {
-        return Task.FromResult<IList<string>>(new List<string>(user.Roles));
+        return Task.FromResult<IList<string>>(user.Roles);
     }
 
     public Task<bool> IsInRoleAsync(User user, string roleName, CancellationToken cancellationToken)
@@ -146,8 +146,15 @@ public partial class UserStoreService : IRoleStore<Role>, IUserRoleStore<User>
     {
         var result = new List<User>();
         var role = await ((IRoleStore<Role>)this).FindByNameAsync(roleName, cancellationToken);
-        foreach (var user in role.UsersInRole)
-            result.Add(await FindByNameAsync(user, cancellationToken));
+        if (role != null)
+        {
+            foreach (var user in role.UsersInRole)
+            {
+                var toAdd = await FindByNameAsync(user, cancellationToken);
+                if (toAdd != null)
+                    result.Add(toAdd);
+            }
+        }
 
         return result;
     }

@@ -37,7 +37,7 @@ public sealed partial class UserStoreService : IUserStore<User>,
         if (user == null)
             throw new ArgumentNullException(nameof(user));
 
-        if (string.IsNullOrWhiteSpace(user.DisplayName))
+        if (string.IsNullOrWhiteSpace(user.DisplayName) && user.UserName != null)
             user.DisplayName = user.UserName;
 
         _users.Insert(user);
@@ -65,34 +65,34 @@ public sealed partial class UserStoreService : IUserStore<User>,
         return Task.FromResult(IdentityResult.Success);
     }
 
-    public Task<User> FindByIdAsync(string userId, CancellationToken cancellationToken)
+    public Task<User?> FindByIdAsync(string userId, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (userId == null)
             throw new ArgumentNullException(nameof(userId));
 
         var user = _users.FindById(userId);
-        return Task.FromResult(user);
+        return Task.FromResult<User?>(user);
     }
 
-    public Task<User> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
+    public Task<User?> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (normalizedUserName == null)
             throw new ArgumentNullException(nameof(normalizedUserName));
 
         var user = _users.FindOne(u => u.NormalizedUserName == normalizedUserName);
-        return Task.FromResult(user);
+        return Task.FromResult<User?>(user);
     }
 
-    public Task<User> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken)
+    public Task<User?> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (normalizedEmail == null)
             throw new ArgumentNullException(nameof(normalizedEmail));
 
         var user = _users.FindOne(u => u.NormalizedEmail == normalizedEmail);
-        return Task.FromResult(user);
+        return Task.FromResult<User?>(user);
     }
 
     public Task<string> GetUserIdAsync(User user, CancellationToken cancellationToken)
@@ -104,7 +104,7 @@ public sealed partial class UserStoreService : IUserStore<User>,
         return Task.FromResult(user.Id);
     }
 
-    public Task<string> GetUserNameAsync(User user, CancellationToken cancellationToken)
+    public Task<string?> GetUserNameAsync(User user, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (user == null)
@@ -113,16 +113,16 @@ public sealed partial class UserStoreService : IUserStore<User>,
         return Task.FromResult(user.UserName);
     }
 
-    public Task SetUserNameAsync(User user, string userName, CancellationToken cancellationToken)
+    public Task SetUserNameAsync(User user, string? userName, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (user == null)
             throw new ArgumentNullException(nameof(user));
-        user.UserName = userName ?? throw new ArgumentNullException(nameof(userName));
+        user.UserName = userName;
         return Task.CompletedTask;
     }
 
-    public Task<string> GetNormalizedUserNameAsync(User user, CancellationToken cancellationToken)
+    public Task<string?> GetNormalizedUserNameAsync(User user, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (user == null)
@@ -131,16 +131,16 @@ public sealed partial class UserStoreService : IUserStore<User>,
         return Task.FromResult(user.NormalizedUserName);
     }
 
-    public Task SetNormalizedUserNameAsync(User user, string normalizedName, CancellationToken cancellationToken)
+    public Task SetNormalizedUserNameAsync(User user, string? normalizedName, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (user == null)
             throw new ArgumentNullException(nameof(user));
-        user.NormalizedUserName = normalizedName ?? throw new ArgumentNullException(nameof(normalizedName));
+        user.NormalizedUserName = normalizedName;
         return Task.CompletedTask;
     }
 
-    public Task<string> GetPasswordHashAsync(User user, CancellationToken cancellationToken)
+    public Task<string?> GetPasswordHashAsync(User user, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (user == null)
@@ -158,16 +158,16 @@ public sealed partial class UserStoreService : IUserStore<User>,
         return Task.FromResult(!string.IsNullOrEmpty(user.PasswordHash));
     }
 
-    public Task SetPasswordHashAsync(User user, string passwordHash, CancellationToken cancellationToken)
+    public Task SetPasswordHashAsync(User user, string? passwordHash, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (user == null)
             throw new ArgumentNullException(nameof(user));
-        user.PasswordHash = passwordHash ?? throw new ArgumentNullException(nameof(passwordHash));
+        user.PasswordHash = passwordHash;
         return Task.CompletedTask;
     }
 
-    public Task<string> GetEmailAsync(User user, CancellationToken cancellationToken)
+    public Task<string?> GetEmailAsync(User user, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (user == null)
@@ -176,7 +176,7 @@ public sealed partial class UserStoreService : IUserStore<User>,
         return Task.FromResult(user.Email);
     }
 
-    public Task SetEmailAsync(User user, string email, CancellationToken cancellationToken)
+    public Task SetEmailAsync(User user, string? email, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (user == null)
@@ -185,7 +185,7 @@ public sealed partial class UserStoreService : IUserStore<User>,
         return Task.CompletedTask;
     }
 
-    public Task<string> GetNormalizedEmailAsync(User user, CancellationToken cancellationToken)
+    public Task<string?> GetNormalizedEmailAsync(User user, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (user == null)
@@ -194,12 +194,12 @@ public sealed partial class UserStoreService : IUserStore<User>,
         return Task.FromResult(user.NormalizedEmail);
     }
 
-    public Task SetNormalizedEmailAsync(User user, string normalizedEmail, CancellationToken cancellationToken)
+    public Task SetNormalizedEmailAsync(User user, string? normalizedEmail, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (user == null)
             throw new ArgumentNullException(nameof(user));
-        user.NormalizedEmail = normalizedEmail ?? throw new ArgumentNullException(nameof(normalizedEmail));
+        user.NormalizedEmail = normalizedEmail;
         return Task.CompletedTask;
     }
 
@@ -222,7 +222,7 @@ public sealed partial class UserStoreService : IUserStore<User>,
         return Task.CompletedTask;
     }
 
-    public Task<string> GetPhoneNumberAsync(User user, CancellationToken cancellationToken)
+    public Task<string?> GetPhoneNumberAsync(User user, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (user == null)
@@ -231,12 +231,12 @@ public sealed partial class UserStoreService : IUserStore<User>,
         return Task.FromResult(user.PhoneNumber);
     }
 
-    public Task SetPhoneNumberAsync(User user, string phoneNumber, CancellationToken cancellationToken)
+    public Task SetPhoneNumberAsync(User user, string? phoneNumber, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (user == null)
             throw new ArgumentNullException(nameof(user));
-        user.PhoneNumber = phoneNumber ?? throw new ArgumentNullException(nameof(phoneNumber));
+        user.PhoneNumber = phoneNumber;
         return Task.CompletedTask;
     }
 
@@ -301,7 +301,7 @@ public sealed partial class UserStoreService : IUserStore<User>,
         return Task.FromResult<IList<UserLoginInfo>>(result);
     }
 
-    public Task<User> FindByLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken)
+    public Task<User?> FindByLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (loginProvider == null)
@@ -311,7 +311,7 @@ public sealed partial class UserStoreService : IUserStore<User>,
 
         var loginString = $"{loginProvider}|{providerKey}";
         var user = _users.FindOne(u => u.ExternalLogins.Contains(loginString));
-        return Task.FromResult(user);
+        return Task.FromResult<User?>(user);
     }
 
     public Task<bool> GetTwoFactorEnabledAsync(User user, CancellationToken cancellationToken)
